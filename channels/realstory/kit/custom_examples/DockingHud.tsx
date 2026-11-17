@@ -45,7 +45,7 @@ export const DockingHud: React.FC<{ s: any; d: number; med: (id: string) => stri
     </svg>
     <Mono text="GEMINI 8 · WINDOW CAMERA" f0={2} size={22} color={MUTED} style={{ position: 'absolute', left: 60, top: 104 }} />
     <div style={{ position: 'absolute', left: 60, top: 144, fontFamily: FONT.mono, fontSize: 22, letterSpacing: '0.12em', color: BONE, textShadow: SHADOW }}>FRAME {k + 1} / {ids.length}</div>
-    <div style={{ position: 'absolute', right: 140, bottom: 120, textAlign: 'right' }}>
+    <div style={{ position: 'absolute', right: 260, bottom: 150, textAlign: 'right' }}>
       <div style={{ fontFamily: FONT.mono, fontSize: 24, letterSpacing: '0.14em', color: MUTED, textShadow: SHADOW }}>RANGE TO AGENA</div>
       <div style={{ ...DISP(220, 62, 860), color: BONE, fontVariantNumeric: 'tabular-nums', textShadow: SHADOW, marginTop: 8 }}>~{rv.toLocaleString('en-US')}<span style={{ ...DISP(110), color: ACCENT_EP, marginLeft: 18 }}>FT</span></div>
     </div>
