@@ -126,8 +126,31 @@ def test_variety_passes_mixed_edit():
            ("document_highlight", 4), ("big_number", 2), ("illus_animated", 5), ("photo_detail_zoom", 3),
            ("chart_line_draw", 6), ("transcript_waveform", 5), ("map_zoom", 3), ("satellite_reveal", 4),
            ("question_card", 2), ("film_freeze_annotate", 5)]
-    res = variety.check({"shots": [shot(i, t, d) for i, (t, d) in enumerate(seq)]}, CH)
+    shots = [shot(i, t, d) for i, (t, d) in enumerate(seq)]
+    shots.insert(7, {**shot(99, "custom", 4), "custom": {"component": "DockingHud", "brief": "Reticle over the approach photos"}})
+    res = variety.check({"shots": shots}, CH)
     assert res["ok"], res["problems"]
+
+
+def test_variety_needs_custom_scenes_and_known_variants():
+    seq = [("photo_parallax", 5), ("kinetic_type", 4), ("film_clip", 5), ("globe_route", 6)] * 6
+    shots = [shot(i, t, d) for i, (t, d) in enumerate(seq)]
+    shots[1]["variant"] = "no_such_variant"
+    res = variety.check({"shots": shots}, CH)
+    msgs = " ".join(p["msg"] for p in res["problems"])
+    assert "made for this episode" in msgs and "no variant 'no_such_variant'" in msgs
+
+
+def test_look_picks_dark_ground_and_vivid_accent(tmp_path):
+    from PIL import Image
+    from vengine import look
+    im = Image.new("RGB", (200, 200), (10, 25, 60))           # night blue
+    im.paste((235, 190, 40), (80, 80, 110, 110))               # a yellow collar
+    im.save(tmp_path / "a.png")
+    res = look.pick([tmp_path / "a.png"])
+    L, C, h = look.hex_to_oklch(res["ground"])
+    assert L < 0.22 and 220 < h < 290
+    assert 60 < res["accent_hue"] < 110 and res["contrast_accent"] >= 4.5
 
 
 @pytest.mark.parametrize("text,rule", [

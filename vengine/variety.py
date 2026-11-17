@@ -15,6 +15,8 @@ DEFAULTS = {
     "shot_min_s": 1.5,
     "shot_max_s": 7.0,
     "max_static_s": 4.0,          # a static-risk shot longer than this needs motion
+    "custom_min": 2,              # scenes built for this episode's subject
+    "unredact_max": 3,            # the channel signature, used sparingly
 }
 
 
@@ -28,9 +30,9 @@ def check(shotlist: dict, channel: dict | None = None) -> dict:
     total = sum(s["duration_s"] for s in shots)
     by_reg = {r: 0.0 for r in scenes.REGISTERS}
     for s in shots:
-        st = scenes.LIBRARY.get(s["scene_type"])
-        if st:
-            by_reg[st.register] += s["duration_s"]
+        reg = scenes.register_of(s)
+        if reg:
+            by_reg[reg] += s["duration_s"]
     share = {r: round(v / total, 3) for r, v in by_reg.items()}
     stats.update(total_s=round(total, 1), shots=len(shots), share=share)
 
@@ -41,9 +43,11 @@ def check(shotlist: dict, channel: dict | None = None) -> dict:
         add("error", f"real material is {share[scenes.ARCHIVAL]:.0%} of screen time, need at least "
                      f"{cfg['archival_min_share']:.0%}: find more photos, film, documents")
 
-    # same type twice in a row
+    # same type twice in a row (two different custom scenes may follow each other)
     for a, b in zip(shots, shots[1:]):
-        if a["scene_type"] == b["scene_type"]:
+        if a["scene_type"] == b["scene_type"] and not (
+                a["scene_type"] == "custom"
+                and (a.get("custom") or {}).get("component") != (b.get("custom") or {}).get("component")):
             add("error", f"{a['id']} and {b['id']} are both {a['scene_type']}: break the repeat")
 
     distinct = {s["scene_type"] for s in shots}
@@ -52,11 +56,44 @@ def check(shotlist: dict, channel: dict | None = None) -> dict:
     if len(distinct) < need:
         add("error", f"only {len(distinct)} scene types, need at least {need}")
 
+    # variants: a library scene must name one the kit has; the same type must not
+    # come back in the same variant (the eye notices the second identical globe)
+    seen: dict[str, str] = {}
+    for s in shots:
+        t, v = s["scene_type"], s.get("variant")
+        st = scenes.LIBRARY.get(t)
+        if t == "custom":
+            c = s.get("custom") or {}
+            if not c.get("component") or not c.get("brief"):
+                add("error", f"{s['id']} is custom but has no custom.component / custom.brief")
+            continue
+        if not st or not st.variants:
+            continue
+        if v is None:
+            add("warn", f"{s['id']} ({t}) has no variant: the kit falls back to {st.variants[0]}")
+            v = st.variants[0]
+        elif v not in st.variants:
+            add("error", f"{s['id']}: {t} has no variant '{v}' (kit has: {', '.join(st.variants)})")
+        if seen.get(t) == v and len(st.variants) > 1:
+            add("warn", f"{s['id']}: {t} again in variant '{v}': pick another one")
+        seen[t] = v
+
+    customs = {(s.get("custom") or {}).get("component") for s in shots if s["scene_type"] == "custom"}
+    customs.discard(None)
+    stats["custom_scenes"] = len(customs)
+    need_c = cfg["custom_min"] if total >= 90 else min(1, cfg["custom_min"])
+    if len(customs) < need_c:
+        add("error", f"{len(customs)} scenes made for this episode, need at least {need_c}: "
+                     "invent a scene from the subject itself (its instrument, object, mechanism)")
+
+    unredacts = sum(1 for s in shots if s.get("variant") == "unredact")
+    if unredacts > cfg["unredact_max"]:
+        add("warn", f"unredact used {unredacts} times, keep the signature to {cfg['unredact_max']}")
+
     # register runs
     run_reg, run_len, run_start = None, 0.0, None
     for s in shots:
-        st = scenes.LIBRARY.get(s["scene_type"])
-        reg = st.register if st else None
+        reg = scenes.register_of(s)
         if reg == run_reg:
             run_len += s["duration_s"]
         else:

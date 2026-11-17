@@ -23,6 +23,7 @@ class SceneType:
     what: str
     needs_media: bool = False
     static_risk: bool = False  # tends to look frozen; must declare `motion`
+    variants: tuple[str, ...] = ()  # composition/motion variants the kit implements
 
 
 _LIB = [
@@ -63,7 +64,59 @@ _LIB = [
     SceneType("illus_reconstruction", ILLUSTRATION, "Reconstruction of a moment nobody filmed, marked RECONSTRUCTION", True),
 ]
 
+# Variants: each library scene has 2+ ways to look, so two episodes never cut the same.
+VARIANTS: dict[str, tuple[str, ...]] = {
+    "photo_parallax": ("push_in", "lateral_drift", "rack_focus"),
+    "photo_lighttable": ("single_print", "contact_strip", "stack_shuffle"),
+    "photo_detail_zoom": ("circle_lands", "crop_marks", "magnifier"),
+    "photo_compare": ("side_by_side", "wipe", "flip"),
+    "film_clip": ("full_frame", "projector_flicker", "split_reel"),
+    "film_freeze_annotate": ("freeze_trace", "freeze_callouts"),
+    "document_highlight": ("glide_marker", "redaction_lift", "typewriter_overlay"),
+    "transcript_waveform": ("waveform_wide", "reel_to_reel"),
+    "quote_card": ("words_with_voice", "portrait_side", "handwritten_source"),
+    "data_plot_real": ("line_draw", "scope_trace"),
+    "satellite_reveal": ("orbit_dive", "tile_assemble"),
+    "stock_broll": ("graded", "split_tone"),
+    "globe_route": ("night_side", "terminator_line", "flat_unroll"),
+    "map_zoom": ("dive", "pan_along", "topo_lines"),
+    "map_compare_scale": ("overlay_drop", "outline_morph"),
+    "chart_line_draw": ("draw_flag", "scrub_cursor"),
+    "chart_bar_race": ("race", "stack_build"),
+    "big_number": ("odometer", "unredact", "fill_count"),
+    "counter_ticker": ("clock_dial", "flip_digits", "mission_clock"),
+    "timeline_scroll": ("rail_travel", "calendar_tear", "vertical_drop"),
+    "diagram_build": ("part_by_part", "exploded", "trace_flow"),
+    "cutaway_section": ("slice_reveal", "depth_drop"),
+    "scale_compare": ("dolly_line", "stack_up"),
+    "kinetic_type": ("rise_narrow", "unredact", "stagger_weight", "type_on"),
+    "chapter_card": ("hairline_index", "unredact", "big_index"),
+    "split_screen": ("two_up", "three_up"),
+    "question_card": ("unredact", "rise_narrow", "hold_cursor"),
+    "formula_card": ("terms_light", "derive"),
+    "evidence_board": ("strings", "folder_spread"),
+    "illus_animated": ("veo",),
+    "illus_parallax": ("layers_drift", "light_sweep"),
+    "illus_reconstruction": ("marked", "split_with_record"),
+}
+_LIB = [SceneType(s.name, s.register, s.what, s.needs_media, s.static_risk, VARIANTS.get(s.name, ())) for s in _LIB]
+
+# A scene made for one episode: its component lives in the episode
+# (`04_shots/custom/<Component>.tsx`), not in the kit. The shot declares
+# `custom: {component, register, brief}`; the register counts like a library scene.
+CUSTOM = SceneType("custom", BLUEPRINT, "Scene built for this episode's subject (HUD, instrument, object, mechanism)")
+_LIB.append(CUSTOM)
+
 LIBRARY: dict[str, SceneType] = {s.name: s for s in _LIB}
+
+
+def register_of(shot: dict) -> str | None:
+    """Register of a shot; custom scenes say their own."""
+    if shot.get("scene_type") == "custom":
+        reg = (shot.get("custom") or {}).get("register", BLUEPRINT)
+        return reg if reg in REGISTERS else BLUEPRINT
+    st = LIBRARY.get(shot.get("scene_type"))
+    return st.register if st else None
 
 
 def get(name: str) -> SceneType:

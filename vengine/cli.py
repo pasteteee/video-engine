@@ -46,6 +46,7 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("status"); p.add_argument("episode"); p.add_argument("--json", action="store_true")
     p = sub.add_parser("validate"); p.add_argument("episode")
     p = sub.add_parser("variety"); p.add_argument("shotlist"); p.add_argument("--channel")
+    p = sub.add_parser("look"); p.add_argument("episode"); p.add_argument("--write", action="store_true")
     p = sub.add_parser("ailint"); p.add_argument("file", nargs="?"); p.add_argument("--json", action="store_true")
     p.add_argument("--print-rules", action="store_true")
     for name in ("approve", "revoke"):
@@ -97,6 +98,17 @@ def main(argv: list[str] | None = None) -> int:
         res = variety.check(sl, ch)
         print(json.dumps(res["stats"], ensure_ascii=False))
         return _print_problems(res["problems"])
+
+    if a.cmd == "look":
+        from . import look
+        res = look.for_episode(Path(a.episode))
+        print(json.dumps(res, ensure_ascii=False, indent=2))
+        if a.write:
+            out = Path(a.episode) / "04_shots/look.json"
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"written: {out}")
+        return 0
 
     if a.cmd == "ailint":
         if a.print_rules:

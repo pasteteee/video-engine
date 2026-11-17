@@ -19,16 +19,36 @@
     "default_privacy": "private",
     "category_id": "27"
   },
-  "planner": {"artifact_slug": "06b339af-2d08-4933-b10f-1d991683cb1d"},
+  "planner": {
+    "artifact_slug": "06b339af-2d08-4933-b10f-1d991683cb1d"
+  },
   "style": {
-    "guide": "/mnt/project-files/anim_tests/STYLE_GUIDE.md",
+    "design_system": "https://claude.ai/artifact/SSQsWiPZJWx4N2FdFwD9zk",
+    "brand_dir": "/mnt/project-files/branding_real_story",
+    "guide": "/mnt/project-files/branding_real_story/design_system/project/README.md",
     "kit": "/mnt/project-files/anim_tests/ps-kit",
+    "palette": "per_episode",
     "tokens": {
-      "NAVY": "#0D2A52", "NAVY2": "#081B38", "SEA": "#123A6E", "LAND": "#1E4A80",
-      "AMBER": "#F2C14E", "RED": "#C8261C", "ROUTE": "#FF5A4E", "INK": "#EAF0F8", "MUTED": "#9FB3CF"
+      "INK": "#0e0f11",
+      "GRAPHITE": "#1b1d21",
+      "BONE": "#f2efe8",
+      "PAPER": "#ece8df",
+      "MUTED": "#a4a199",
+      "SIGNAL": "#e2231a"
     },
-    "image_style_refs": ["/mnt/project-files/anim_tests/11-godwit-pro_frames.jpg"],
-    "image_style_prompt": "Editorial illustration for a documentary: deep navy blue palette (#0D2A52 to #081B38) with amber (#F2C14E) light accents and a single red (#C8261C) highlight, soft film grain, cinematic side light, simple bold shapes, no text, no logos, no watermarks."
+    "fonts": {
+      "display": "Archivo (variable wdth 62-125, wght 100-900), titles at wdth 62 / 860",
+      "quote": "Newsreader Italic (opsz)",
+      "mono": "IBM Plex Mono 400/500",
+      "dir": "/mnt/project-files/branding_real_story/source/fonts"
+    },
+    "type_rules": [
+      "no plates, boxes or borders behind text: legibility from size, a scrim of the episode ground and a soft shadow",
+      "signal red only for the stop block / redaction bar and thumbnail key words",
+      "episode accent for one word per kinetic line, routes and diagram strokes"
+    ],
+    "image_style_refs": [],
+    "image_style_prompt": "Editorial documentary illustration in the palette of this episode: ground {ground}, light accents {accent}, soft film grain, cinematic side light, simple bold shapes, archival photo texture, no text, no logos, no watermarks."
   },
   "voice": {
     "provider": "gemini",
@@ -45,10 +65,16 @@
     "max_static_s": 4
   },
   "script": {
-    "target_minutes": [8, 11],
+    "target_minutes": [
+      8,
+      11
+    ],
     "open_loop_every_s": 50,
     "words_per_minute": 150,
     "max_numbers": 12,
-    "golden_facts": [5, 7]
+    "golden_facts": [
+      5,
+      7
+    ]
   }
 }

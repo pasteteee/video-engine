@@ -3,33 +3,172 @@
   "$id": "shotlist",
   "title": "Shot list: the edit plan the renderer builds",
   "type": "object",
-  "required": ["fps", "width", "height", "shots"],
+  "required": [
+    "fps",
+    "width",
+    "height",
+    "shots"
+  ],
   "properties": {
-    "fps": {"type": "integer"},
-    "width": {"type": "integer"},
-    "height": {"type": "integer"},
+    "fps": {
+      "type": "integer"
+    },
+    "width": {
+      "type": "integer"
+    },
+    "height": {
+      "type": "integer"
+    },
     "music_cues": {
       "type": "array",
-      "items": {"type": "object", "required": ["at_shot", "level"], "properties": {"at_shot": {"type": "string"}, "level": {"type": "integer", "minimum": 0, "maximum": 4}}}
-    },
-    "shots": {
-      "type": "array", "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "line_ids", "scene_type", "duration_s"],
+        "required": [
+          "at_shot",
+          "level"
+        ],
         "properties": {
-          "id": {"type": "string"},
-          "line_ids": {"type": "array", "items": {"type": "string"}},
-          "scene_type": {"type": "string"},
-          "duration_s": {"type": "number", "exclusiveMinimum": 0, "description": "Planned; the renderer re-times to the voice"},
-          "media_ids": {"type": "array", "items": {"type": "string"}},
-          "params": {"type": "object"},
-          "on_screen_text": {"type": "array", "items": {"type": "string"}},
-          "source_line": {"type": "string"},
-          "motion": {"type": "string", "description": "What moves the whole time (camera, element, particles)"},
-          "transition_in": {"enum": ["cut", "push", "whip", "match", "dissolve", "flash", "mask"]},
-          "sfx": {"type": "array", "items": {"type": "string"}},
-          "sync_word": {"type": "string", "description": "Word in the narration the key element lands on"}
+          "at_shot": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          }
+        }
+      }
+    },
+    "shots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "line_ids",
+          "scene_type",
+          "duration_s"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "line_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "scene_type": {
+            "type": "string"
+          },
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Planned; the renderer re-times to the voice"
+          },
+          "media_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "params": {
+            "type": "object"
+          },
+          "on_screen_text": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "source_line": {
+            "type": "string"
+          },
+          "motion": {
+            "type": "string",
+            "description": "What moves the whole time (camera, element, particles)"
+          },
+          "transition_in": {
+            "enum": [
+              "cut",
+              "push",
+              "whip",
+              "match",
+              "dissolve",
+              "flash",
+              "mask"
+            ]
+          },
+          "sfx": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sync_word": {
+            "type": "string",
+            "description": "Word in the narration the key element lands on"
+          },
+          "variant": {
+            "type": "string",
+            "description": "Composition/motion variant from vengine/scenes.py VARIANTS"
+          },
+          "custom": {
+            "type": "object",
+            "required": [
+              "component",
+              "brief"
+            ],
+            "description": "Only for scene_type custom",
+            "properties": {
+              "component": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Za-z0-9]+$"
+              },
+              "register": {
+                "enum": [
+                  "archival",
+                  "blueprint",
+                  "illustration"
+                ]
+              },
+              "brief": {
+                "type": "string",
+                "description": "What the viewer sees and how it moves, in two or three sentences"
+              }
+            }
+          }
+        }
+      }
+    },
+    "look": {
+      "type": "object",
+      "description": "Episode palette: from `vengine look`, may be adjusted by the director. Text stays channel bone; signal red stays for the stop block.",
+      "required": [
+        "ground",
+        "accent"
+      ],
+      "properties": {
+        "ground": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "ground_2": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "accent": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "tint": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "why": {
+          "type": "string"
         }
       }
     }
