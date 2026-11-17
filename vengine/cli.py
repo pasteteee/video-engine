@@ -47,6 +47,8 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("validate"); p.add_argument("episode")
     p = sub.add_parser("variety"); p.add_argument("shotlist"); p.add_argument("--channel")
     p = sub.add_parser("look"); p.add_argument("episode"); p.add_argument("--write", action="store_true")
+    p = sub.add_parser("shorts"); p.add_argument("episode"); p.add_argument("--n", type=int, default=3)
+    p.add_argument("--write", action="store_true"); p.add_argument("--check", action="store_true")
     p = sub.add_parser("ailint"); p.add_argument("file", nargs="?"); p.add_argument("--json", action="store_true")
     p.add_argument("--print-rules", action="store_true")
     for name in ("approve", "revoke"):
@@ -105,6 +107,22 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(res, ensure_ascii=False, indent=2))
         if a.write:
             out = Path(a.episode) / "04_shots/look.json"
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"written: {out}")
+        return 0
+
+    if a.cmd == "shorts":
+        from . import shorts
+        ep = Path(a.episode)
+        if a.check:
+            plan = json.loads((ep / "06_render/shorts/shorts.json").read_text(encoding="utf-8"))
+            return _print_problems(shorts.check_plan(plan))
+        res = shorts.for_episode(ep, a.n)
+        for c in res["picked"]:
+            print(f"{c['id']}: {c['score']:>5}  {c['start_s']:>6}-{c['end_s']:<6} {','.join(c['line_ids'])}  ({'; '.join(c['why'])})")
+        if a.write:
+            out = ep / "06_render/shorts/candidates.json"
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
             print(f"written: {out}")

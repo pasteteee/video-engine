@@ -34,6 +34,7 @@ GATES = [s.gate for s in STAGES if s.gate]
 # Secondary files each stage also writes (checked by `validate`, not by `status`).
 EXTRA = {
     "02_research/media.json": "media",
+    "06_render/shorts/shorts.json": "shorts",
 }
 
 SUBDIRS = [

@@ -185,3 +185,17 @@ def test_every_agent_has_a_definition():
     agents = {s.agent for s in STAGES} | {"rs-analyst"}
     for a in agents:
         assert (ROOT / ".claude" / "agents" / f"{a}.md").exists(), a
+
+
+def test_shorts_pick_prefers_hooks_and_rejects_landscape_layouts():
+    from vengine import shorts as sh
+    lines = [{"id": f"l{i}", "chapter": "a", "text": t, **({"hook": h} if h else {})} for i, (t, h) in enumerate([
+        ("Nobody had done this before, 1966.", "cold_open"), ("They flew for ten hours.", None), ("And then it went on.", None),
+        ("It was quiet for a long time after that and nothing much happened at all.", None), ("Two feet.", "reveal")])]
+    words = {"lines": [{"id": l["id"], "start": i * 9.0, "end": i * 9.0 + 8.5} for i, l in enumerate(lines)]}
+    c = sh.candidates({"lines": lines}, {"shots": []}, words)
+    assert c[0]["line_ids"][0] == "l0"
+    plan = {"width": 1080, "height": 1920, "shorts": [{"id": "s1", "start_s": 0, "end_s": 30, "hook_text": "TWO FEET AWAY",
+             "shots": [{"id": "a", "layout": "letterbox", "duration_s": 2}, {"id": "b", "layout": "v_type", "duration_s": 2}]}]}
+    msgs = " ".join(p["msg"] for p in sh.check_plan(plan))
+    assert "not vertical-native" in msgs and "'v_type'" not in msgs

@@ -19,7 +19,8 @@ Talk to the owner in the profile's `work_language` (Russian for realstory). Firs
 | 4 | rs-writer | `03_script/script.json` | **script** |
 | 5 | rs-director | `04_shots/shotlist.json` | no |
 | 6 | rs-voice | `05_voice/words.json` + audio | no |
-| 7 | rs-render | `06_render/main.mp4`, shorts, thumb | no |
+| 7 | rs-render | `06_render/main.mp4`, thumb | no |
+| 7b | rs-shorts | `06_render/shorts/shorts.json`, `<id>.mp4` (vertical-native, 1080x1920) | no |
 | 8 | rs-qa | `07_qa/qa_report.json` (loops back to 7) | **final** |
 | 9 | rs-publisher | `08_publish/publish.json` | no |
 

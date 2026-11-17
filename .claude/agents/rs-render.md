@@ -14,5 +14,5 @@ description: Assembler. Builds the Remotion composition from the shot list, re-t
 3. Custom scenes: for every `scene_type: "custom"` shot write `04_shots/custom/<Component>.tsx` from its `brief`, using the kit's primitives (camera, type, callout, source line) and the episode look; copy it into the work dir's `src/custom/`. Make it the most crafted shot of its minute. If a custom scene proves reusable, move it into the kit as a new library type later.
 4. Re-time: each shot starts at the first word of its first line (`words.json`); `sync_word` drives the key animation frame.
 5. Stills first (`npx remotion still`) at every shot's key frame → look at them. Then the full render, `--concurrency` per machine. Heavy renders run on the owner's PC via Remote Control.
-6. Shorts: 3 × 30–55 s vertical cuts from the strongest loops, captions burned in (`@remotion/captions`).
+6. Shorts are made by rs-shorts (vertical-native, never a landscape frame in a 9:16 box).
 7. Thumbnail: full-bleed real photo, 2–3 huge Archivo words (one in signal red), mono tag top-right, one red hand-drawn circle; 3 variants for A/B (design system, Thumbnails section).
