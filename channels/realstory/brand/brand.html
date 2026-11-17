@@ -14,6 +14,8 @@ body{background:#333}
 .stop{display:inline-block;background:var(--signal);vertical-align:baseline}
 .mono{font-family:Plex;font-weight:500;letter-spacing:.14em;text-transform:uppercase}
 .grain{position:absolute;inset:0;pointer-events:none;opacity:.12;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.zone{position:absolute;display:none;border:3px dashed #3fd07a;color:#3fd07a;font:600 22px Plex;letter-spacing:.1em;align-items:center;justify-content:center}
+body.guide .zone{display:flex}
 </style></head>
 <body>
 
@@ -23,8 +25,26 @@ body{background:#333}
 </div>
 
 <!-- 2. avatar 800 -->
-<div id="avatar" class="art" style="width:800px;height:800px">
-  <div class="wm" style="position:absolute;left:96px;top:190px;font-size:236px;line-height:.84">Real<br>Story<span class="stop" style="width:.3em;height:.7em;margin-left:.07em"></span></div>
+<div id="avatar" class="art" style="width:800px;height:800px;display:flex;align-items:center;justify-content:center">
+  <div class="wm" style="position:relative;font-size:204px;line-height:.84;transform:translate(4px,8px)">Real<br>Story<span class="stop" style="width:.3em;height:.7em;margin-left:.07em"></span></div>
+  <div class="grain"></div>
+</div>
+
+<!-- 3b. watermark 150 transparent -->
+<div id="watermark150" style="width:150px;height:150px;display:flex;align-items:center;justify-content:center;background:transparent">
+  <div class="wm" style="font-size:50px;line-height:.84;color:#fff;opacity:.92">Real<br>Story<span class="stop" style="width:.3em;height:.7em;margin-left:.07em"></span></div>
+</div>
+
+<!-- 5. end screen 1920x1080: zones for YouTube end-screen elements (add ?guide to see them) -->
+<div id="endscreen" class="art" style="width:1920px;height:1080px">
+  <div class="wm" style="position:absolute;left:150px;top:96px;font-size:84px">Real Story<span class="stop" style="width:.34em;height:.7em;margin-left:.08em"></span></div>
+  <div class="mono" style="position:absolute;left:152px;top:250px;font-size:24px;color:var(--muted)">Watch next</div>
+  <div style="position:absolute;left:150px;top:286px;width:1620px;height:2px;background:#3a3d42"></div>
+  <div class="mono" style="position:absolute;left:1180px;top:250px;font-size:24px;color:var(--muted)">From the archive</div>
+  <div class="mono" style="position:absolute;left:152px;bottom:84px;font-size:22px;color:var(--muted)">True stories, shown with the original records</div>
+  <div class="zone" style="left:150px;top:330px;width:960px;height:540px">VIDEO 1 · 960×540</div>
+  <div class="zone" style="left:1180px;top:330px;width:590px;height:332px">VIDEO 2 · PLAYLIST</div>
+  <div class="zone" style="left:1355px;top:700px;width:240px;height:240px;border-radius:50%">SUBSCRIBE</div>
   <div class="grain"></div>
 </div>
 
@@ -45,6 +65,7 @@ body{background:#333}
 </div>
 
 <script>
+if (location.search.includes('guide')) document.body.classList.add('guide');
 // banner side strips: archival photos passed as ?photos=a.jpg,b.jpg
 const ph = new URLSearchParams(location.search).get('photos');
 if (ph) { const s = document.getElementById('strip');
