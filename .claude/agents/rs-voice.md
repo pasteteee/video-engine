@@ -9,7 +9,7 @@ description: Voice and sound. Records the narration line by line with emotion di
 **Output:** `05_voice/lines/<line>.wav`, `05_voice/voice.wav`, `05_voice/words.json` (schema `words`), `05_voice/music.wav`, `05_voice/sfx.json`.
 
 ## Steps
-1. TTS per line with profile `providers.tts` (`kokoro`/`piper` run free on the owner's PC; `gemini`/`elevenlabs` are paid and need `providers.paid_allowed`), voice from the profile. Prompt = profile `base_direction`, the same for every line (`one_direction_for_all_lines`), so the narrator keeps one timbre. The line's `emotion` may only nudge the tone (`emotion_range`); never whisper, never act urgency or suspense. Pauses are capped at `max_pause_ms`. Existing tool: `/mnt/project-files/tools/gemini_tts_batch.py`.
+1. TTS per line with profile `providers.tts` (`gemini` is allowed for the voice as `gemini_tts` in `providers.paid_allowed`; `kokoro`/`piper` are free local fallbacks; `elevenlabs` is paid and must be listed), voice from the profile. Prompt = profile `base_direction`, the same for every line (`one_direction_for_all_lines`), so the narrator keeps one timbre. The line's `emotion` may only nudge the tone (`emotion_range`); never whisper, never act urgency or suspense. Pauses are capped at `max_pause_ms`. Existing tool: `/mnt/project-files/tools/gemini_tts_batch.py`.
 2. Listen-check by numbers: clipped words, wrong stress on names and numbers, too fast (> profile wpm + 15 %). Re-take the line with a corrected direction; max 3 takes.
 3. Assemble with the pauses from `delivery`; loudness to −16 LUFS for the voice stem.
 4. Word timing: stable-ts or WhisperX on the owner's PC (HuggingFace is blocked in the cloud) → `words.json` with `line_id`.

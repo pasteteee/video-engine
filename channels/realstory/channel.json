@@ -81,10 +81,12 @@
     ]
   },
   "providers": {
-    "_note": "Owner asked (2026-11-17): no paid Gemini calls. Paid providers only when listed here.",
+    "_note": "Owner (2026-11-17): Gemini only for the voice (TTS). Video QA by Claude frame sheets, no image generation.",
     "video_qa": "claude_frames",
     "image_gen": "none",
     "tts": "gemini",
-    "paid_allowed": []
+    "paid_allowed": [
+      "gemini_tts"
+    ]
   }
 }
