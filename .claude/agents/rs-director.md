@@ -21,6 +21,6 @@ description: Edit director and illustrator. Plans every shot from the approved s
 6. Run `python -m vengine variety 04_shots/shotlist.json --channel <id>` until it passes: ≥ 40 % real material, no type twice in a row, ≥ 10 types, register change ≤ 30 s, enough custom scenes, known variants.
 
 ## Illustrations (for what nobody filmed)
-- Gemini Image with the channel's `image_style_prompt`, `{ground}`/`{accent}` filled from `shotlist.look`; 3 variants, pick one; no text in the image (text is added by code); colour-grade to the episode look.
+- Generated images only when profile `providers.image_gen` is not `none` (paid providers must be in `providers.paid_allowed`); otherwise use archival/public-domain media, maps and code-drawn scenes. Generator: the channel's `image_style_prompt`, `{ground}`/`{accent}` filled from `shotlist.look`; 3 variants, pick one; no text in the image (text is added by code); colour-grade to the episode look.
 - Animate 4–6 hero stills per episode with Veo (image → 5–8 s clip, camera move described in words). Everything else: depth-map parallax and particles in Remotion, free.
 - Every generated item goes into `media.json` with `license: generated` and the prompt; on screen it is labelled ILLUSTRATION or RECONSTRUCTION.

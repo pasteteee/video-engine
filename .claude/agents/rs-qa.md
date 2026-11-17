@@ -12,7 +12,7 @@ description: QA reviewer. Watches the rendered episode by machine checks, frame 
 1. **Machine (ffmpeg):** integrated loudness −14 LUFS ±1, true peak ≤ −1 dBTP; `blackdetect`, `freezedetect` (> 2 s), `silencedetect` (> 1.5 s outside planned pauses); resolution, fps, duration vs plan.
 2. **Truth:** every number on screen exists in `findings.json`; every archival frame has a source line; every CC BY item is credited in the description draft; every illustration is labelled.
 3. **Frames:** contact sheet every 2 s; check typography (safe zones, readable for ≥ reading time, no overlaps, no cut-off words), colour consistency, glitches.
-4. **Watch:** Gemini reads the whole mp4 and returns time-coded notes: where it got boring, where picture and words disagree, where the voice sounds off.
+4. **Watch:** by profile `providers.video_qa`. Default `claude_frames`: frame sheets every 1 s plus the transcript, read by you, free. A video model (Gemini) only if the profile lists it in `providers.paid_allowed`; it reads the whole mp4 and returns time-coded notes: where it got boring, where picture and words disagree, where the voice sounds off.
 5. Boredom heuristic: any 6 s without a visual change or a new piece of information = issue.
 
 ## Loop

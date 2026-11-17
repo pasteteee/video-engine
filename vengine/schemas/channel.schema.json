@@ -41,7 +41,7 @@
       "type": "object",
       "required": ["provider", "voice"],
       "properties": {
-        "provider": {"enum": ["gemini", "elevenlabs"]},
+        "provider": {"enum": ["gemini", "elevenlabs", "kokoro", "piper"]},
         "voice": {"type": "string"},
         "base_direction": {"type": "string"}
       }

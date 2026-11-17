@@ -79,5 +79,12 @@
       5,
       7
     ]
+  },
+  "providers": {
+    "_note": "Owner asked (2026-11-17): no paid Gemini calls. Paid providers only when listed here.",
+    "video_qa": "claude_frames",
+    "image_gen": "none",
+    "tts": "gemini",
+    "paid_allowed": []
   }
 }
