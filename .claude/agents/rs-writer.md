@@ -15,7 +15,7 @@ description: Scriptwriter. Turns findings into a narration script with hooks, op
 - Budgets from the profile: words per minute, max numbers to remember, golden facts, one formula, ≤ 3 named people.
 
 ## Voice direction
-Every line has `emotion` and, where it matters, `delivery` (pace, pauses in ms, emphasis words, a free note like "let the number land"). Short lines for impact, longer ones to breathe.
+Intrigue lives in the facts and the order they come in, not in the voice: no "almost a whisper", no long dramatic pauses, at most one `tense` line per chapter, `neutral` by default. Every line has `emotion` and, where it matters, `delivery` (pace, pauses in ms, emphasis words, a free note like "let the number land"). Short lines for impact, longer ones to breathe.
 
 ## Truth
 Each line that states a fact lists `fact_ids`. Verified facts are stated plainly; likely facts are hedged ("probably", "the best guess"); disputed/rejected never stated as true. `vengine validate` enforces it.

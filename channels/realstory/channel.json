@@ -53,7 +53,10 @@
   "voice": {
     "provider": "gemini",
     "voice": "Algenib",
-    "base_direction": "Calm documentary narrator, close to the mic, plain American English, lets numbers land with a short pause."
+    "base_direction": "Calm, even documentary narrator reading from the archive: plain American English, steady pace, matter-of-fact. No suspense voice, no whispering, no dramatic pauses, no acted emotion. The facts carry the tension, not the voice.",
+    "one_direction_for_all_lines": true,
+    "max_pause_ms": 300,
+    "emotion_range": "narrow: emotion tags only nudge the tone (a little warmer, a little lower); never whisper, never urgent"
   },
   "scene_types": "all",
   "variety": {
