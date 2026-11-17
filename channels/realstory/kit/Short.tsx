@@ -8,6 +8,7 @@ import { MEDIA } from './Episode';
 import { ACCENT_EP, BONE, C, DISP, FONT, GROUND, GROUND2, MUTED, PAPER, SHADOW, SIGNAL, TINT, io, out, rgba } from './kit/tokens';
 import { Kinetic, Mono, Odometer, StopBlock, Unredact } from './kit/Type';
 import { Grain } from './kit/Brand';
+import { VCUSTOM } from './custom';
 
 const FPS = 30, W = 1080, H = 1920, X0 = 80;
 // size that fits the longest line into the 9:16 text column (Archivo at wdth 62 ≈ 0.5 em per capital)
@@ -76,7 +77,7 @@ const VQuote: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   return <Bg>
     <Mono text={P.name} f0={0} size={26} style={{ position: 'absolute', left: X0, top: 470 }} />
     <div style={{ position: 'absolute', left: X0, right: 120, top: 530, fontFamily: FONT.quote, fontStyle: 'italic', fontWeight: 420, fontSize: 124, lineHeight: 1.04, color: BONE, textShadow: SHADOW }}>
-      {words.map((w: string, i: number) => { const p = interpolate(f, [4 + i * per, 12 + i * per], [0, 1], C); return <span key={i} style={{ opacity: p, filter: `blur(${(1 - p) * 6}px)`, color: /serious/i.test(w) ? ACCENT_EP : BONE }}>{w} </span>; })}
+      {words.map((w: string, i: number) => { const p = interpolate(f, [4 + i * per, 12 + i * per], [0, 1], C); return <span key={i} style={{ opacity: p, filter: `blur(${(1 - p) * 6}px)`, color: P.accent && w.replace(/[^\w]/g, '').toLowerCase() === String(P.accent).toLowerCase() ? ACCENT_EP : BONE }}>{w} </span>; })}
     </div>
   </Bg>;
 };
@@ -91,45 +92,6 @@ const VDoc: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
     </div>
   </Bg>;
 };
-// custom, re-laid for 9:16
-const VClock: React.FC<{ d: number }> = ({ d }) => {
-  const f = useCurrentFrame(); const CX = 540, CY = 640, R = 330;
-  const pt = (deg: number, r: number) => [CX + r * Math.sin((deg * Math.PI) / 180), CY - r * Math.cos((deg * Math.PI) / 180)];
-  const p = interpolate(f, [6, Math.min(d - 12, 70)], [0, 1], { ...C, easing: io }); const t = 600 + 101 * p;
-  const hd = ((t / 60) * 30) % 360, md = (t % 60) * 6; const [x0, y0] = pt(300, R - 110), [x1, y1] = pt(hd, R - 110);
-  return <Bg>
-    <svg width={W} height={H} style={{ position: 'absolute' }}>
-      <circle cx={CX} cy={CY} r={R} fill="none" stroke={rgba(TINT, 0.35)} strokeWidth={2} />
-      {Array.from({ length: 60 }, (_, i) => { const b = i % 5 === 0; const [a, c] = pt(i * 6, R - (b ? 34 : 16)), [e, g] = pt(i * 6, R - 4); return <line key={i} x1={a} y1={c} x2={e} y2={g} stroke={b ? BONE : rgba(TINT, 0.6)} strokeWidth={b ? 4 : 2} />; })}
-      <path d={`M${CX} ${CY} L${x0} ${y0} A${R - 110} ${R - 110} 0 0 1 ${x1} ${y1} Z`} fill={rgba(ACCENT_EP, 0.28)} stroke={ACCENT_EP} strokeWidth={3} />
-      {(() => { const [x, y] = pt(md, R - 40); return <line x1={CX} y1={CY} x2={x} y2={y} stroke={BONE} strokeWidth={6} />; })()}
-      {(() => { const [x, y] = pt(hd, R - 130); return <line x1={CX} y1={CY} x2={x} y2={y} stroke={ACCENT_EP} strokeWidth={14} />; })()}
-      <circle cx={CX} cy={CY} r={12} fill={BONE} />
-    </svg>
-    <div style={{ position: 'absolute', left: 0, right: 0, top: 1010, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: 24 }}>
-      <Odometer value={101} size={230} f0={6} dur={Math.min(d - 20, 60)} /><div style={{ ...DISP(100), color: ACCENT_EP }}>MIN</div></div>
-  </Bg>;
-};
-const FR: Record<string, { at: [number, number]; z: number; filter?: string }> = {
-  m_a1000: { at: [0.608, 0.743], z: 3.4, filter: 'brightness(2.2) contrast(1.15) saturate(0.3)' }, m_a260: { at: [0.338, 0.5], z: 1.6 }, m_a210: { at: [0.324, 0.6], z: 1.5 } };
-const VDockingHud: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
-  const f = useCurrentFrame(); const ids = s.media_ids!; const seg = d / ids.length; const k = Math.min(ids.length - 1, Math.floor(f / seg)); const lf = f - k * seg;
-  const fr = FR[ids[k]]; const lock = interpolate(lf, [3, 18], [0, 1], { ...C, easing: out }); const rs = 200 - 80 * lock;
-  const prev = k ? s.params.ranges[k - 1] : 1400; const rv = Math.round(interpolate(lf, [2, 18], [prev, s.params.ranges[k]], { ...C, easing: io }));
-  const ax = 540, ay = 760; const tick = (x: number, y: number, dx: number, dy: number) => `M${x + dx * 40} ${y} L${x} ${y} L${x} ${y + dy * 40}`;
-  return <AbsoluteFill style={{ background: '#000' }}>
-    <AbsoluteFill style={{ transform: `translateY(${ay - H / 2}px) scale(1.3)` }}><VPhoto id={ids[k]} from={[fr.at[0], fr.at[1], fr.z]} to={[fr.at[0], fr.at[1], fr.z * 1.05]} d={Math.round(seg)} filter={fr.filter} /></AbsoluteFill>
-    <svg width={W} height={H} style={{ position: 'absolute', filter: 'drop-shadow(0 0 6px rgba(0,0,0,.7))' }}>
-      <line x1={ax} y1={ay - rs - 140} x2={ax} y2={ay - 24} stroke={rgba(BONE, 0.55 * lock)} strokeWidth={2} /><line x1={ax} y1={ay + 24} x2={ax} y2={ay + rs + 140} stroke={rgba(BONE, 0.55 * lock)} strokeWidth={2} />
-      <line x1={ax - rs - 120} y1={ay} x2={ax - 24} y2={ay} stroke={rgba(BONE, 0.55 * lock)} strokeWidth={2} /><line x1={ax + 24} y1={ay} x2={ax + rs + 120} y2={ay} stroke={rgba(BONE, 0.55 * lock)} strokeWidth={2} />
-      <path d={[tick(ax - rs, ay - rs, 1, 1), tick(ax + rs, ay - rs, -1, 1), tick(ax - rs, ay + rs, 1, -1), tick(ax + rs, ay + rs, -1, -1)].join(' ')} fill="none" stroke={lock > 0.98 ? ACCENT_EP : BONE} strokeWidth={4} />
-    </svg>
-    <div style={{ position: 'absolute', left: 0, right: 0, top: 1180, textAlign: 'center' }}>
-      <div style={{ fontFamily: FONT.mono, fontSize: 26, letterSpacing: '0.14em', color: MUTED, textShadow: SHADOW }}>RANGE TO AGENA · FRAME {k + 1}/3</div>
-      <div style={{ ...DISP(200, 62, 860), color: BONE, textShadow: SHADOW }}>~{rv.toLocaleString('en-US')}<span style={{ ...DISP(100), color: ACCENT_EP, marginLeft: 14 }}>FT</span></div></div>
-    <AbsoluteFill style={{ background: '#fff', opacity: k ? interpolate(lf, [0, 4], [0.85, 0], C) : 0 }} />
-  </AbsoluteFill>;
-};
 const Layout: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   switch (s.layout) {
     case 'v_photo_pan': return <VPhotoPan s={s} d={d} />;
@@ -138,7 +100,7 @@ const Layout: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
     case 'v_number': return <VNumber s={s} d={d} />;
     case 'v_quote': return <VQuote s={s} d={d} />;
     case 'v_doc': return <VDoc s={s} d={d} />;
-    case 'v_custom': return s.params.component === 'VClock' ? <VClock d={d} /> : <VDockingHud s={s} d={d} />;
+    case 'v_custom': { const V = VCUSTOM[s.params.component]; return V ? <V s={s} d={d} /> : <Bg><div style={{ color: SIGNAL, fontSize: 60 }}>NO CUSTOM {s.params.component}</div></Bg>; }
     default: return <Bg><div style={{ color: SIGNAL, fontSize: 60 }}>NO LAYOUT {s.layout}</div></Bg>;
   }
 };
@@ -191,15 +153,15 @@ export const ShortVideo: React.FC<{ id: string }> = ({ id }) => {
   const sh = SHORTS.find((x) => x.id === id)!; const total = shortFrames(sh);
   return <AbsoluteFill style={{ background: GROUND }}>
     {sh.shots.map((s) => { const from = Math.round(s.start_s * FPS), d = Math.round(s.duration_s * FPS);
-      return <Sequence key={s.id} from={from} durationInFrames={d}><PunchIn><Layout s={s} d={d} /></PunchIn></Sequence>; })}
+      return <Sequence key={s.id} from={from} durationInFrames={d}><PunchIn d={d}><Layout s={s} d={d} /></PunchIn></Sequence>; })}
     <Captions sh={sh} />
     <Hook sh={sh} />
     <Grain opacity={0.07} />
     <Audio src={staticFile('ep/voice.wav')} startFrom={Math.round(sh.start_s * FPS)} endAt={Math.round(sh.start_s * FPS) + total} />
-    <Audio src={staticFile('ep/music_raw.mp3')} startFrom={Math.round(sh.start_s * FPS)} volume={(fr) => 0.07 * interpolate(fr, [total - 20, total], [1, 0], C)} />
+    <Audio src={staticFile('ep/music.wav')} startFrom={Math.round(sh.start_s * FPS)} volume={(fr) => interpolate(fr, [0, 6, total - 20, total], [0, 1, 1, 0], C)} />
   </AbsoluteFill>;
 };
-const PunchIn: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const f = useCurrentFrame(); const z = interpolate(f, [0, 6], [1.06, 1], { ...C, easing: out });
+const PunchIn: React.FC<{ children: React.ReactNode; d: number }> = ({ children, d }) => {
+  const f = useCurrentFrame(); const z = interpolate(f, [0, 6], [1.06, 1], { ...C, easing: out }) * interpolate(f, [6, d], [1, 1.045], C);
   return <AbsoluteFill style={{ transform: `scale(${z})` }}>{children}</AbsoluteFill>;
 };
