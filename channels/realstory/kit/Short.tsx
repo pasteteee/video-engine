@@ -8,12 +8,14 @@ import { MEDIA } from './Episode';
 import { ACCENT_EP, BONE, C, DISP, FONT, GROUND, GROUND2, MUTED, PAPER, SHADOW, SIGNAL, TINT, io, out, rgba } from './kit/tokens';
 import { Kinetic, Mono, Odometer, StopBlock, Unredact } from './kit/Type';
 import { Grain } from './kit/Brand';
+import { FlatMap, Pin, useLand } from './kit/Geo';
 
 const FPS = 30, W = 1080, H = 1920, X0 = 80;
 // size that fits the longest line into the 9:16 text column (Archivo at wdth 62 ≈ 0.5 em per capital)
 const fit = (lines: string[], max: number) => Math.min(max, Math.floor(900 / (Math.max(...lines.map((l) => l.length)) * 0.5)));
 type VShot = { id: string; layout: string; start_s: number; duration_s: number; media_ids?: string[]; params?: any };
 type Short = { id: string; line_ids: string[]; start_s: number; end_s: number; hook_text: string; shots: VShot[] };
+const SOUNDS: { media_id: string; start: number; seconds: number; from_s: number; gain?: number }[] = (WORDS as any).sounds ?? [];
 export const SHORTS = (PLAN as any).shorts as Short[];
 export const shortFrames = (s: Short) => Math.round((s.shots[s.shots.length - 1].start_s + s.shots[s.shots.length - 1].duration_s) * FPS);
 const med = (id: string) => staticFile('ep/' + MEDIA[id].src);
@@ -38,13 +40,13 @@ const VPhotoPan: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   return <AbsoluteFill>
     <VPhoto id={s.media_ids![0]} from={P.from ?? [0.5, 0.5, 1]} to={P.to ?? [0.5, 0.5, 1.1]} d={d} filter={P.illustration ? 'sepia(0.15) contrast(1.05)' : 'contrast(1.06)'} />
     <Shade />
-    {P.big ? <div style={{ position: 'absolute', left: 0, right: 0, top: 560, textAlign: 'center', ...DISP(360, 62, 880), color: ACCENT_EP, textShadow: SHADOW, transform: `scale(${0.85 + 0.15 * big})`, opacity: big }}>{P.big}</div> : null}
+    {P.big ? <div style={{ position: 'absolute', left: 0, right: 0, top: 640, textAlign: 'center', ...DISP(fit([P.big], 300), 62, 880), color: ACCENT_EP, textShadow: SHADOW, transform: `scale(${0.85 + 0.15 * big})`, opacity: big }}>{P.big}</div> : null}
     {P.illustration ? <Mono text="ILLUSTRATION · AI-GENERATED" f0={4} size={20} style={{ position: 'absolute', left: X0, top: 250 }} /> : null}
   </AbsoluteFill>;
 };
 const VFilm: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   const f = useCurrentFrame(); const P = s.params ?? {}; const z = 1 + 0.06 * interpolate(f, [0, d], [0, 1], C);
-  const m = MEDIA[s.media_ids![0]]; const h = H * 1.0, w = (h * m.w) / m.h * 1.335; // 4:3 film inside 16:9: scale off the pillarbox
+  const m = MEDIA[s.media_ids![0]]; const h = H * 1.0, w = (h * m.w) / m.h * (P.pillar43 ? 1.335 : 1); // 4:3 film inside 16:9: scale off the pillarbox
   const x = (P.x ?? 0.5) * (w - W);
   return <AbsoluteFill style={{ background: '#000', overflow: 'hidden' }}>
     <div style={{ position: 'absolute', left: -x, top: 0, width: w, height: h, transform: `scale(${z})`, transformOrigin: `${x + W / 2}px 50%` }}>
@@ -76,7 +78,7 @@ const VQuote: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   return <Bg>
     <Mono text={P.name} f0={0} size={26} style={{ position: 'absolute', left: X0, top: 470 }} />
     <div style={{ position: 'absolute', left: X0, right: 120, top: 530, fontFamily: FONT.quote, fontStyle: 'italic', fontWeight: 420, fontSize: 124, lineHeight: 1.04, color: BONE, textShadow: SHADOW }}>
-      {words.map((w: string, i: number) => { const p = interpolate(f, [4 + i * per, 12 + i * per], [0, 1], C); return <span key={i} style={{ opacity: p, filter: `blur(${(1 - p) * 6}px)`, color: /serious/i.test(w) ? ACCENT_EP : BONE }}>{w} </span>; })}
+      {words.map((w: string, i: number) => { const p = interpolate(f, [4 + i * per, 12 + i * per], [0, 1], C); return <span key={i} style={{ opacity: p, filter: `blur(${(1 - p) * 6}px)`, color: P.hl && w.toLowerCase().includes(P.hl) ? ACCENT_EP : BONE }}>{w} </span>; })}
     </div>
   </Bg>;
 };
@@ -91,44 +93,60 @@ const VDoc: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
     </div>
   </Bg>;
 };
-// custom, re-laid for 9:16
-const VClock: React.FC<{ d: number }> = ({ d }) => {
-  const f = useCurrentFrame(); const CX = 540, CY = 640, R = 330;
-  const pt = (deg: number, r: number) => [CX + r * Math.sin((deg * Math.PI) / 180), CY - r * Math.cos((deg * Math.PI) / 180)];
-  const p = interpolate(f, [6, Math.min(d - 12, 70)], [0, 1], { ...C, easing: io }); const t = 600 + 101 * p;
-  const hd = ((t / 60) * 30) % 360, md = (t % 60) * 6; const [x0, y0] = pt(300, R - 110), [x1, y1] = pt(hd, R - 110);
+// ---- vertical-native data layouts ----
+// A crop of a spectrogram's plot area (image fractions [x0,y0,x1,y1]) scaled to `boxH` px tall, panned so `head` (0-1 of plot width) stays centred.
+const PlotStrip: React.FC<{ id: string; plot: number[]; top: number; boxH: number; head: number; playing: number }> = ({ id, plot, top, boxH, head, playing }) => {
+  const m = MEDIA[id]; const [x0, y0, x1, y1] = plot; const k = boxH / ((y1 - y0) * m.h); const iw = m.w * k, ih = m.h * k;
+  const pl = x0 * iw, pw = (x1 - x0) * iw; const hx = pl + head * pw;
+  const bw = Math.min(W, pw), bl = (W - bw) / 2; // the box never shows the image's axes or margins
+  const camL = pw <= W ? pl : Math.min(Math.max(hx - W / 2, pl), pl + pw - W);
+  return <div style={{ position: 'absolute', left: bl, top, width: bw, height: boxH, overflow: 'hidden' }}>
+    <Img src={med(id)} style={{ position: 'absolute', left: -camL, top: -y0 * ih, width: iw, height: ih, filter: 'contrast(1.08)' }} />
+    <div style={{ position: 'absolute', left: hx - camL - 2, top: 0, width: 4, height: boxH, background: ACCENT_EP, opacity: playing, boxShadow: `0 0 18px ${ACCENT_EP}` }} />
+  </div>;
+};
+const VSpectro: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
+  const P = s.params; const f = useCurrentFrame(); const m = MEDIA[s.media_ids![0]];
+  const play = P.play_at !== undefined; const a = (P.play_at ?? 0) * FPS, b = a + (P.play_dur ?? 0) * FPS;
+  const head = play ? interpolate(f, [a, b], [P.ph0, P.ph1], C) : interpolate(f, [0, d], [P.pan0 ?? 0.15, P.pan1 ?? 0.45], { ...C, easing: io });
+  const on = play ? interpolate(f, [a - 4, a + 2, b, b + 8], [0, 1, 1, 0], C) : 0;
+  const boxH = Math.min(1000, P.box_h ?? 1000); const top = 860 - boxH / 2;
   return <Bg>
-    <svg width={W} height={H} style={{ position: 'absolute' }}>
-      <circle cx={CX} cy={CY} r={R} fill="none" stroke={rgba(TINT, 0.35)} strokeWidth={2} />
-      {Array.from({ length: 60 }, (_, i) => { const b = i % 5 === 0; const [a, c] = pt(i * 6, R - (b ? 34 : 16)), [e, g] = pt(i * 6, R - 4); return <line key={i} x1={a} y1={c} x2={e} y2={g} stroke={b ? BONE : rgba(TINT, 0.6)} strokeWidth={b ? 4 : 2} />; })}
-      <path d={`M${CX} ${CY} L${x0} ${y0} A${R - 110} ${R - 110} 0 0 1 ${x1} ${y1} Z`} fill={rgba(ACCENT_EP, 0.28)} stroke={ACCENT_EP} strokeWidth={3} />
-      {(() => { const [x, y] = pt(md, R - 40); return <line x1={CX} y1={CY} x2={x} y2={y} stroke={BONE} strokeWidth={6} />; })()}
-      {(() => { const [x, y] = pt(hd, R - 130); return <line x1={CX} y1={CY} x2={x} y2={y} stroke={ACCENT_EP} strokeWidth={14} />; })()}
-      <circle cx={CX} cy={CY} r={12} fill={BONE} />
-    </svg>
-    <div style={{ position: 'absolute', left: 0, right: 0, top: 1010, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: 24 }}>
-      <Odometer value={101} size={230} f0={6} dur={Math.min(d - 20, 60)} /><div style={{ ...DISP(100), color: ACCENT_EP }}>MIN</div></div>
+    <PlotStrip id={s.media_ids![0]} plot={P.plot} top={top} boxH={boxH} head={head} playing={on} />
+    <div style={{ position: 'absolute', left: X0, top: top - 92, display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div style={{ width: 36, height: 4, background: ACCENT_EP }} />
+      <Mono text={P.label} f0={2} size={34} weight={600} color={BONE} /></div>
+    <Mono text={play && f >= a - 4 ? P.listen : (P.sub ?? '')} f0={play ? Math.round(a) : 8} size={26} color={rgba(BONE, 0.75)} style={{ position: 'absolute', left: X0, top: top + boxH + 40 }} />
+    {P.axes ? <><Mono text="TIME →" f0={10} size={22} style={{ position: 'absolute', right: 80, top: top + boxH + 40 }} /></> : null}
   </Bg>;
 };
-const FR: Record<string, { at: [number, number]; z: number; filter?: string }> = {
-  m_a1000: { at: [0.608, 0.743], z: 3.4, filter: 'brightness(2.2) contrast(1.15) saturate(0.3)' }, m_a260: { at: [0.338, 0.5], z: 1.6 }, m_a210: { at: [0.324, 0.6], z: 1.5 } };
-const VDockingHud: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
-  const f = useCurrentFrame(); const ids = s.media_ids!; const seg = d / ids.length; const k = Math.min(ids.length - 1, Math.floor(f / seg)); const lf = f - k * seg;
-  const fr = FR[ids[k]]; const lock = interpolate(lf, [3, 18], [0, 1], { ...C, easing: out }); const rs = 200 - 80 * lock;
-  const prev = k ? s.params.ranges[k - 1] : 1400; const rv = Math.round(interpolate(lf, [2, 18], [prev, s.params.ranges[k]], { ...C, easing: io }));
-  const ax = 540, ay = 760; const tick = (x: number, y: number, dx: number, dy: number) => `M${x + dx * 40} ${y} L${x} ${y} L${x} ${y + dy * 40}`;
-  return <AbsoluteFill style={{ background: '#000' }}>
-    <AbsoluteFill style={{ transform: `translateY(${ay - H / 2}px) scale(1.3)` }}><VPhoto id={ids[k]} from={[fr.at[0], fr.at[1], fr.z]} to={[fr.at[0], fr.at[1], fr.z * 1.05]} d={Math.round(seg)} filter={fr.filter} /></AbsoluteFill>
-    <svg width={W} height={H} style={{ position: 'absolute', filter: 'drop-shadow(0 0 6px rgba(0,0,0,.7))' }}>
-      <line x1={ax} y1={ay - rs - 140} x2={ax} y2={ay - 24} stroke={rgba(BONE, 0.55 * lock)} strokeWidth={2} /><line x1={ax} y1={ay + 24} x2={ax} y2={ay + rs + 140} stroke={rgba(BONE, 0.55 * lock)} strokeWidth={2} />
-      <line x1={ax - rs - 120} y1={ay} x2={ax - 24} y2={ay} stroke={rgba(BONE, 0.55 * lock)} strokeWidth={2} /><line x1={ax + 24} y1={ay} x2={ax + rs + 120} y2={ay} stroke={rgba(BONE, 0.55 * lock)} strokeWidth={2} />
-      <path d={[tick(ax - rs, ay - rs, 1, 1), tick(ax + rs, ay - rs, -1, 1), tick(ax - rs, ay + rs, 1, -1), tick(ax + rs, ay + rs, -1, -1)].join(' ')} fill="none" stroke={lock > 0.98 ? ACCENT_EP : BONE} strokeWidth={4} />
+// Two plots stacked: the vertical frame's natural side-by-side.
+const VStack: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
+  const P = s.params; const f = useCurrentFrame(); const ids = s.media_ids!;
+  return <Bg>{ids.map((id, i) => { const top = 330 + i * 760; const o = interpolate(f, [i * 10, i * 10 + 10], [0, 1], C);
+    return <div key={id} style={{ opacity: o }}>
+      <div style={{ position: 'absolute', left: X0, top: top - 80, display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div style={{ width: 36, height: 4, background: i ? ACCENT_EP : BONE }} /><Mono text={P.labels[i]} f0={i * 10} size={34} weight={600} color={BONE} /></div>
+      <PlotStrip id={id} plot={P.plots[i]} top={top} boxH={560} head={P.heads[i]} playing={0} />
+      <Mono text={P.subs[i]} f0={i * 10 + 6} size={24} style={{ position: 'absolute', left: X0, top: top + 580 }} /></div>; })}
+  </Bg>;
+};
+const VMap: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
+  const land = useLand('countries-50m.json'); const f = useCurrentFrame(); const P = s.params;
+  if (!land) return null;
+  return <FlatMap land={land} center={P.center} scale={P.scale} dur={d} push={0.08}>{(proj: any) => {
+    const pins = P.pins as { at: [number, number]; label: string; t: number; kind?: string; anchor?: string; dy?: number }[];
+    const lk = P.link ? interpolate(f, [P.link.t * FPS, P.link.t * FPS + 36], [0, 1], { ...C, easing: io }) : 0;
+    const A = P.link ? proj(pins[P.link.a].at) : null, B = P.link ? proj(pins[P.link.b].at) : null;
+    return <><svg width={W} height={H} style={{ position: 'absolute' }}>
+      {A && B ? <line x1={A[0]} y1={A[1]} x2={A[0] + (B[0] - A[0]) * lk} y2={A[1] + (B[1] - A[1]) * lk} stroke={ACCENT_EP} strokeWidth={5} strokeDasharray="16 12" /> : null}
+      {pins.map((p, i) => { const q = proj(p.at); const f0 = Math.round(p.t * FPS); if (f < f0) return null; return <g key={i}>
+        {p.kind === 'ring' ? <circle cx={q[0]} cy={q[1]} r={70 + 6 * Math.sin(f / 6)} fill={rgba(SIGNAL, 0.12)} stroke={SIGNAL} strokeWidth={3} strokeDasharray="8 8" /> : <Pin x={q[0]} y={q[1]} f0={f0} />}
+        <text x={q[0] + (p.anchor === 'end' ? -28 : p.anchor === 'middle' ? 0 : 28)} y={q[1] + (p.dy ?? 60)} fontFamily={FONT.mono} fontSize={30} letterSpacing={3} fill={BONE} textAnchor={(p.anchor as any) ?? 'start'} style={{ textShadow: SHADOW } as any}>{p.label}</text></g>; })}
     </svg>
-    <div style={{ position: 'absolute', left: 0, right: 0, top: 1180, textAlign: 'center' }}>
-      <div style={{ fontFamily: FONT.mono, fontSize: 26, letterSpacing: '0.14em', color: MUTED, textShadow: SHADOW }}>RANGE TO AGENA · FRAME {k + 1}/3</div>
-      <div style={{ ...DISP(200, 62, 860), color: BONE, textShadow: SHADOW }}>~{rv.toLocaleString('en-US')}<span style={{ ...DISP(100), color: ACCENT_EP, marginLeft: 14 }}>FT</span></div></div>
-    <AbsoluteFill style={{ background: '#fff', opacity: k ? interpolate(lf, [0, 4], [0.85, 0], C) : 0 }} />
-  </AbsoluteFill>;
+      {P.link?.label && A && B ? <div style={{ position: 'absolute', left: 0, right: 0, top: Math.min(A[1], B[1]) - 330, textAlign: 'center', ...DISP(170, 62, 900), color: ACCENT_EP, textShadow: SHADOW, opacity: interpolate(f, [P.link.t * FPS + 30, P.link.t * FPS + 40], [0, 1], C) }}>{P.link.label}</div> : null}
+      {P.title ? <div style={{ position: 'absolute', left: X0, top: 300, display: 'flex', alignItems: 'center', gap: 16 }}><div style={{ width: 36, height: 4, background: ACCENT_EP }} /><Mono text={P.title} f0={4} size={34} weight={600} color={BONE} /></div> : null}
+    </>; }}</FlatMap>;
 };
 const Layout: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   switch (s.layout) {
@@ -138,7 +156,9 @@ const Layout: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
     case 'v_number': return <VNumber s={s} d={d} />;
     case 'v_quote': return <VQuote s={s} d={d} />;
     case 'v_doc': return <VDoc s={s} d={d} />;
-    case 'v_custom': return s.params.component === 'VClock' ? <VClock d={d} /> : <VDockingHud s={s} d={d} />;
+    case 'v_custom': return <VSpectro s={s} d={d} />;
+    case 'v_photo_stack': return <VStack s={s} d={d} />;
+    case 'v_map': return <VMap s={s} d={d} />;
     default: return <Bg><div style={{ color: SIGNAL, fontSize: 60 }}>NO LAYOUT {s.layout}</div></Bg>;
   }
 };
@@ -146,7 +166,7 @@ const Layout: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
 // ---- one text layer at a time ----
 // Picture shots get a bottom-left block: mono kicker (what we see) + the spoken phrase, built word by word.
 // Type, number, quote, doc and custom shots carry their own words, so captions step aside there.
-const TEXT_LAYOUTS = new Set(['v_type', 'v_number', 'v_quote', 'v_doc', 'v_custom']);
+const TEXT_LAYOUTS = new Set(['v_type', 'v_number', 'v_quote', 'v_doc', 'v_custom', 'v_photo_stack', 'v_map']);
 const WEAK = /^(the|a|an|of|in|at|on|to|and|but|or|was|were|is|with|for|from|about|what|their|his|her|its|that|this|by|as|into|than|then)$/i;
 const phrases = (ws: any[]) => {
   const out: any[][] = []; let cur: any[] = [];
@@ -163,6 +183,7 @@ const Captions: React.FC<{ sh: Short }> = ({ sh }) => {
   const f = useCurrentFrame(); const t = sh.start_s + f / FPS; const ts = f / FPS;
   const shot = sh.shots.find((s) => ts >= s.start_s && ts < s.start_s + s.duration_s);
   if (!shot || TEXT_LAYOUTS.has(shot.layout) || (shot.params?.big && shot.start_s > 0.3)) return null;
+  if (f < hookEnd(sh)) return null; // one text layer: the hook owns the opening
   const ws = (WORDS as any).words.filter((w: any) => sh.line_ids.includes(w.line_id));
   const ch = phrases(ws).find((c) => t >= c[0].start - 0.04 && t < c[c.length - 1].end + 0.2);
   const label = shot.params?.label; const lf = f - Math.round(shot.start_s * FPS);
@@ -177,10 +198,10 @@ const Captions: React.FC<{ sh: Short }> = ({ sh }) => {
     </div> : null}
   </div>;
 };
+const hookEnd = (sh: Short) => { const firstText = sh.shots.find((s) => s.start_s > 0.3 && (TEXT_LAYOUTS.has(s.layout) || s.params?.big));
+  return Math.min(66, firstText ? Math.round(firstText.start_s * FPS) - 2 : 66); };
 const Hook: React.FC<{ sh: Short }> = ({ sh }) => {
-  const f = useCurrentFrame();
-  const firstText = sh.shots.find((s) => s.start_s > 0.3 && (TEXT_LAYOUTS.has(s.layout) || s.params?.big));
-  const endF = Math.min(66, firstText ? Math.round(firstText.start_s * FPS) - 2 : 66);
+  const f = useCurrentFrame(); const endF = hookEnd(sh);
   const o = interpolate(f, [endF - 8, endF], [1, 0], C); if (o <= 0) return null;
   const words = sh.hook_text.split(' '); const size = fit([sh.hook_text.length > 14 ? sh.hook_text.slice(0, Math.ceil(sh.hook_text.length / 2)) : sh.hook_text], 150);
   return <div style={{ position: 'absolute', left: X0, right: 120, top: 210, opacity: o, textWrap: 'balance' as any, ...DISP(size, 62, 880), lineHeight: `${size * 0.94}px`, color: BONE, textShadow: SHADOW }}>
@@ -195,8 +216,10 @@ export const ShortVideo: React.FC<{ id: string }> = ({ id }) => {
     <Captions sh={sh} />
     <Hook sh={sh} />
     <Grain opacity={0.07} />
-    <Audio src={staticFile('ep/voice.wav')} startFrom={Math.round(sh.start_s * FPS)} endAt={Math.round(sh.start_s * FPS) + total} />
-    <Audio src={staticFile('ep/music_raw.mp3')} startFrom={Math.round(sh.start_s * FPS)} volume={(fr) => 0.07 * interpolate(fr, [total - 20, total], [1, 0], C)} />
+    <Audio src={staticFile('ep/voice.wav')} startFrom={Math.round(sh.start_s * FPS)} endAt={Math.round(sh.start_s * FPS) + total} volume={(fr) => interpolate(fr, [total - 8, total], [1, 0], C)} />
+    <Audio src={staticFile('ep/bed.wav')} startFrom={Math.round(sh.start_s * FPS)} volume={(fr) => interpolate(fr, [0, 12, total - 24, total], [0, 1, 1, 0], C)} />
+    {SOUNDS.filter((x) => x.start >= sh.start_s - 0.05 && x.start < sh.start_s + total / FPS).map((x, i) => { const fr = Math.round((x.start - sh.start_s) * FPS), n = Math.round(x.seconds * FPS);
+      return <Sequence key={'snd' + i} from={fr} durationInFrames={n}><Audio src={med(x.media_id)} startFrom={Math.round(x.from_s * FPS)} volume={(q) => (x.gain ?? 1) * interpolate(q, [0, 6, n - 12, n], [0, 1, 1, 0], C)} /></Sequence>; })}
   </AbsoluteFill>;
 };
 const PunchIn: React.FC<{ children: React.ReactNode }> = ({ children }) => {
