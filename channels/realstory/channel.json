@@ -26,7 +26,7 @@
     "design_system": "https://claude.ai/artifact/SSQsWiPZJWx4N2FdFwD9zk",
     "brand_dir": "/mnt/project-files/branding_real_story",
     "guide": "/mnt/project-files/branding_real_story/design_system/project/README.md",
-    "kit": "/mnt/project-files/anim_tests/ps-kit",
+    "kit": "/mnt/project-files/anim_tests/rs-kit",
     "palette": "per_episode",
     "tokens": {
       "INK": "#0e0f11",
