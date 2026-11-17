@@ -39,3 +39,9 @@ Big word-by-word captions from `words.json`: Archivo wdth 75, 84 px, bone with a
 - Check stills at 0.0 s, the first cut and the last frame: hook readable on a phone at arm's length, nothing under the UI zones, no letterbox bars.
 - Cover frame `<id>_cover.jpg`: the hook frame.
 - Report to rs-publisher: title, description (one line + link to the full episode), the timestamps used.
+
+## Type on a vertical frame
+- One text layer at a time. Picture shots carry a bottom-left block: mono kicker (what we see) over the spoken phrase, built word by word. Type, number, quote, doc and custom shots carry their own words; captions step aside there.
+- One left edge (x 80) for hook, kicker, captions and type scenes. Type is fitted to the 900 px column, never centred in empty space.
+- Captions break on phrases (≤ 22 chars, ≤ 4 words), never end on a weak word (the, of, in, and, was...), no karaoke colour.
+- The hook owns the first two seconds: balanced lines, stop block glued to the last word; a big number on the first shot waits until the hook leaves.
