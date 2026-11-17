@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "channel",
+  "title": "Channel profile: everything that differs between channels",
+  "type": "object",
+  "required": ["id", "name", "language", "promise", "style", "voice", "variety"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "name": {"type": "string"},
+    "language": {"type": "string", "description": "Language of videos, titles, descriptions (e.g. en)"},
+    "work_language": {"type": "string", "default": "ru", "description": "Language for talking to the owner"},
+    "promise": {"type": "string", "description": "One sentence the channel promises every viewer"},
+    "rules": {"type": "array", "items": {"type": "string"}},
+    "episodes_root": {"type": "string", "description": "Folder with episode folders; {slug} is replaced"},
+    "youtube": {
+      "type": "object",
+      "properties": {
+        "channel_id": {"type": "string"},
+        "secrets_dir": {"type": "string", "description": "Folder on the owner's PC with client_secret.json and token.json. Never in the repo."},
+        "default_privacy": {"enum": ["private", "unlisted", "public"], "default": "private"},
+        "category_id": {"type": "string"},
+        "default_playlist": {"type": "string"}
+      }
+    },
+    "planner": {
+      "type": "object",
+      "properties": {"artifact_slug": {"type": "string"}, "space": {"type": "string"}}
+    },
+    "style": {
+      "type": "object",
+      "required": ["guide"],
+      "properties": {
+        "guide": {"type": "string", "description": "Path to the style guide (markdown)"},
+        "kit": {"type": "string", "description": "Path to the Remotion kit for this channel"},
+        "tokens": {"type": "object", "additionalProperties": {"type": "string"}},
+        "image_style_refs": {"type": "array", "items": {"type": "string"}, "description": "Reference frames passed to the image model"},
+        "image_style_prompt": {"type": "string"}
+      }
+    },
+    "voice": {
+      "type": "object",
+      "required": ["provider", "voice"],
+      "properties": {
+        "provider": {"enum": ["gemini", "elevenlabs"]},
+        "voice": {"type": "string"},
+        "base_direction": {"type": "string"}
+      }
+    },
+    "scene_types": {
+      "description": "Scene types this channel may use; 'all' = whole library",
+      "oneOf": [{"const": "all"}, {"type": "array", "items": {"type": "string"}}]
+    },
+    "variety": {
+      "type": "object",
+      "properties": {
+        "archival_min_share": {"type": "number", "minimum": 0, "maximum": 1},
+        "min_distinct_types": {"type": "integer", "minimum": 1},
+        "max_register_run_s": {"type": "number"},
+        "shot_min_s": {"type": "number"},
+        "shot_max_s": {"type": "number"},
+        "max_static_s": {"type": "number"}
+      }
+    },
+    "script": {
+      "type": "object",
+      "properties": {
+        "target_minutes": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+        "open_loop_every_s": {"type": "number"},
+        "words_per_minute": {"type": "number"},
+        "max_numbers": {"type": "integer"},
+        "golden_facts": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2}
+      }
+    }
+  }
+}

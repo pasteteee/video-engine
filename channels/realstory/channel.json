@@ -1,0 +1,54 @@
+{
+  "id": "realstory",
+  "name": "Real Story",
+  "language": "en",
+  "work_language": "ru",
+  "promise": "A real story shown through real records, with one question answered by the end.",
+  "rules": [
+    "Only facts with status verified go into the narration; 'likely' facts must be hedged on screen and in words.",
+    "Quotes only from a transcript, with time and source.",
+    "Every real record on screen carries a source line; every illustration is labelled as such.",
+    "Secondary retellings help to find facts; only primary material goes on screen. No other creators' videos.",
+    "Tragedies without relish.",
+    "Synthetic voice, music and generated images are disclosed in the description and in the upload flag.",
+    "Thumbnail: clickbait but honest; everything promised is in the video."
+  ],
+  "episodes_root": "/mnt/project-files/videos_{slug}",
+  "youtube": {
+    "secrets_dir": "D:\\Work\\realstory-secrets",
+    "default_privacy": "private",
+    "category_id": "27"
+  },
+  "planner": {"artifact_slug": "06b339af-2d08-4933-b10f-1d991683cb1d"},
+  "style": {
+    "guide": "/mnt/project-files/anim_tests/STYLE_GUIDE.md",
+    "kit": "/mnt/project-files/anim_tests/ps-kit",
+    "tokens": {
+      "NAVY": "#0D2A52", "NAVY2": "#081B38", "SEA": "#123A6E", "LAND": "#1E4A80",
+      "AMBER": "#F2C14E", "RED": "#C8261C", "ROUTE": "#FF5A4E", "INK": "#EAF0F8", "MUTED": "#9FB3CF"
+    },
+    "image_style_refs": ["/mnt/project-files/anim_tests/11-godwit-pro_frames.jpg"],
+    "image_style_prompt": "Editorial illustration for a documentary: deep navy blue palette (#0D2A52 to #081B38) with amber (#F2C14E) light accents and a single red (#C8261C) highlight, soft film grain, cinematic side light, simple bold shapes, no text, no logos, no watermarks."
+  },
+  "voice": {
+    "provider": "gemini",
+    "voice": "Algenib",
+    "base_direction": "Calm documentary narrator, close to the mic, plain American English, lets numbers land with a short pause."
+  },
+  "scene_types": "all",
+  "variety": {
+    "archival_min_share": 0.4,
+    "min_distinct_types": 10,
+    "max_register_run_s": 30,
+    "shot_min_s": 1.5,
+    "shot_max_s": 7,
+    "max_static_s": 4
+  },
+  "script": {
+    "target_minutes": [8, 11],
+    "open_loop_every_s": 50,
+    "words_per_minute": 150,
+    "max_numbers": 12,
+    "golden_facts": [5, 7]
+  }
+}

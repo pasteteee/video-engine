@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "topic_card",
+  "title": "Topic card: output of the topics agent, input of the researcher",
+  "type": "object",
+  "required": ["slug", "working_title", "question", "signals", "known_layer", "angle", "scores"],
+  "properties": {
+    "slug": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+    "working_title": {"type": "string"},
+    "question": {"type": "string", "description": "The one question the episode answers at the end"},
+    "signals": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["kind", "detail"],
+        "properties": {
+          "kind": {"enum": ["own_analytics", "yt_search_terms", "yt_suggest", "google_trends", "wiki_pageviews", "competitor_outlier", "news", "anniversary", "keyword_metrics", "comments"]},
+          "detail": {"type": "string"},
+          "value": {"type": ["number", "string"]},
+          "source": {"type": "string"}
+        }
+      }
+    },
+    "known_layer": {"type": "array", "items": {"type": "string"}, "description": "What a viewer who saw the popular videos already knows"},
+    "angle": {"type": "string", "description": "What we show that the known layer lacks"},
+    "primary_sources_expected": {"type": "array", "items": {"type": "string"}},
+    "scores": {
+      "type": "object",
+      "required": ["demand", "competition", "material", "fit"],
+      "properties": {
+        "demand": {"type": "integer", "minimum": 1, "maximum": 5},
+        "competition": {"type": "integer", "minimum": 1, "maximum": 5, "description": "5 = little good competition"},
+        "material": {"type": "integer", "minimum": 1, "maximum": 5, "description": "Real photos/video/records available"},
+        "fit": {"type": "integer", "minimum": 1, "maximum": 5}
+      }
+    },
+    "risks": {"type": "array", "items": {"type": "string"}}
+  }
+}

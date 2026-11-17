@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "publish",
+  "title": "Publish record: what was uploaded and where",
+  "type": "object",
+  "required": ["title", "description", "privacy", "contains_synthetic_media"],
+  "properties": {
+    "video_id": {"type": "string"},
+    "url": {"type": "string"},
+    "title": {"type": "string", "maxLength": 100},
+    "description": {"type": "string", "maxLength": 5000},
+    "tags": {"type": "array", "items": {"type": "string"}},
+    "chapters": {"type": "array", "items": {"type": "object", "required": ["at_s", "title"], "properties": {"at_s": {"type": "number"}, "title": {"type": "string"}}}},
+    "privacy": {"enum": ["private", "unlisted", "public"]},
+    "publish_at": {"type": "string", "description": "ISO time for scheduled publish"},
+    "thumbnail": {"type": "string"},
+    "captions": {"type": "array", "items": {"type": "string"}},
+    "playlist_id": {"type": "string"},
+    "contains_synthetic_media": {"type": "boolean"},
+    "shorts": {"type": "array", "items": {"type": "object", "properties": {"file": {"type": "string"}, "video_id": {"type": "string"}, "title": {"type": "string"}}}},
+    "uploaded_at": {"type": "string"}
+  }
+}

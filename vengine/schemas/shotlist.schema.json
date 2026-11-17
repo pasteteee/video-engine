@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "shotlist",
+  "title": "Shot list: the edit plan the renderer builds",
+  "type": "object",
+  "required": ["fps", "width", "height", "shots"],
+  "properties": {
+    "fps": {"type": "integer"},
+    "width": {"type": "integer"},
+    "height": {"type": "integer"},
+    "music_cues": {
+      "type": "array",
+      "items": {"type": "object", "required": ["at_shot", "level"], "properties": {"at_shot": {"type": "string"}, "level": {"type": "integer", "minimum": 0, "maximum": 4}}}
+    },
+    "shots": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "line_ids", "scene_type", "duration_s"],
+        "properties": {
+          "id": {"type": "string"},
+          "line_ids": {"type": "array", "items": {"type": "string"}},
+          "scene_type": {"type": "string"},
+          "duration_s": {"type": "number", "exclusiveMinimum": 0, "description": "Planned; the renderer re-times to the voice"},
+          "media_ids": {"type": "array", "items": {"type": "string"}},
+          "params": {"type": "object"},
+          "on_screen_text": {"type": "array", "items": {"type": "string"}},
+          "source_line": {"type": "string"},
+          "motion": {"type": "string", "description": "What moves the whole time (camera, element, particles)"},
+          "transition_in": {"enum": ["cut", "push", "whip", "match", "dissolve", "flash", "mask"]},
+          "sfx": {"type": "array", "items": {"type": "string"}},
+          "sync_word": {"type": "string", "description": "Word in the narration the key element lands on"}
+        }
+      }
+    }
+  }
+}

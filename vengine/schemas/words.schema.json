@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "words",
+  "title": "Voice timing: each word with start and end in seconds",
+  "type": "object",
+  "required": ["audio", "words"],
+  "properties": {
+    "audio": {"type": "string"},
+    "duration_s": {"type": "number"},
+    "words": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["w", "start", "end"],
+        "properties": {"w": {"type": "string"}, "start": {"type": "number"}, "end": {"type": "number"}, "line_id": {"type": "string"}}
+      }
+    }
+  }
+}
