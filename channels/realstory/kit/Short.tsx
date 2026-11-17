@@ -44,7 +44,8 @@ const VPhotoPan: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
 };
 const VFilm: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   const f = useCurrentFrame(); const P = s.params ?? {}; const z = 1 + 0.06 * interpolate(f, [0, d], [0, 1], C);
-  const m = MEDIA[s.media_ids![0]]; const h = H * 1.0, w = (h * m.w) / m.h * 1.335; // 4:3 film inside 16:9: scale off the pillarbox
+  const m = MEDIA[s.media_ids![0]]; const k = P.unpillar ?? (PLAN as any).unpillar ?? 1; // 1.335 for 4:3 film inside a 16:9 file
+  const h = H * 1.0, w = (h * m.w) / m.h * k; // a 9:16 window travels across the clip
   const x = (P.x ?? 0.5) * (w - W);
   return <AbsoluteFill style={{ background: '#000', overflow: 'hidden' }}>
     <div style={{ position: 'absolute', left: -x, top: 0, width: w, height: h, transform: `scale(${z})`, transformOrigin: `${x + W / 2}px 50%` }}>
@@ -66,7 +67,7 @@ const VNumber: React.FC<{ s: VShot; d: number }> = ({ s }) => {
   const P = s.params; const f = useCurrentFrame(); const up = interpolate(f, [20, 32], [0, 1], { ...C, easing: out });
   return <Bg>
     <Mono text={P.label} f0={0} size={34} color={ACCENT_EP} style={{ position: 'absolute', left: X0, top: 500 }} />
-    <div style={{ position: 'absolute', left: X0 - 10, top: 570 }}><Odometer value={P.value} size={String(P.value).length > 3 ? 330 : 400} f0={2} dur={22} /></div>
+    <div style={{ position: 'absolute', left: X0 - 10, top: 570 }}><Odometer value={P.value} size={String(P.value).length > 4 ? 250 : String(P.value).length > 3 ? 330 : 400} f0={2} dur={22} /></div>
     <div style={{ position: 'absolute', left: X0, top: 920, ...DISP(170), color: BONE, opacity: up }}>{P.unit}</div>
     <Mono text={P.note} f0={24} size={28} color={rgba(BONE, 0.7)} style={{ position: 'absolute', left: X0, top: 1110 }} />
   </Bg>;
@@ -92,6 +93,24 @@ const VDoc: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   </Bg>;
 };
 // custom, re-laid for 9:16
+// VDelay: a signal crawling from one body to another (radio delay), the delay in big type under it
+const VDelay: React.FC<{ d: number; s: VShot }> = ({ d, s }) => {
+  const f = useCurrentFrame(); const P = s.params; const y0 = 330, y1 = 1000, X = 540;
+  const p = interpolate(f, [8, d - 10], [0, 1], { ...C, easing: io }); const yp = y0 + (y1 - y0) * p;
+  const arrive = interpolate(f, [d - 14, d - 6], [0, 1], C); const up = interpolate(f, [4, 16], [0, 1], { ...C, easing: out });
+  return <Bg>
+    <svg width={W} height={H} style={{ position: 'absolute' }}>
+      <line x1={X} y1={y0} x2={X} y2={y1} stroke={rgba(TINT, 0.35)} strokeWidth={3} strokeDasharray="4 14" />
+      <line x1={X} y1={y0} x2={X} y2={yp} stroke={ACCENT_EP} strokeWidth={5} />
+      <circle cx={X} cy={yp} r={14} fill={ACCENT_EP} opacity={1 - arrive} />
+      <circle cx={X} cy={y0} r={46} fill="#b4552c" /><circle cx={X} cy={y1} r={46} fill="#3d6f9e" stroke={rgba(BONE, arrive)} strokeWidth={6} />
+    </svg>
+    <Mono text="MARS" f0={2} size={30} color={BONE} style={{ position: 'absolute', left: X + 80, top: y0 - 16 }} />
+    <Mono text="EARTH" f0={2} size={30} color={BONE} style={{ position: 'absolute', left: X + 80, top: y1 - 16 }} />
+    <div style={{ position: 'absolute', left: X0, top: 1110, opacity: up, ...DISP(230, 62, 880), color: BONE, textShadow: SHADOW }}>{P.big}</div>
+    <Mono text={P.note} f0={10} size={28} color={ACCENT_EP} style={{ position: 'absolute', left: X0, top: 1360 }} />
+  </Bg>;
+};
 const VClock: React.FC<{ d: number }> = ({ d }) => {
   const f = useCurrentFrame(); const CX = 540, CY = 640, R = 330;
   const pt = (deg: number, r: number) => [CX + r * Math.sin((deg * Math.PI) / 180), CY - r * Math.cos((deg * Math.PI) / 180)];
@@ -138,7 +157,7 @@ const Layout: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
     case 'v_number': return <VNumber s={s} d={d} />;
     case 'v_quote': return <VQuote s={s} d={d} />;
     case 'v_doc': return <VDoc s={s} d={d} />;
-    case 'v_custom': return s.params.component === 'VClock' ? <VClock d={d} /> : <VDockingHud s={s} d={d} />;
+    case 'v_custom': return s.params.component === 'VDelay' ? <VDelay s={s} d={d} /> : s.params.component === 'VClock' ? <VClock d={d} /> : <VDockingHud s={s} d={d} />;
     default: return <Bg><div style={{ color: SIGNAL, fontSize: 60 }}>NO LAYOUT {s.layout}</div></Bg>;
   }
 };
@@ -196,7 +215,8 @@ export const ShortVideo: React.FC<{ id: string }> = ({ id }) => {
     <Hook sh={sh} />
     <Grain opacity={0.07} />
     <Audio src={staticFile('ep/voice.wav')} startFrom={Math.round(sh.start_s * FPS)} endAt={Math.round(sh.start_s * FPS) + total} />
-    <Audio src={staticFile('ep/music_raw.mp3')} startFrom={Math.round(sh.start_s * FPS)} volume={(fr) => 0.07 * interpolate(fr, [total - 20, total], [1, 0], C)} />
+    {/* the episode music bed (music_kit) at its own level; plan.music overrides the file, plan.music_volume the gain */}
+    <Audio src={staticFile((PLAN as any).music ?? 'ep/bed.wav')} startFrom={Math.round(sh.start_s * FPS)} endAt={Math.round(sh.start_s * FPS) + total} volume={(fr) => ((PLAN as any).music_volume ?? 1) * interpolate(fr, [total - 20, total], [1, 0], C)} />
   </AbsoluteFill>;
 };
 const PunchIn: React.FC<{ children: React.ReactNode }> = ({ children }) => {
