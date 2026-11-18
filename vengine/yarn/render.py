@@ -391,9 +391,7 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
                         occ += min(1.0, dz / (1.2 * r)) * (1.0 - dz / (6.0 * r))
                     ns += 1
             ao = max(0.0, 1.0 - 1.05 * ao_amt * occ / max(ns, 1))
-            ndv = -(nx * rx + ny * ry + nz * rz)
-            if ndv < 0.0:
-                ndv = 0.0
+            ndv = min(1.0, max(0.0, -(nx * rx + ny * ry + nz * rz)))   # <= 1: (1 - ndv) ** 2.5 must not go NaN
             if ident == 3:
                 ci = cb[py, px]
                 ndl = max(0.0, nx * ldir[0] + ny * ldir[1] + nz * ldir[2])
@@ -663,7 +661,7 @@ class Renderer:
             img = downsample(img, self.ss, self.aa)
         tm.append(time.perf_counter())
         self.times = dict(zip(('prep', 'splat', 'shadow', 'shade', 'down'), np.diff(tm).round(3)))
-        return (np.clip(img, 0, 1) * 255 + 0.5).astype(np.uint8)
+        return (np.clip(np.nan_to_num(img), 0, 1) * 255 + 0.5).astype(np.uint8)
 
 
 def downsample(img, ss, aa=0.6):
