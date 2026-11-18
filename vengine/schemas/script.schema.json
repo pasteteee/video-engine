@@ -3,45 +3,184 @@
   "$id": "script",
   "title": "Script: lines with delivery direction, facts and hooks",
   "type": "object",
-  "required": ["meta", "lines"],
+  "required": [
+    "meta",
+    "lines"
+  ],
   "properties": {
     "meta": {
       "type": "object",
-      "required": ["slug", "language", "title_options"],
+      "required": [
+        "slug",
+        "language",
+        "title_options"
+      ],
       "properties": {
-        "slug": {"type": "string"},
-        "language": {"type": "string"},
-        "title_options": {"type": "array", "minItems": 3, "items": {"type": "string"}},
-        "thumbnail_text_options": {"type": "array", "items": {"type": "string"}},
-        "target_duration_s": {"type": "number"}
+        "slug": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "title_options": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "string"
+          }
+        },
+        "thumbnail_text_options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "target_duration_s": {
+          "type": "number"
+        }
       }
     },
     "lines": {
-      "type": "array", "minItems": 1,
+      "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "chapter", "text", "emotion"],
+        "required": [
+          "id",
+          "chapter",
+          "text",
+          "emotion"
+        ],
         "properties": {
-          "id": {"type": "string"},
-          "chapter": {"type": "string"},
-          "text": {"type": "string", "description": "Narration in the video language"},
-          "draft": {"type": "string", "description": "Owner-language draft"},
-          "emotion": {"enum": ["neutral", "curious", "tense", "urgent", "awe", "somber", "warm", "wry", "triumphant", "whisper"]},
+          "id": {
+            "type": "string"
+          },
+          "chapter": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "description": "Narration in the video language"
+          },
+          "draft": {
+            "type": "string",
+            "description": "Owner-language draft"
+          },
+          "emotion": {
+            "enum": [
+              "neutral",
+              "curious",
+              "tense",
+              "urgent",
+              "awe",
+              "somber",
+              "warm",
+              "wry",
+              "triumphant",
+              "whisper"
+            ]
+          },
           "delivery": {
             "type": "object",
             "properties": {
-              "pace": {"enum": ["slow", "normal", "fast"]},
-              "pause_before_ms": {"type": "integer", "minimum": 0},
-              "pause_after_ms": {"type": "integer", "minimum": 0},
-              "emphasis": {"type": "array", "items": {"type": "string"}},
-              "note": {"type": "string", "description": "Free direction for the voice, e.g. 'let the number land'"}
+              "pace": {
+                "enum": [
+                  "slow",
+                  "normal",
+                  "fast"
+                ]
+              },
+              "pause_before_ms": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "pause_after_ms": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "emphasis": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string",
+                "description": "Free direction for the voice, e.g. 'let the number land'"
+              }
             }
           },
-          "hook": {"enum": ["cold_open", "open_loop", "payoff", "reveal", "question", "stakes", "twist"]},
-          "closes_loop": {"type": "string", "description": "id of the line whose open_loop this pays off"},
-          "fact_ids": {"type": "array", "items": {"type": "string"}},
-          "visual_hint": {"type": "string"},
-          "media_ids": {"type": "array", "items": {"type": "string"}}
+          "hook": {
+            "enum": [
+              "cold_open",
+              "open_loop",
+              "payoff",
+              "reveal",
+              "question",
+              "stakes",
+              "twist"
+            ]
+          },
+          "closes_loop": {
+            "type": "string",
+            "description": "id of the line whose open_loop this pays off"
+          },
+          "fact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "visual_hint": {
+            "type": "string"
+          },
+          "media_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "beat": {
+            "enum": [
+              "hook",
+              "question",
+              "recap",
+              "context",
+              "evidence",
+              "motive",
+              "author_intent",
+              "setup_payoff",
+              "theory",
+              "author_credit",
+              "counter",
+              "community",
+              "score",
+              "prediction",
+              "viewer_question",
+              "feature",
+              "cta",
+              "countdown",
+              "outro"
+            ],
+            "description": "Role of the line in the format's structure; formats check required beats and the recap share"
+          },
+          "claim": {
+            "enum": [
+              "canon",
+              "inference",
+              "speculation",
+              "community"
+            ],
+            "description": "Epistemic status shown on screen: canon (on the page, with chapter), inference (follows from canon), speculation (theory), community (readers' view)"
+          },
+          "chapter_refs": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Manga chapters the line cites"
+          }
         }
       }
     }

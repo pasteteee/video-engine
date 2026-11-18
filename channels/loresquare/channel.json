@@ -1,0 +1,214 @@
+{
+  "id": "loresquare",
+  "name": "LoreSquare",
+  "language": "en",
+  "work_language": "ru",
+  "promise": "One Piece argued with chapter receipts: every video asks one question, shows the evidence and lets the community vote on the answer.",
+  "rules": [
+    "Only officially released chapters (MANGA Plus / Shonen Jump). No leaks, raws, spoiler scans or pirate-site screenshots, on screen or in words.",
+    "Every claim on screen carries its stamp: CANON (with chapter), INFERENCE, THEORY or COMMUNITY. Canon claims cite the chapter number on screen.",
+    "Manga panels: only from official releases, at most a third of the runtime, 3-5 s each, cropped or zoomed, always with our commentary on screen, never two in a row, never page after page. Credit line on every panel.",
+    "No anime footage, anime screenshots, openings or OST: Toei Content ID. No other creators' videos or voices.",
+    "Recap at most a fifth of the narration; the rest is our argument. No template videos where only the chapter number changes.",
+    "Fan theories are credited to their LoreSquare author by handle; their confidence is a community signal, never presented as canon.",
+    "Readers' opinions are retold in our words with the source named, never read out verbatim.",
+    "Thumbnail and title: own graphics plus 2-4 words, no bare manga panel, no main twist of a chapter in its first days.",
+    "Description: timestamps, 'One Piece (c) Eiichiro Oda / Shueisha. Read it officially on MANGA Plus.', 'Fan analysis, not affiliated with Shueisha.', links to the LoreSquare pages used (utm tagged).",
+    "Synthetic voice and any generated image are disclosed in the description and in the upload flag."
+  ],
+  "episodes_root": "/mnt/project-files/loresquare-videos/{slug}",
+  "pipeline": {
+    "skip": ["publish"],
+    "_note": "Owner (2026-11-18): video generation only for now; publishing comes later."
+  },
+  "source_work": {
+    "title": "One Piece",
+    "credit_line": "One Piece (c) Eiichiro Oda / Shueisha",
+    "official_source": "MANGA Plus",
+    "official_url": "https://mangaplus.shueisha.co.jp/"
+  },
+  "data_sources": {
+    "loresquare": {
+      "mcp_url": "https://loresquare.com/api/mcp",
+      "lore": "one-piece",
+      "connector_tools": ["search_lore", "get_mystery", "get_theory", "mystery_board"],
+      "site": "https://loresquare.com",
+      "_note": "Public read-only MCP endpoint; `python -m vengine lore ...` or the LoreSquare connector."
+    }
+  },
+  "youtube": {
+    "secrets_dir": "D:\\Work\\loresquare-secrets",
+    "default_privacy": "private",
+    "category_id": "24"
+  },
+  "style": {
+    "name": "Ink",
+    "guide": "channels/loresquare/brand/STYLEGUIDE.md",
+    "kit": "channels/loresquare/kit",
+    "reference_frames": "/mnt/project-files/shorts/series",
+    "palette": "fixed",
+    "tokens": {
+      "RED": "#e63946",
+      "YELLOW": "#ffd43b",
+      "BLUE": "#1f6feb",
+      "INK": "#0b0b0b",
+      "PAPER": "#ffffff",
+      "STAMP_RED": "#b3121f",
+      "STAMP_GREEN": "#1b6b2a",
+      "STAMP_NAVY": "#1b3a8a",
+      "CANON": "#2f9e44",
+      "INFERENCE": "#f0b400",
+      "THEORY": "#e64980",
+      "COMMUNITY": "#1f6feb"
+    },
+    "fonts": {
+      "display": "Oswald 700 (slam words, titles)",
+      "poster": "Playfair Display SC 900 (wanted poster headers)",
+      "mono": "PT Mono (case-file lines, chapter stamps)",
+      "heavy": "Rubik 800/900 (covers, Cyrillic slam words)"
+    },
+    "type_rules": [
+      "slam words: 2-3 short lines, all caps, one colour field behind (red, black or blue)",
+      "chapter numbers always as stamps: CH. 1192 in PT Mono or a rotated rubber stamp",
+      "epistemic stamp colours are fixed: canon green, inference yellow, theory pink, community blue"
+    ],
+    "image_style_refs": [],
+    "image_style_prompt": "none: the channel uses official manga panels (short, commented) and code-drawn graphics only"
+  },
+  "voice": {
+    "provider": "kokoro",
+    "voice": "am_michael",
+    "alternatives": {"ru": {"provider": "silero", "voice": "eugene"}},
+    "base_direction": "Friendly lore host talking to fellow readers: clear American English, steady pace, a little playful on the hook and the vote, calm on the evidence. Names read the way the anime cast says them.",
+    "one_direction_for_all_lines": true,
+    "max_pause_ms": 300,
+    "lexicon": {"Imu": "EE-moo", "Vegapunk": "VEH-gah-punk", "Elbaph": "EL-baf", "Oda": "OH-dah", "LoreSquare": "lore square"},
+    "check": "transcribe the voice (faster-whisper small) and re-record every name that comes back wrong"
+  },
+  "scene_types": "all",
+  "scene_domains": ["manga", "site", "debate"],
+  "variety": {
+    "archival_min_share": 0.15,
+    "min_distinct_types": 8,
+    "max_register_run_s": 30,
+    "shot_min_s": 1.5,
+    "shot_max_s": 8,
+    "max_static_s": 4,
+    "custom_min": 1,
+    "unredact_max": 0,
+    "groups": {
+      "manga_panels": {
+        "scene_types": ["panel_callout", "panel_setup_payoff"],
+        "max_share": 0.33,
+        "shot_min_s": 3,
+        "shot_max_s": 5,
+        "max_consecutive": 1,
+        "needs_on_screen_text": true
+      }
+    }
+  },
+  "script": {
+    "target_minutes": [8, 12],
+    "open_loop_every_s": 60,
+    "words_per_minute": 155,
+    "max_numbers": 14,
+    "golden_facts": [3, 5]
+  },
+  "providers": {
+    "_note": "Free stack: Kokoro (EN) or Silero (RU) on the owner's PC or here, Remotion/Playwright + ffmpeg render, Claude frame-sheet QA, no image generation.",
+    "video_qa": "claude_frames",
+    "image_gen": "none",
+    "tts": "kokoro",
+    "paid_allowed": []
+  },
+  "formats": {
+    "top_theories": {
+      "name": "Top theories from LoreSquare",
+      "what": "Countdown of the 3-5 strongest fan theories on LoreSquare right now: each theory credited to its author, argued with chapter clues, challenged with the best counterpoint, scored by the community.",
+      "aspect": "16:9",
+      "data": ["vengine lore top --n 5 (ranked theories with arguments and confidence history)", "get_mystery for each theory's question"],
+      "structure": [
+        "Hook 0-15 s: the boldest claim of the countdown as a question, no greeting",
+        "The question of the video: which theory holds up best right now",
+        "For each theory, #5 to #1: the question it answers, claim, author credit (@handle), 2 chapter clues (CANON) and what follows (INFERENCE), the strongest counterpoint, confidence was -> now",
+        "Every theory ends on a one-line verdict and opens the next (open loop)",
+        "#1 gets the longest segment and a testable prediction",
+        "Viewer question with 2-3 options, CTA: vote or post a rival theory on LoreSquare"
+      ],
+      "required_beats": ["hook", "question", "countdown", "theory", "author_credit", "evidence", "counter", "score", "viewer_question", "cta"],
+      "claims_required": true,
+      "release_gate": false,
+      "shorts": "rs-shorts cuts each theory segment into its own 35-45 s Short (hook, author, context, clue 1, clue 2, counter, score, CTA): the existing Ink theory Shorts series",
+      "script": {"target_minutes": [6, 10]}
+    },
+    "chapter_breakdown": {
+      "name": "New chapter breakdown",
+      "what": "Analysis of the newest officially released chapter: one question the chapter raises, answered through motives, the author's design, setup and payoff, a theory and its counterpoint, the community view and a testable prediction.",
+      "aspect": "16:9",
+      "data": ["chapter text and pages (official release only)", "search_lore / get_mystery for every mystery the chapter touches", "community discussion of the chapter (retold, credited)"],
+      "structure": [
+        "Hook 0-15 s: the paradox of the chapter, no 'today chapter N'",
+        "The question of the video, said and shown",
+        "Canon context: only what the argument needs (at most a fifth of the narration)",
+        "Motives: what 2-3 characters want, fear and know here, against their past (chapter)",
+        "Author's design: why this scene now, mirrors, repeated motifs",
+        "Setup -> payoff: at least 2 links to old chapters that are not obvious",
+        "Theory (LoreSquare if one exists, credited) with its counterpoint",
+        "Community: where readers agree and where we disagree",
+        "Prediction for the next chapter, checkable",
+        "One-line answer, viewer question, CTA to the mystery on LoreSquare"
+      ],
+      "required_beats": ["hook", "question", "recap", "motive", "author_intent", "setup_payoff", "theory", "counter", "community", "prediction", "viewer_question", "cta"],
+      "max_recap_share": 0.2,
+      "claims_required": true,
+      "release_gate": true,
+      "shorts": "one 30-45 s Short from the strongest setup -> payoff or the prediction, no main twist in the title",
+      "script": {"target_minutes": [8, 14]}
+    },
+    "chapter_moments": {
+      "name": "Moments that will matter",
+      "what": "3-5 small moments of recent chapters that most readers skimmed but that set up future plot or feed a big community question: each moment, what it echoes, which LoreSquare mystery it moves and what to watch for.",
+      "aspect": "16:9",
+      "data": ["chapter pages of the moments (official release only)", "get_mystery for the question each moment moves, with its competing theories", "search_lore for older chapters with the same motif"],
+      "structure": [
+        "Hook: the smallest detail with the biggest consequence",
+        "The question: what did the last chapters quietly set up",
+        "For each moment: the panel (commented), the echo in an old chapter (setup -> payoff), the mystery it moves and how confidence in its theories may shift",
+        "Ranking of the moments by how soon they pay off",
+        "Prediction: which one pays off first, checkable",
+        "Viewer question, CTA: follow the mystery on LoreSquare"
+      ],
+      "required_beats": ["hook", "question", "evidence", "setup_payoff", "theory", "prediction", "viewer_question", "cta"],
+      "max_recap_share": 0.25,
+      "claims_required": true,
+      "release_gate": true,
+      "shorts": "every moment is a Short of its own (detail -> echo -> question)",
+      "script": {"target_minutes": [4, 7]}
+    },
+    "site_promo": {
+      "name": "LoreSquare promo",
+      "what": "Vertical 30-45 s promo of one LoreSquare feature (theory board, confidence votes, mystery board, chapter timeline, AI connector), shown on the real site with a real theory or mystery as the example.",
+      "aspect": "9:16",
+      "data": ["the live site (screens of the feature)", "one real theory or mystery as the example (mystery_board / get_theory)"],
+      "structure": [
+        "Hook 0-2 s: the reader's problem (a theory buried in a thread, no way to see who was right)",
+        "The feature on the real site, one action per shot",
+        "A real example: a theory with its confidence moving",
+        "CTA: what to do on the site, the link in the description and pinned comment"
+      ],
+      "required_beats": ["hook", "feature", "cta"],
+      "claims_required": false,
+      "release_gate": false,
+      "script": {"target_minutes": [0.5, 0.75], "open_loop_every_s": 20, "golden_facts": [1, 2]},
+      "variety": {
+        "archival_min_share": 0.4,
+        "min_distinct_types": 4,
+        "shot_max_s": 5,
+        "groups": {
+          "manga_panels": {"max_share": 0.15},
+          "site_screens": {"scene_types": ["site_screen"], "min_share": 0.4}
+        }
+      }
+    }
+  }
+}

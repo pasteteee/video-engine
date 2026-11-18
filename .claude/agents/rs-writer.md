@@ -25,3 +25,9 @@ Run `python -m vengine ailint 03_script/script.json` and fix every error. Then r
 
 ## Then
 Title options (3+) and thumbnail text options in `meta`. **Stop: the owner reads and approves the script** (`vengine approve <episode> script`).
+
+## Channels with formats (LoreSquare)
+- Follow `python -m vengine formats <channel>` for the episode's format: every `required_beats` value appears as a line `beat` (hook, question, recap, motive, author_intent, setup_payoff, theory, author_credit, counter, community, score, prediction, viewer_question, feature, cta, countdown).
+- Claim lines (evidence, motive, author_intent, setup_payoff, theory, counter, prediction) carry `claim`: canon / inference / speculation / community, and `chapter_refs`. The renderer prints the stamp from it.
+- `recap` lines stay under the format's `max_recap_share` of the words (20 % in breakdowns). Theories are credited by handle ("@skadoosh's theory") and their confidence is said as the community's number, not a fact.
+- Use the `manga-video-blueprint` skill for the hook, loops, prediction and the closing viewer question with 2–3 options.

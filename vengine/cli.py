@@ -1,13 +1,15 @@
 """Command line: python -m vengine <command> ...
 
-  init      CHANNEL SLUG [--root DIR]   create the episode folder
+  init      CHANNEL SLUG [--format F] [--root DIR]   create the episode folder
   status    EPISODE_DIR [--json]        where the episode is and who acts next
   validate  EPISODE_DIR                 schemas + cross-file references
   variety   SHOTLIST.json [--channel ID] variety rules of the edit plan
   ailint    SCRIPT.json | TEXT_FILE [--json] [--print-rules]
   approve   EPISODE_DIR GATE [--note ..] record the owner's approval (topic|script|final)
   revoke    EPISODE_DIR GATE
-  channels                              list channel profiles
+  channels                              list channel profiles (and their formats)
+  formats   CHANNEL                     formats of a channel with their structure
+  lore      call TOOL [--args JSON] | top [--n N]   LoreSquare data (theories channel)
 """
 from __future__ import annotations
 
@@ -16,16 +18,13 @@ import json
 import sys
 from pathlib import Path
 
-from . import ailint, contracts, variety
+from . import ailint, contracts, formats, variety
 from .episode import GATES, ROOT, Episode, load_channel
 
 
 def _channel_of(ep: Episode) -> dict | None:
-    cid = ep.state.get("channel")
-    try:
-        return load_channel(cid) if cid else None
-    except FileNotFoundError:
-        return None
+    """Channel profile with the episode's format applied."""
+    return ep.channel()
 
 
 def _print_problems(probs: list[dict]) -> int:
@@ -43,9 +42,10 @@ def main(argv: list[str] | None = None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser("init"); p.add_argument("channel"); p.add_argument("slug"); p.add_argument("--root")
+    p.add_argument("--format")
     p = sub.add_parser("status"); p.add_argument("episode"); p.add_argument("--json", action="store_true")
     p = sub.add_parser("validate"); p.add_argument("episode")
-    p = sub.add_parser("variety"); p.add_argument("shotlist"); p.add_argument("--channel")
+    p = sub.add_parser("variety"); p.add_argument("shotlist"); p.add_argument("--channel"); p.add_argument("--format")
     p = sub.add_parser("look"); p.add_argument("episode"); p.add_argument("--write", action="store_true")
     p = sub.add_parser("shorts"); p.add_argument("episode"); p.add_argument("--n", type=int, default=3)
     p.add_argument("--write", action="store_true"); p.add_argument("--check", action="store_true")
@@ -56,6 +56,10 @@ def main(argv: list[str] | None = None) -> int:
         if name == "approve":
             p.add_argument("--note", default="")
     sub.add_parser("channels")
+    p = sub.add_parser("formats"); p.add_argument("channel")
+    p = sub.add_parser("lore"); p.add_argument("action", choices=["call", "top"]); p.add_argument("tool", nargs="?")
+    p.add_argument("--args", default="{}"); p.add_argument("--channel"); p.add_argument("--lore")
+    p.add_argument("--n", type=int, default=5); p.add_argument("--out")
 
     a = ap.parse_args(argv)
 
@@ -63,13 +67,52 @@ def main(argv: list[str] | None = None) -> int:
         for d in sorted((ROOT / "channels").glob("*/channel.json")):
             c = json.loads(d.read_text(encoding="utf-8"))
             print(f"{c['id']:<16} {c['name']} · {c['promise']}")
+            for f in formats.names(c):
+                print(f"{'':<16}   --format {f}")
+        return 0
+
+    if a.cmd == "formats":
+        ch = load_channel(a.channel)
+        for fid in formats.names(ch):
+            f = ch["formats"][fid]
+            eff = formats.effective(ch, fid)
+            mins = (eff.get("script") or {}).get("target_minutes")
+            print(f"{fid}  ·  {f['name']}  ·  {eff.get('aspect', '16:9')}  ·  {mins} min")
+            print(f"  {f['what']}")
+            for i, step in enumerate(f.get("structure", []), 1):
+                print(f"   {i}. {step}")
+            print(f"  beats: {', '.join(f['required_beats'])}")
+            print()
+        return 0
+
+    if a.cmd == "lore":
+        from . import lore
+        ch = load_channel(a.channel) if a.channel else None
+        url = lore.url_of(ch)
+        if a.action == "call":
+            if not a.tool:
+                ap.error("lore call needs a TOOL")
+            res = lore.call(a.tool, json.loads(a.args), url)
+        else:
+            res = {"tool": "top_theories", "url": url, "items": lore.top_theories(a.n, a.lore, url)}
+        text = json.dumps(res, ensure_ascii=False, indent=2)
+        if a.out:
+            Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+            Path(a.out).write_text(text, encoding="utf-8")
+            print(f"written: {a.out}")
+        else:
+            print(text)
         return 0
 
     if a.cmd == "init":
         ch = load_channel(a.channel)
+        if ch.get("formats") and not a.format:
+            ap.error(f"channel {ch['id']} has formats, pass --format ({', '.join(formats.names(ch))})")
+        if a.format:
+            formats.get(ch, a.format)
         root = Path(a.root or ch.get("episodes_root", "episodes/{slug}").replace("{slug}", a.slug))
-        ep = Episode.init(root if a.root is None else root / a.slug, ch["id"], a.slug)
-        print(f"episode folder: {ep.folder}")
+        ep = Episode.init(root if a.root is None else root / a.slug, ch["id"], a.slug, a.format)
+        print(f"episode folder: {ep.folder}" + (f"  (format {a.format})" if a.format else ""))
         return 0
 
     if a.cmd == "status":
@@ -77,7 +120,12 @@ def main(argv: list[str] | None = None) -> int:
         if a.json:
             print(json.dumps(st, ensure_ascii=False, indent=2))
             return 0
+        if st.get("format"):
+            print(f"format: {st['format']}")
         for r in st["stages"]:
+            if r.get("skipped"):
+                print(f"- {r['stage']:<9} {r['agent']:<13}  (off for this channel)")
+                continue
             gate = ""
             if r["gate"]:
                 gate = f"  [owner: {r['gate']} {'✓' if r['approved'] else '…'}]"
@@ -86,6 +134,8 @@ def main(argv: list[str] | None = None) -> int:
             print(f"\nwaiting for the owner to approve: {st['waiting_for_owner']}")
         elif st["next"]:
             print(f"\nnext: {st['next']}")
+        elif "publish" in st.get("skipped", []):
+            print("\nepisode ready: publishing is off for this channel")
         else:
             print("\nepisode published")
         return 0
@@ -96,7 +146,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if a.cmd == "variety":
         sl = json.loads(Path(a.shotlist).read_text(encoding="utf-8"))
-        ch = load_channel(a.channel) if a.channel else None
+        ch = formats.effective(load_channel(a.channel), a.format) if a.channel else None
         res = variety.check(sl, ch)
         print(json.dumps(res["stats"], ensure_ascii=False))
         return _print_problems(res["problems"])

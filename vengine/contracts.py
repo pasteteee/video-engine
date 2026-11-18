@@ -5,13 +5,14 @@ An agent may hand over only when there are no errors for its files.
 """
 from __future__ import annotations
 
+import datetime as dt
 import json
 from functools import lru_cache
 from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
-from . import scenes
+from . import formats, scenes
 from .episode import EXTRA, STAGES, Episode
 
 SCHEMA_DIR = Path(__file__).resolve().parent / "schemas"
@@ -39,6 +40,9 @@ def _load(p: Path):
 
 
 def validate_episode(ep: Episode, channel: dict | None = None) -> list[dict]:
+    fmt = ep.state.get("format")
+    if channel is not None and fmt and "format" not in channel:
+        channel = formats.effective(channel, fmt)
     probs: list[dict] = []
     docs: dict[str, dict] = {}
     files = [(s.output, s.schema) for s in STAGES if s.schema] + list(EXTRA.items())
@@ -53,6 +57,7 @@ def validate_episode(ep: Episode, channel: dict | None = None) -> list[dict]:
         docs[schema] = obj
         probs += validate_obj(schema, obj, rel)
     probs += cross_check(docs, ep, channel)
+    probs += format_check(docs, ep, channel)
     return probs
 
 
@@ -137,4 +142,71 @@ def cross_check(docs: dict[str, dict], ep: Episode | None = None, channel: dict 
                 err("shotlist", f"shot {s['id']}: archival or illustration shot without source_line")
         for lid in sorted(line_ids - covered):
             err("shotlist", f"line {lid} has no shot")
+    return P
+
+
+def format_check(docs: dict[str, dict], ep: Episode | None = None, channel: dict | None = None,
+                 today: dt.date | None = None) -> list[dict]:
+    """Rules of the episode's format (see vengine/formats.py) and of the commented work."""
+    P = []
+    fmt = (channel or {}).get("format")
+    if not fmt:
+        return P
+
+    def err(file, msg):
+        P.append({"level": "error", "file": file, "msg": msg})
+
+    def warn(file, msg):
+        P.append({"level": "warn", "file": file, "msg": msg})
+
+    topic, media, script = docs.get("topic_card"), docs.get("media"), docs.get("script")
+
+    if topic and topic.get("format") and topic["format"] != fmt["id"]:
+        err("topic_card", f"format {topic['format']} but the episode was started as {fmt['id']}")
+
+    # official release: never before the chapter is out on the official source
+    released = None
+    if fmt.get("release_gate") and topic:
+        rel = topic.get("release")
+        if not rel:
+            err("topic_card", "release missing: this format needs the chapter and its official release date")
+        else:
+            released = rel["chapter"]
+            day = dt.date.fromisoformat(rel["official_at"][:10])
+            if day > (today or dt.date.today()):
+                err("topic_card", f"chapter {released} is not officially out until {day}: no leaks, wait for the release")
+    if media and released is not None:
+        for m in media.get("items", []):
+            if m.get("kind") == "panel" and m.get("chapter", 0) > released:
+                err("media", f"{m['id']}: panel from chapter {m['chapter']}, newer than the released {released}")
+    credit = ((channel or {}).get("source_work") or {}).get("credit_line")
+    if media and credit:
+        for m in media.get("items", []):
+            if m.get("kind") == "panel" and credit.split()[0].lower() not in (m.get("credit") or "").lower():
+                warn("media", f"{m['id']}: credit should read like '{credit}'")
+
+    if script:
+        lines = script.get("lines", [])
+        beats = {l.get("beat") for l in lines}
+        for b in fmt.get("required_beats", []):
+            if b not in beats:
+                err("script", f"format {fmt['id']} needs a '{b}' line")
+        words = [len(l["text"].split()) for l in lines]
+        total = sum(words) or 1
+        cap = fmt.get("max_recap_share")
+        if cap is not None:
+            recap = sum(w for l, w in zip(lines, words) if l.get("beat") == "recap") / total
+            if recap > cap:
+                err("script", f"recap is {recap:.0%} of the narration, at most {cap:.0%}: the video must be our argument")
+        if fmt.get("claims_required"):
+            for l in lines:
+                if l.get("beat") in formats.CLAIM_BEATS and not l.get("claim"):
+                    err("script", f"line {l['id']} ({l['beat']}) has no claim tag: canon, inference, speculation or community")
+                if l.get("claim") == "canon" and not l.get("chapter_refs"):
+                    warn("script", f"line {l['id']} is canon but cites no chapter_refs")
+        if released is not None:
+            for l in lines:
+                for c in l.get("chapter_refs", []):
+                    if c > released:
+                        err("script", f"line {l['id']} cites chapter {c}, newer than the released {released}")
     return P

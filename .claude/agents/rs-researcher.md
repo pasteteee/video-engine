@@ -16,3 +16,8 @@ description: Deep researcher. Digs primary sources, statistics and archives for 
 5. Conclusions: each states what follows, based on which facts, with confidence and the strongest counterpoint.
 6. Media: aim for ≥ 40 items, mostly real. Only public domain, CC0, CC BY/BY-SA (credit!), Pexels/Pixabay. Wikimedia Commons and NASA Images APIs give licenses in metadata. Record what is literally in each frame (`shows`). No other creators' videos.
 7. Hand over only when `python -m vengine validate <episode>` shows no errors.
+
+## Manga channels (LoreSquare)
+- Sources ladder: the chapter itself (official release, `kind: primary`, cite `Ch. N p. P`) → LoreSquare theories, clues and confidence (`kind: data`, via connector or `vengine lore`) → community discussion (`kind: secondary`, retold, never quoted at length) → wiki for orientation only.
+- Facts are canon statements with chapter and page; theories go to `conclusions` with `confidence` and the strongest `counterpoint`. The "own calculation" is ours: a confidence movement, a chapter-gap count (setup in Ch. 441 → payoff in Ch. 1192 = 751 chapters), a tally of clues for/against.
+- Media: panels `kind: panel`, `license: fair-use-review`, `chapter`, `page`, `credit: "One Piece (c) Eiichiro Oda / Shueisha"`, only from chapters ≤ `topic.release.chapter`, never leaks or pirate scans. Note in `shows` the detail the commentary is about. Site screens `kind: screen`, `license: own`. No anime frames at all.
