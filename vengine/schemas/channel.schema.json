@@ -3,73 +3,354 @@
   "$id": "channel",
   "title": "Channel profile: everything that differs between channels",
   "type": "object",
-  "required": ["id", "name", "language", "promise", "style", "voice", "variety"],
+  "required": [
+    "id",
+    "name",
+    "language",
+    "promise",
+    "style"
+  ],
   "properties": {
-    "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
-    "name": {"type": "string"},
-    "language": {"type": "string", "description": "Language of videos, titles, descriptions (e.g. en)"},
-    "work_language": {"type": "string", "default": "ru", "description": "Language for talking to the owner"},
-    "promise": {"type": "string", "description": "One sentence the channel promises every viewer"},
-    "rules": {"type": "array", "items": {"type": "string"}},
-    "episodes_root": {"type": "string", "description": "Folder with episode folders; {slug} is replaced"},
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string",
+      "description": "Language of videos, titles, descriptions (e.g. en)"
+    },
+    "work_language": {
+      "type": "string",
+      "default": "ru",
+      "description": "Language for talking to the owner"
+    },
+    "promise": {
+      "type": "string",
+      "description": "One sentence the channel promises every viewer"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "episodes_root": {
+      "type": "string",
+      "description": "Folder with episode folders; {slug} is replaced"
+    },
     "youtube": {
       "type": "object",
       "properties": {
-        "channel_id": {"type": "string"},
-        "secrets_dir": {"type": "string", "description": "Folder on the owner's PC with client_secret.json and token.json. Never in the repo."},
-        "default_privacy": {"enum": ["private", "unlisted", "public"], "default": "private"},
-        "category_id": {"type": "string"},
-        "default_playlist": {"type": "string"}
+        "channel_id": {
+          "type": "string"
+        },
+        "secrets_dir": {
+          "type": "string",
+          "description": "Folder on the owner's PC with client_secret.json and token.json. Never in the repo."
+        },
+        "default_privacy": {
+          "enum": [
+            "private",
+            "unlisted",
+            "public"
+          ],
+          "default": "private"
+        },
+        "category_id": {
+          "type": "string"
+        },
+        "default_playlist": {
+          "type": "string"
+        }
       }
     },
     "planner": {
       "type": "object",
-      "properties": {"artifact_slug": {"type": "string"}, "space": {"type": "string"}}
+      "properties": {
+        "artifact_slug": {
+          "type": "string"
+        },
+        "space": {
+          "type": "string"
+        }
+      }
     },
     "style": {
       "type": "object",
-      "required": ["guide"],
+      "required": [
+        "guide"
+      ],
       "properties": {
-        "guide": {"type": "string", "description": "Path to the style guide (markdown)"},
-        "kit": {"type": "string", "description": "Path to the Remotion kit for this channel"},
-        "tokens": {"type": "object", "additionalProperties": {"type": "string"}},
-        "image_style_refs": {"type": "array", "items": {"type": "string"}, "description": "Reference frames passed to the image model"},
-        "image_style_prompt": {"type": "string"}
+        "guide": {
+          "type": "string",
+          "description": "Path to the style guide (markdown)"
+        },
+        "kit": {
+          "type": "string",
+          "description": "Path to the Remotion kit for this channel"
+        },
+        "tokens": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "image_style_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Reference frames passed to the image model"
+        },
+        "image_style_prompt": {
+          "type": "string"
+        },
+        "fonts": {
+          "type": "object",
+          "description": "Font names; for build_short the files: display, bold, semibold (relative to dir)"
+        }
       }
     },
     "voice": {
       "type": "object",
-      "required": ["provider", "voice"],
+      "required": [
+        "provider",
+        "voice"
+      ],
       "properties": {
-        "provider": {"enum": ["gemini", "elevenlabs", "kokoro", "piper"]},
-        "voice": {"type": "string"},
-        "base_direction": {"type": "string"}
+        "provider": {
+          "enum": [
+            "gemini",
+            "elevenlabs",
+            "kokoro",
+            "piper",
+            "none"
+          ]
+        },
+        "voice": {
+          "type": "string"
+        },
+        "base_direction": {
+          "type": "string"
+        }
       }
     },
     "scene_types": {
       "description": "Scene types this channel may use; 'all' = whole library",
-      "oneOf": [{"const": "all"}, {"type": "array", "items": {"type": "string"}}]
+      "oneOf": [
+        {
+          "const": "all"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     },
     "variety": {
       "type": "object",
       "properties": {
-        "archival_min_share": {"type": "number", "minimum": 0, "maximum": 1},
-        "min_distinct_types": {"type": "integer", "minimum": 1},
-        "max_register_run_s": {"type": "number"},
-        "shot_min_s": {"type": "number"},
-        "shot_max_s": {"type": "number"},
-        "max_static_s": {"type": "number"}
+        "archival_min_share": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "min_distinct_types": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_register_run_s": {
+          "type": "number"
+        },
+        "shot_min_s": {
+          "type": "number"
+        },
+        "shot_max_s": {
+          "type": "number"
+        },
+        "max_static_s": {
+          "type": "number"
+        }
       }
     },
     "script": {
       "type": "object",
       "properties": {
-        "target_minutes": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
-        "open_loop_every_s": {"type": "number"},
-        "words_per_minute": {"type": "number"},
-        "max_numbers": {"type": "integer"},
-        "golden_facts": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2}
+        "target_minutes": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "open_loop_every_s": {
+          "type": "number"
+        },
+        "words_per_minute": {
+          "type": "number"
+        },
+        "max_numbers": {
+          "type": "integer"
+        },
+        "golden_facts": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "format": {
+      "enum": [
+        "documentary",
+        "build_short"
+      ],
+      "default": "documentary",
+      "description": "documentary: narrated long video (realstory). build_short: a vertical short where a toy is crocheted stitch by stitch, no narration (amigurumi)."
+    },
+    "build": {
+      "type": "object",
+      "description": "build_short only: how the knit is rendered and how the short is cut",
+      "required": [
+        "knit"
+      ],
+      "properties": {
+        "knit": {
+          "type": "object",
+          "required": [
+            "renderer"
+          ],
+          "properties": {
+            "renderer": {
+              "type": "string",
+              "description": "'auto' (yarn when installed, else crochetsim), 'crochetsim', 'yarn' (python -m vengine yarn grow) or 'command'"
+            },
+            "command": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "renderer=command: argv with {spec} {out} {dur} {reveal} {size} {part}"
+            },
+            "src": {
+              "type": "string",
+              "description": "Folder with the crochetsim package (env CROCHETSIM_SRC wins)"
+            },
+            "amikit": {
+              "type": "string",
+              "description": "Folder that holds the amikit package (env AMIKIT wins)"
+            },
+            "params": {
+              "type": "object",
+              "description": "Flags for the renderer, flat or per renderer {crochetsim: {...}, yarn: {...}}"
+            },
+            "smooth": {
+              "description": "Temporal blend [prev, this, next], flat or per renderer; [0,1,0] = off",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "fps": {
+          "type": "integer",
+          "default": 30
+        },
+        "size": {
+          "type": "string",
+          "pattern": "^\\d+x\\d+$",
+          "default": "1080x1920"
+        },
+        "timing": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Default section lengths in seconds: hook, grow, done, real, cta; beat"
+        },
+        "cta": {
+          "type": "object",
+          "description": "Default call to action: lines, button, chip"
+        },
+        "music": {
+          "type": "object",
+          "description": "Built-in synth: bpm, key, style"
+        }
+      }
+    },
+    "catalog": {
+      "type": "object",
+      "required": [
+        "api",
+        "storage"
+      ],
+      "description": "Where the channel's models live (amigurumi.ai): card list API, package storage, page URL pattern",
+      "properties": {
+        "api": {
+          "type": "string"
+        },
+        "storage": {
+          "type": "string"
+        },
+        "page": {
+          "type": "string",
+          "description": "{id} is replaced"
+        },
+        "locale": {
+          "type": "string"
+        }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "format": {
+            "const": "build_short"
+          }
+        },
+        "required": [
+          "format"
+        ]
+      },
+      "then": {
+        "required": [
+          "build"
+        ]
+      },
+      "else": {
+        "required": [
+          "voice",
+          "variety"
+        ]
+      }
+    }
+  ]
 }
