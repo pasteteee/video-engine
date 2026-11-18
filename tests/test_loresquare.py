@@ -232,3 +232,31 @@ def test_tool_errors_surface():
 def test_utm_replaces_connector_tags():
     u = lore.with_utm("https://loresquare.com/t/x?utm_source=claude&ref=1", "zaza")
     assert "utm_source=youtube" in u and "utm_campaign=zaza" in u and "ref=1" in u and "claude" not in u
+
+
+def test_all_formats_are_vertical_shorts():
+    for fmt in formats.names(LS):
+        assert formats.effective(LS, fmt)["aspect"] == "9:16", fmt
+
+
+def test_art_media_needs_credit_source_and_review_license():
+    bad = {"items": [{"id": "a", "path": "x.png", "kind": "art", "license": "CC0", "shows": "cover"}]}
+    msgs = " ".join(m["msg"] for m in contracts.validate_obj("media", bad))
+    assert "credit" in msgs and "source_url" in msgs and "fair-use-review" in msgs
+    ok = {"items": [{"id": "a", "path": "x.png", "kind": "art", "license": "fair-use-review", "credit": SRC,
+                     "source_url": "https://example.org", "shows": "Volume 106 cover", "volume": 106}]}
+    assert not errors(contracts.validate_obj("media", ok))
+
+
+def test_art_backdrop_always_carries_text_and_moves_on():
+    ch = formats.effective(LS, "top_theories")
+    art = {"scene_type": "art_backdrop", "variant": "ken_burns", "media_ids": ["a"], "source_line": SRC + ", Vol. 106"}
+    shots = {"fps": 30, "width": 1080, "height": 1920, "shots": [
+        {**art, "id": "s1", "line_ids": ["l1"], "duration_s": 7},
+        {"id": "s2", "line_ids": ["l2"], "scene_type": "claim_card", "variant": "stamp", "duration_s": 3},
+        {**art, "id": "s3", "line_ids": ["l3"], "duration_s": 4, "variant": "speed_burst", "on_screen_text": ["90% BELIEVE"]},
+    ]}
+    msgs = " | ".join(p["msg"] for p in variety.check(shots, ch)["problems"] if p["level"] == "error")
+    assert "s1 has no on_screen_text" in msgs
+    assert "s1 holds 7s, at most 6s" in msgs
+    assert "s3" not in msgs  # art under type has no share cap, unlike raw panels

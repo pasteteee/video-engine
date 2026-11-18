@@ -177,12 +177,12 @@ def format_check(docs: dict[str, dict], ep: Episode | None = None, channel: dict
                 err("topic_card", f"chapter {released} is not officially out until {day}: no leaks, wait for the release")
     if media and released is not None:
         for m in media.get("items", []):
-            if m.get("kind") == "panel" and m.get("chapter", 0) > released:
+            if m.get("kind") in ("panel", "art") and m.get("chapter", 0) > released:
                 err("media", f"{m['id']}: panel from chapter {m['chapter']}, newer than the released {released}")
     credit = ((channel or {}).get("source_work") or {}).get("credit_line")
     if media and credit:
         for m in media.get("items", []):
-            if m.get("kind") == "panel" and credit.split()[0].lower() not in (m.get("credit") or "").lower():
+            if m.get("kind") in ("panel", "art") and credit.split()[0].lower() not in (m.get("credit") or "").lower():
                 warn("media", f"{m['id']}: credit should read like '{credit}'")
 
     if script:

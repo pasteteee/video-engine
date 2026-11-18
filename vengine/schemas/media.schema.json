@@ -36,11 +36,13 @@
               "illustration",
               "animation",
               "panel",
-              "screen"
+              "screen",
+              "art"
             ]
           },
           "source_url": {
-            "type": "string"
+            "type": "string",
+            "description": "Where the file was taken from"
           },
           "credit": {
             "type": "string"
@@ -102,6 +104,11 @@
           "page": {
             "type": "integer",
             "minimum": 1
+          },
+          "volume": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "For art: the volume whose cover it is"
           }
         },
         "allOf": [
@@ -195,6 +202,29 @@
               "properties": {
                 "license": {
                   "const": "own"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "art"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "required": [
+                "credit",
+                "source_url"
+              ],
+              "properties": {
+                "license": {
+                  "const": "fair-use-review"
                 }
               }
             }

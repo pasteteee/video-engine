@@ -69,6 +69,7 @@ _LIB = [
     SceneType("illus_reconstruction", ILLUSTRATION, "Reconstruction of a moment nobody filmed, marked RECONSTRUCTION", True),
     # manga: panels of an officially released chapter, always cropped and commented
     SceneType("panel_callout", ARCHIVAL, "One manga panel, cropped, slow zoom, our circle/arrow/note lands on the detail; credit line", True, True, domain="manga"),
+    SceneType("art_backdrop", ARCHIVAL, "Official manga art (volume cover, chapter title page, colour spread) moving under our kinetic type, darkened or duotoned", True, domain="manga"),
     SceneType("panel_setup_payoff", ARCHIVAL, "Setup panel from an old chapter beside the payoff panel from the new one, chapter numbers on both", True, domain="manga"),
     # site: the channel's own product on screen
     SceneType("site_screen", ARCHIVAL, "Real screen of the channel's own site: scroll, cursor, the feature highlighted", True, domain="site"),
@@ -115,6 +116,7 @@ VARIANTS: dict[str, tuple[str, ...]] = {
     "illus_reconstruction": ("marked", "split_with_record"),
     "panel_callout": ("circle_note", "arrow_label", "crop_zoom"),
     "panel_setup_payoff": ("split", "wipe", "stack"),
+    "art_backdrop": ("ken_burns", "halftone_duotone", "speed_burst", "parallax_cut"),
     "site_screen": ("scroll_highlight", "cursor_click", "device_frame"),
     "theory_card": ("wanted_poster", "case_file"),
     "claim_card": ("stamp", "chip"),

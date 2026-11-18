@@ -7,7 +7,7 @@
   "rules": [
     "Only officially released chapters (MANGA Plus / Shonen Jump). No leaks, raws, spoiler scans or pirate-site screenshots, on screen or in words.",
     "Every claim on screen carries its stamp: CANON (with chapter), INFERENCE, THEORY or COMMUNITY. Canon claims cite the chapter number on screen.",
-    "Manga panels: only from official releases, at most a third of the runtime, 3-5 s each, cropped or zoomed, always with our commentary on screen, never two in a row, never page after page. Credit line on every panel.",
+    "Manga images: only official releases and official art (volume covers, chapter title pages, colour spreads, panels). Raw panels at most a third of the runtime, 3-5 s each, never two in a row. Art under our type has no share cap but always carries our text and moves. Credit line on every frame with manga images. Fan art only with the artist's credit and permission.",
     "No anime footage, anime screenshots, openings or OST: Toei Content ID. No other creators' videos or voices.",
     "Recap at most a fifth of the narration; the rest is our argument. No template videos where only the chapter number changes.",
     "Fan theories are credited to their LoreSquare author by handle; their confidence is a community signal, never presented as canon.",
@@ -69,18 +69,23 @@
       "COMMUNITY": "#1f6feb"
     },
     "fonts": {
-      "display": "Oswald 700 (slam words, titles)",
-      "poster": "Playfair Display SC 900 (wanted poster headers)",
-      "mono": "PT Mono (case-file lines, chapter stamps)",
-      "heavy": "Rubik 800/900 (covers, Cyrillic slam words)"
+      "display": "Dela Gothic One (slams, numbers, katakana SFX)",
+      "caption": "Inter 900 (word-by-word captions)",
+      "mono": "JetBrains Mono 700 (chapter stamps, labels)"
     },
     "type_rules": [
-      "slam words: 2-3 short lines, all caps, one colour field behind (red, black or blue)",
-      "chapter numbers always as stamps: CH. 1192 in PT Mono or a rotated rubber stamp",
-      "epistemic stamp colours are fixed: canon green, inference yellow, theory pink, community blue"
+      "slam words land one by one with a spring (scale 2.4 -> 1) and a camera shake; one key word per slam in yellow",
+      "manga art always moves (ken burns or parallax) under a dark/halftone/duotone treatment so our type reads first",
+      "katakana SFX (ドン, ゴゴゴ) as outline texture behind slams, never as information",
+      "chapter numbers as stamps: CH. 1192 in JetBrains Mono on a yellow tape",
+      "epistemic chip on every claim: canon green, inference yellow, theory pink, community blue"
     ],
     "image_style_refs": [],
-    "image_style_prompt": "none: the channel uses official manga panels (short, commented) and code-drawn graphics only"
+    "image_style_prompt": "none: the channel uses official manga panels (short, commented) and code-drawn graphics only",
+    "image_sources": [
+      "https://static.wikia.nocookie.net/onepiece/ (One Piece Wiki files: Volume N.png covers, Chapter N.png title pages, Manga Infobox portraits)",
+      "LoreSquare theory covers (credit the theory author)"
+    ]
   },
   "voice": {
     "provider": "kokoro",
@@ -111,10 +116,10 @@
   ],
   "variety": {
     "archival_min_share": 0.0,
-    "min_distinct_types": 8,
+    "min_distinct_types": 6,
     "max_register_run_s": 60,
     "shot_min_s": 1.5,
-    "shot_max_s": 8,
+    "shot_max_s": 6,
     "max_static_s": 4,
     "custom_min": 1,
     "unredact_max": 0,
@@ -129,21 +134,29 @@
         "shot_max_s": 5,
         "max_consecutive": 1,
         "needs_on_screen_text": true
+      },
+      "manga_art": {
+        "scene_types": [
+          "art_backdrop"
+        ],
+        "needs_on_screen_text": true,
+        "shot_max_s": 6,
+        "_note": "Official art under our type: no share cap (owner 2026-11-18: more manga images), but never without our text on top and never a static hold."
       }
     },
     "_note": "Real material here = manga panels (capped, risky) and site screens; no floor by default so no format is pushed towards more panels."
   },
   "script": {
     "target_minutes": [
-      8,
-      12
+      0.75,
+      1.0
     ],
-    "open_loop_every_s": 60,
-    "words_per_minute": 155,
-    "max_numbers": 14,
+    "open_loop_every_s": 15,
+    "words_per_minute": 165,
+    "max_numbers": 6,
     "golden_facts": [
-      3,
-      5
+      2,
+      3
     ]
   },
   "providers": {
@@ -156,92 +169,80 @@
   "formats": {
     "top_theories": {
       "name": "Top theories from LoreSquare",
-      "what": "Countdown of the 3-5 strongest fan theories on LoreSquare right now: each theory credited to its author, argued with chapter clues, challenged with the best counterpoint, scored by the community.",
-      "aspect": "16:9",
+      "what": "Short countdown of the 3 strongest LoreSquare theories: claim, author, one clue, one counterpoint and the community score for each, over official manga art.",
+      "aspect": "9:16",
       "data": [
         "vengine lore top --n 5 (ranked theories with arguments and confidence history)",
         "get_mystery for each theory's question"
       ],
       "structure": [
-        "Hook 0-15 s: the boldest claim of the countdown as a question, no greeting",
-        "The question of the video: which theory holds up best right now",
-        "For each theory, #5 to #1: the question it answers, claim, author credit (@handle), 2 chapter clues (CANON) and what follows (INFERENCE), the strongest counterpoint, confidence was -> now",
-        "Every theory ends on a one-line verdict and opens the next (open loop)",
-        "#1 gets the longest segment and a testable prediction",
-        "Viewer question with 2-3 options, CTA: vote or post a rival theory on LoreSquare"
+        "Hook 0-2 s: the boldest number or claim, slam over art",
+        "#3, #2, #1: claim + @author, one chapter clue, the counterpoint, score (was -> now), ~15 s each",
+        "Vote CTA: which breaks first"
       ],
       "required_beats": [
         "hook",
-        "question",
         "countdown",
         "theory",
         "author_credit",
         "evidence",
         "counter",
         "score",
-        "viewer_question",
         "cta"
       ],
       "claims_required": true,
       "release_gate": false,
-      "shorts": "rs-shorts cuts each theory segment into its own 35-45 s Short (hook, author, context, clue 1, clue 2, counter, score, CTA): the existing Ink theory Shorts series",
+      "shorts": "the video is the Short; each theory can also get its own 35-45 s Short",
       "script": {
         "target_minutes": [
-          6,
-          10
+          0.75,
+          1.0
         ]
       }
     },
     "chapter_breakdown": {
       "name": "New chapter breakdown",
-      "what": "Analysis of the newest officially released chapter: one question the chapter raises, answered through motives, the author's design, setup and payoff, a theory and its counterpoint, the community view and a testable prediction.",
-      "aspect": "16:9",
+      "what": "Short analysis of the newest officially released chapter: one question, the key detail, its setup in an old chapter, a theory, a counterpoint and a testable prediction.",
+      "aspect": "9:16",
       "data": [
         "chapter text and pages (official release only)",
         "search_lore / get_mystery for every mystery the chapter touches",
         "community discussion of the chapter (retold, credited)"
       ],
       "structure": [
-        "Hook 0-15 s: the paradox of the chapter, no 'today chapter N'",
-        "The question of the video, said and shown",
-        "Canon context: only what the argument needs (at most a fifth of the narration)",
-        "Motives: what 2-3 characters want, fear and know here, against their past (chapter)",
-        "Author's design: why this scene now, mirrors, repeated motifs",
-        "Setup -> payoff: at least 2 links to old chapters that are not obvious",
-        "Theory (LoreSquare if one exists, credited) with its counterpoint",
-        "Community: where readers agree and where we disagree",
-        "Prediction for the next chapter, checkable",
-        "One-line answer, viewer question, CTA to the mystery on LoreSquare"
+        "Hook 0-2 s: the paradox of the chapter",
+        "The question",
+        "Recap: only what the argument needs",
+        "Motive or author's design, one beat",
+        "Setup -> payoff with an old chapter",
+        "Theory and counterpoint",
+        "Prediction, viewer question, CTA"
       ],
       "required_beats": [
         "hook",
         "question",
         "recap",
-        "motive",
-        "author_intent",
         "setup_payoff",
         "theory",
         "counter",
-        "community",
         "prediction",
-        "viewer_question",
         "cta"
       ],
       "max_recap_share": 0.2,
       "claims_required": true,
       "release_gate": true,
-      "shorts": "one 30-45 s Short from the strongest setup -> payoff or the prediction, no main twist in the title",
+      "shorts": "the video is the Short",
       "script": {
         "target_minutes": [
-          8,
-          14
+          0.75,
+          1.5
         ]
       }
     },
     "chapter_moments": {
       "name": "Moments that will matter",
-      "what": "3-5 small moments of recent chapters that most readers skimmed but that set up future plot or feed a big community question: each moment, what it echoes, which LoreSquare mystery it moves and what to watch for.",
-      "aspect": "16:9",
+      "what": "Short on one or two small moments of recent chapters that set up future plot or move a LoreSquare mystery.",
+      "aspect": "9:16",
       "data": [
         "chapter pages of the moments (official release only)",
         "get_mystery for the question each moment moves, with its competing theories",
@@ -257,22 +258,19 @@
       ],
       "required_beats": [
         "hook",
-        "question",
         "evidence",
         "setup_payoff",
-        "theory",
         "prediction",
-        "viewer_question",
         "cta"
       ],
       "max_recap_share": 0.25,
       "claims_required": true,
       "release_gate": true,
-      "shorts": "every moment is a Short of its own (detail -> echo -> question)",
+      "shorts": "the video is the Short",
       "script": {
         "target_minutes": [
-          4,
-          7
+          0.5,
+          1.0
         ]
       }
     },
@@ -325,5 +323,6 @@
         }
       }
     }
-  }
+  },
+  "aspect": "9:16"
 }
