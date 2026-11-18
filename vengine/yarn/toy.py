@@ -28,21 +28,39 @@ def _toy(spec):
 
 # a single crochet as points (dv rounds below the top of its round, du in half-widths from its centre, n in yarn
 # diameters out of the surface).  'L'/'R': into the left / right base stitch; 'C': at the stitch itself.
-SC = [                            # a sc seen from the front: a plump V (legs stay up, no pointed leaf ends)
-    ('C', 0.00, -1.00, 0.24),     # where the previous stitch's top ended
-    ('C', 0.24, -0.84, 0.46),     # left front leg, upper
-    ('C', 0.55, -0.46, 0.44),     # left front leg, middle
-    ('L', 0.85, 0.00, 0.30),      # left front leg, lower: into the base stitch
+SC = [                            # a sc seen from the front: a short plump V, wider than tall (as on a real toy)
+    ('C', 0.04, -1.00, 0.20),     # where the previous stitch's top ended
+    ('C', 0.12, -0.92, 0.40),     # left front leg, upper: starts wide, at the corner of the stitch
+    ('C', 0.44, -0.56, 0.46),     # left front leg, middle: leans in at about 45 degrees
+    ('L', 0.80, 0.00, 0.30),      # left front leg, lower: into the base stitch
     ('B', 1.00, 0.00, -0.05),     # through the fabric under the base V
     ('C', 0.55, 0.00, -0.42),     # the bar on the wrong side
-    ('R', 0.88, 0.00, 0.24),      # back to the front, at the base
-    ('C', 0.55, 0.46, 0.44),      # right front leg, middle
-    ('C', 0.24, 0.84, 0.46),      # right front leg, upper
-    ('C', 0.02, 0.86, 0.38),      # top: front loop along the edge
-    ('C', -0.06, 1.00, 0.14),     # round the end of the top loop
+    ('R', 0.82, 0.00, 0.24),      # back to the front, at the base
+    ('C', 0.44, 0.56, 0.46),      # right front leg, middle
+    ('C', 0.12, 0.92, 0.40),      # right front leg, upper
+    ('C', 0.02, 1.00, 0.26),      # top: front loop along the edge, tucked under the next round's legs
+    ('C', -0.03, 1.06, 0.06),     # round the end of the top loop
     ('C', 0.00, 0.80, -0.30),     # back loop
     ('C', 0.04, 1.00, -0.10),
 ]
+
+
+# rounds 1-2 of a piece begun in a magic ring: the ring is pulled tight, so the stitches are short radial spokes into
+# the centre and their tops make a smooth closed circle (a plain V there opens into a star or a flower)
+SC_RING = [
+    ('C', 0.02, -1.00, 0.20),
+    ('C', 0.16, -0.42, 0.26),     # left leg: nearly radial, close to the right one
+    ('L', 0.85, 0.00, 0.14),
+    ('B', 1.00, 0.00, -0.05),
+    ('C', 0.55, 0.00, -0.36),
+    ('R', 0.85, 0.00, 0.14),
+    ('C', 0.16, 0.42, 0.26),
+    ('C', 0.02, 0.62, 0.26),      # the top runs on round the circle: one even edge, no scallops
+    ('C', -0.02, 1.00, 0.16),
+    ('C', 0.00, 0.80, -0.30),
+    ('C', 0.04, 1.00, -0.10),
+]
+RING_ROUNDS = 2
 
 
 def _catmull(P, per, tag=None):
@@ -80,7 +98,9 @@ def piece_yarn(inst, lean, d, rmax=None, with_stitch=False):
     rounds = p.rounds[:rmax] if rmax else p.rounds
     T, TH, NN, SID = [], [], [], []
     prev_n = None
+    ring = counts[0] <= 8                                    # begun in a magic ring (not a chain ring of 48)
     for i, rd in enumerate(rounds, 1):
+        tmpl = SC_RING if ring and i <= RING_ROUNDS else SC
         n_i = counts[i - 1]
         hw = math.pi / n_i                                  # half a stitch, in angle
         k = 0; j = 0
@@ -90,7 +110,7 @@ def piece_yarn(inst, lean, d, rmax=None, with_stitch=False):
             for q in range(outs):
                 thc = 2 * math.pi * (k + 0.5 - lean * (i - 0.5)) / n_i
                 if prev_n is None:                          # round 1: into the ring
-                    bl = br = thc; tb = 0.18
+                    bl = br = thc; tb = 0.04
                     hb = 0.0
                 else:
                     hb = math.pi / prev_n
@@ -102,11 +122,13 @@ def piece_yarn(inst, lean, d, rmax=None, with_stitch=False):
                     else:
                         bl = br = thb
                     tb = i - 1
-                for kind, dv, du, nn in SC:
+                for kind, dv, du, nn in tmpl:
+                    # the tip of the V sits between the base stitch and the stitch's own centre: the column still
+                    # leans (amikit LEAN), but the two legs stay the same length instead of one long and one steep
                     if kind == 'L':
-                        t, th = max(tb, i - dv), bl - 0.35 * hb
+                        t, th = max(tb, i - dv), 0.6 * bl + 0.4 * thc - 0.12 * hb
                     elif kind == 'R':
-                        t, th = max(tb, i - dv), br + 0.35 * hb
+                        t, th = max(tb, i - dv), 0.6 * br + 0.4 * thc + 0.12 * hb
                     elif kind == 'B':
                         t, th = max(tb - 0.02, i - dv), 0.5 * (bl + br)
                     else:
@@ -159,10 +181,17 @@ def directors(X):
     return D
 
 
+def yarn_width(yarn):
+    """The yarn as it looks in the fabric: a soft cotton yarn is squashed flat by its neighbours, so its visible width
+    is about 0.58 of the stitch (2.3 mm at a 4 mm stitch), more than its nominal round thickness."""
+    t = float(yarn.get('thickness_mm', 1.9))
+    return max(t, 0.58 * float(yarn.get('stitch_mm', 4.0)))
+
+
 def toy_yarn(spec, rmax=None, parts=None):
     """All pieces as one chain with gaps between them.  Returns X, D, colour index per node, palette, gap."""
     toy, lean = _toy(spec)
-    d = float(toy.yarn.get('thickness_mm', 1.9))
+    d = yarn_width(toy.yarn)
     cols = {}
     Xs, Cs = [], []
     pieces = []
