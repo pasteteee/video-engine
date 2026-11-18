@@ -138,3 +138,33 @@ def test_grow_plan_and_camera_are_smooth(tmp_path):
     mtime = (out / "0000.png").stat().st_mtime_ns
     main([str(spec), str(out), "--size", "108x192", "--dur", "2", "--reveal", "1", "--ss", "1", "--frames", "0:1"])
     assert (out / "0000.png").stat().st_mtime_ns == mtime       # existing frames are kept
+
+
+def test_sc_is_a_short_wide_v():
+    """The front of a sc reads as a plump V wider than tall (about 1.3 on a real toy), not a long knit-like leaf."""
+    from vengine.yarn.toy import SC
+    front = [(dv, du) for k, dv, du, nn in SC if nn > 0.2]
+    rnd, st = 3.6, 4.0                                      # round height and stitch width, mm (amikit default)
+    width = (max(du for _, du in front) - min(du for _, du in front)) / 2 * st
+    height = (max(dv for dv, _ in front) - min(dv for dv, _ in front)) * rnd
+    assert 1.2 <= width / height <= 1.6
+
+
+def test_yarn_width_follows_the_stitch():
+    from vengine.yarn.toy import yarn_width
+    assert yarn_width({'stitch_mm': 4.0, 'thickness_mm': 1.9}) == pytest.approx(2.32)
+    assert yarn_width({'stitch_mm': 2.0, 'thickness_mm': 1.9}) == 1.9
+
+
+def test_magic_ring_is_a_closed_circle():
+    """Rounds 1-2 of a flat circle: the tops of the stitches lie on one even circle (no star or flower points)."""
+    from vengine.yarn.toy import _FlatDisc, piece_yarn
+    disc = _FlatDisc(np.zeros(3), np.array([0.0, 0.0, 1.0]), np.array([1.0, 0.0, 0.0]), np.array([0.0, 1.0, 0.0]),
+                     12.0, 12.0, 4)
+    X, sid = piece_yarn(disc, 0.0, 2.3, with_stitch=True)
+    top = []
+    for q in np.unique(sid[sid // 100000 == 2]):
+        P = X[sid == q]
+        top.append(np.linalg.norm(P[:, :2], axis=1).max())
+    top = np.array(top[:-1])                               # the last one runs on into round 3
+    assert top.std() / top.mean() < 0.06
