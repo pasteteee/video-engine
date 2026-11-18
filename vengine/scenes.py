@@ -7,6 +7,10 @@ Registers say what kind of picture the viewer sees:
 - archival: a real record (photo, film, document, audio, data plot of real data)
 - blueprint: drawn graphics in the channel style (maps, charts, diagrams, type)
 - illustration: generated picture of what nobody filmed, always labelled
+
+Most types fit any channel. Some belong to a domain (`manga`, `site`, `debate`)
+and are offered only to channels that list that domain in `scene_domains`, so a
+documentary channel never sees a manga panel and the other way round.
 """
 from __future__ import annotations
 
@@ -24,6 +28,7 @@ class SceneType:
     needs_media: bool = False
     static_risk: bool = False  # tends to look frozen; must declare `motion`
     variants: tuple[str, ...] = ()  # composition/motion variants the kit implements
+    domain: str | None = None  # None = any channel; else only channels with this in `scene_domains`
 
 
 _LIB = [
@@ -62,6 +67,17 @@ _LIB = [
     SceneType("illus_animated", ILLUSTRATION, "Generated still animated by an image-to-video model", True),
     SceneType("illus_parallax", ILLUSTRATION, "Generated still split in layers, 2.5D move and particles", True),
     SceneType("illus_reconstruction", ILLUSTRATION, "Reconstruction of a moment nobody filmed, marked RECONSTRUCTION", True),
+    # manga: panels of an officially released chapter, always cropped and commented
+    SceneType("panel_callout", ARCHIVAL, "One manga panel, cropped, slow zoom, our circle/arrow/note lands on the detail; credit line", True, True, domain="manga"),
+    SceneType("art_backdrop", ARCHIVAL, "Official manga art (volume cover, chapter title page, colour spread) moving under our kinetic type, darkened or duotoned", True, domain="manga"),
+    SceneType("panel_setup_payoff", ARCHIVAL, "Setup panel from an old chapter beside the payoff panel from the new one, chapter numbers on both", True, domain="manga"),
+    # site: the channel's own product on screen
+    SceneType("site_screen", ARCHIVAL, "Real screen of the channel's own site: scroll, cursor, the feature highlighted", True, domain="site"),
+    # debate: theories, arguments and community scores
+    SceneType("theory_card", BLUEPRINT, "A fan theory as a case file: claim, author handle, community confidence", domain="debate"),
+    SceneType("claim_card", BLUEPRINT, "One statement with its stamp CANON / INFERENCE / THEORY / COMMUNITY and the chapter", domain="debate"),
+    SceneType("argument_duel", BLUEPRINT, "Strongest argument for against strongest against, each with chapter and votes", domain="debate"),
+    SceneType("confidence_meter", BLUEPRINT, "Community confidence moving from was to now, the number lands on the voice", domain="debate"),
 ]
 
 # Variants: each library scene has 2+ ways to look, so two episodes never cut the same.
@@ -98,8 +114,17 @@ VARIANTS: dict[str, tuple[str, ...]] = {
     "illus_animated": ("veo",),
     "illus_parallax": ("layers_drift", "light_sweep"),
     "illus_reconstruction": ("marked", "split_with_record"),
+    "panel_callout": ("circle_note", "arrow_label", "crop_zoom"),
+    "panel_setup_payoff": ("split", "wipe", "stack"),
+    "art_backdrop": ("ken_burns", "halftone_duotone", "speed_burst", "parallax_cut"),
+    "site_screen": ("scroll_highlight", "cursor_click", "device_frame"),
+    "theory_card": ("wanted_poster", "case_file"),
+    "claim_card": ("stamp", "chip"),
+    "argument_duel": ("two_column", "tug"),
+    "confidence_meter": ("gauge", "history_line", "counter"),
 }
-_LIB = [SceneType(s.name, s.register, s.what, s.needs_media, s.static_risk, VARIANTS.get(s.name, ())) for s in _LIB]
+_LIB = [SceneType(s.name, s.register, s.what, s.needs_media, s.static_risk, VARIANTS.get(s.name, ()), s.domain)
+        for s in _LIB]
 
 # A scene made for one episode: its component lives in the episode
 # (`04_shots/custom/<Component>.tsx`), not in the kit. The shot declares
@@ -127,5 +152,9 @@ def get(name: str) -> SceneType:
 
 
 def allowed_for(channel: dict) -> set[str]:
+    """'all' = every general type plus the types of the channel's `scene_domains`."""
     st = channel.get("scene_types", "all")
-    return set(LIBRARY) if st == "all" else set(st)
+    if st != "all":
+        return set(st)
+    domains = set(channel.get("scene_domains", []))
+    return {n for n, t in LIBRARY.items() if t.domain is None or t.domain in domains}

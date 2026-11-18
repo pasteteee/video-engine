@@ -3,72 +3,374 @@
   "$id": "channel",
   "title": "Channel profile: everything that differs between channels",
   "type": "object",
-  "required": ["id", "name", "language", "promise", "style", "voice", "variety"],
+  "required": [
+    "id",
+    "name",
+    "language",
+    "promise",
+    "style",
+    "voice",
+    "variety"
+  ],
   "properties": {
-    "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
-    "name": {"type": "string"},
-    "language": {"type": "string", "description": "Language of videos, titles, descriptions (e.g. en)"},
-    "work_language": {"type": "string", "default": "ru", "description": "Language for talking to the owner"},
-    "promise": {"type": "string", "description": "One sentence the channel promises every viewer"},
-    "rules": {"type": "array", "items": {"type": "string"}},
-    "episodes_root": {"type": "string", "description": "Folder with episode folders; {slug} is replaced"},
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string",
+      "description": "Language of videos, titles, descriptions (e.g. en)"
+    },
+    "work_language": {
+      "type": "string",
+      "default": "ru",
+      "description": "Language for talking to the owner"
+    },
+    "promise": {
+      "type": "string",
+      "description": "One sentence the channel promises every viewer"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "episodes_root": {
+      "type": "string",
+      "description": "Folder with episode folders; {slug} is replaced"
+    },
     "youtube": {
       "type": "object",
       "properties": {
-        "channel_id": {"type": "string"},
-        "secrets_dir": {"type": "string", "description": "Folder on the owner's PC with client_secret.json and token.json. Never in the repo."},
-        "default_privacy": {"enum": ["private", "unlisted", "public"], "default": "private"},
-        "category_id": {"type": "string"},
-        "default_playlist": {"type": "string"}
+        "channel_id": {
+          "type": "string"
+        },
+        "secrets_dir": {
+          "type": "string",
+          "description": "Folder on the owner's PC with client_secret.json and token.json. Never in the repo."
+        },
+        "default_privacy": {
+          "enum": [
+            "private",
+            "unlisted",
+            "public"
+          ],
+          "default": "private"
+        },
+        "category_id": {
+          "type": "string"
+        },
+        "default_playlist": {
+          "type": "string"
+        }
       }
     },
     "planner": {
       "type": "object",
-      "properties": {"artifact_slug": {"type": "string"}, "space": {"type": "string"}}
+      "properties": {
+        "artifact_slug": {
+          "type": "string"
+        },
+        "space": {
+          "type": "string"
+        }
+      }
     },
     "style": {
       "type": "object",
-      "required": ["guide"],
+      "required": [
+        "guide"
+      ],
       "properties": {
-        "guide": {"type": "string", "description": "Path to the style guide (markdown)"},
-        "kit": {"type": "string", "description": "Path to the Remotion kit for this channel"},
-        "tokens": {"type": "object", "additionalProperties": {"type": "string"}},
-        "image_style_refs": {"type": "array", "items": {"type": "string"}, "description": "Reference frames passed to the image model"},
-        "image_style_prompt": {"type": "string"}
+        "guide": {
+          "type": "string",
+          "description": "Path to the style guide (markdown)"
+        },
+        "kit": {
+          "type": "string",
+          "description": "Path to the Remotion kit for this channel"
+        },
+        "tokens": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "image_style_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Reference frames passed to the image model"
+        },
+        "image_style_prompt": {
+          "type": "string"
+        }
       }
     },
     "voice": {
       "type": "object",
-      "required": ["provider", "voice"],
+      "required": [
+        "provider",
+        "voice"
+      ],
       "properties": {
-        "provider": {"enum": ["gemini", "elevenlabs", "kokoro", "piper"]},
-        "voice": {"type": "string"},
-        "base_direction": {"type": "string"}
+        "provider": {
+          "enum": [
+            "gemini",
+            "elevenlabs",
+            "kokoro",
+            "piper",
+            "silero"
+          ]
+        },
+        "voice": {
+          "type": "string"
+        },
+        "base_direction": {
+          "type": "string"
+        }
       }
     },
     "scene_types": {
       "description": "Scene types this channel may use; 'all' = whole library",
-      "oneOf": [{"const": "all"}, {"type": "array", "items": {"type": "string"}}]
+      "oneOf": [
+        {
+          "const": "all"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     },
     "variety": {
       "type": "object",
       "properties": {
-        "archival_min_share": {"type": "number", "minimum": 0, "maximum": 1},
-        "min_distinct_types": {"type": "integer", "minimum": 1},
-        "max_register_run_s": {"type": "number"},
-        "shot_min_s": {"type": "number"},
-        "shot_max_s": {"type": "number"},
-        "max_static_s": {"type": "number"}
+        "archival_min_share": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "min_distinct_types": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_register_run_s": {
+          "type": "number"
+        },
+        "shot_min_s": {
+          "type": "number"
+        },
+        "shot_max_s": {
+          "type": "number"
+        },
+        "max_static_s": {
+          "type": "number"
+        },
+        "groups": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "scene_types"
+            ],
+            "properties": {
+              "scene_types": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "max_share": {
+                "type": "number"
+              },
+              "min_share": {
+                "type": "number"
+              },
+              "shot_min_s": {
+                "type": "number"
+              },
+              "shot_max_s": {
+                "type": "number"
+              },
+              "max_consecutive": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "needs_on_screen_text": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
       }
     },
     "script": {
       "type": "object",
       "properties": {
-        "target_minutes": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
-        "open_loop_every_s": {"type": "number"},
-        "words_per_minute": {"type": "number"},
-        "max_numbers": {"type": "integer"},
-        "golden_facts": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2}
+        "target_minutes": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "open_loop_every_s": {
+          "type": "number"
+        },
+        "words_per_minute": {
+          "type": "number"
+        },
+        "max_numbers": {
+          "type": "integer"
+        },
+        "golden_facts": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "scene_domains": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "manga",
+          "site",
+          "debate"
+        ]
+      },
+      "description": "Domain scene types this channel may use on top of the general library"
+    },
+    "aspect": {
+      "enum": [
+        "16:9",
+        "9:16"
+      ],
+      "default": "16:9"
+    },
+    "pipeline": {
+      "type": "object",
+      "properties": {
+        "skip": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "topic",
+              "research",
+              "script",
+              "shots",
+              "voice",
+              "render",
+              "qa",
+              "publish"
+            ]
+          },
+          "description": "Stages this channel does not run (e.g. publish while it only makes videos)"
+        }
+      }
+    },
+    "source_work": {
+      "type": "object",
+      "description": "The third-party work the channel comments on",
+      "required": [
+        "title",
+        "credit_line",
+        "official_source"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "credit_line": {
+          "type": "string"
+        },
+        "official_source": {
+          "type": "string"
+        },
+        "official_url": {
+          "type": "string"
+        }
+      }
+    },
+    "data_sources": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "formats": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "name",
+          "what",
+          "required_beats"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "what": {
+            "type": "string"
+          },
+          "aspect": {
+            "enum": [
+              "16:9",
+              "9:16"
+            ]
+          },
+          "structure": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "required_beats": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "max_recap_share": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "claims_required": {
+            "type": "boolean"
+          },
+          "release_gate": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "shorts": {
+            "type": "string"
+          },
+          "variety": {
+            "type": "object"
+          },
+          "script": {
+            "type": "object"
+          }
+        }
       }
     }
   }

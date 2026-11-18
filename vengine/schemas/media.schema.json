@@ -3,39 +3,232 @@
   "$id": "media",
   "title": "Media library of an episode: every picture, clip, sound, document, with license",
   "type": "object",
-  "required": ["items"],
+  "required": [
+    "items"
+  ],
   "properties": {
     "items": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "path", "kind", "license", "shows"],
+        "required": [
+          "id",
+          "path",
+          "kind",
+          "license",
+          "shows"
+        ],
         "properties": {
-          "id": {"type": "string"},
-          "path": {"type": "string"},
-          "kind": {"enum": ["photo", "video", "audio", "document", "data", "map", "illustration", "animation"]},
-          "source_url": {"type": "string"},
-          "credit": {"type": "string"},
-          "license": {"enum": ["public-domain", "CC0", "CC-BY", "CC-BY-SA", "pexels", "pixabay", "own", "generated", "fair-use-review"]},
-          "license_url": {"type": "string"},
-          "shows": {"type": "string", "description": "What is literally in the frame"},
-          "fact_ids": {"type": "array", "items": {"type": "string"}},
+          "id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "photo",
+              "video",
+              "audio",
+              "document",
+              "data",
+              "map",
+              "illustration",
+              "animation",
+              "panel",
+              "screen",
+              "art"
+            ]
+          },
+          "source_url": {
+            "type": "string",
+            "description": "Where the file was taken from"
+          },
+          "credit": {
+            "type": "string"
+          },
+          "license": {
+            "enum": [
+              "public-domain",
+              "CC0",
+              "CC-BY",
+              "CC-BY-SA",
+              "pexels",
+              "pixabay",
+              "own",
+              "generated",
+              "fair-use-review"
+            ]
+          },
+          "license_url": {
+            "type": "string"
+          },
+          "shows": {
+            "type": "string",
+            "description": "What is literally in the frame"
+          },
+          "fact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "generated": {
             "type": "object",
             "properties": {
-              "model": {"type": "string"},
-              "prompt": {"type": "string"},
-              "from_media_id": {"type": "string"}
+              "model": {
+                "type": "string"
+              },
+              "prompt": {
+                "type": "string"
+              },
+              "from_media_id": {
+                "type": "string"
+              }
             }
           },
-          "width": {"type": "integer"},
-          "height": {"type": "integer"},
-          "duration_s": {"type": "number"}
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "duration_s": {
+            "type": "number"
+          },
+          "chapter": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "For panels: chapter of the official release"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "volume": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "For art: the volume whose cover it is"
+          }
         },
         "allOf": [
-          {"if": {"properties": {"license": {"const": "generated"}}}, "then": {"required": ["generated"]}},
-          {"if": {"properties": {"license": {"enum": ["public-domain", "CC0", "CC-BY", "CC-BY-SA", "pexels", "pixabay"]}}}, "then": {"required": ["source_url"]}},
-          {"if": {"properties": {"license": {"enum": ["CC-BY", "CC-BY-SA"]}}}, "then": {"required": ["credit"]}}
+          {
+            "if": {
+              "properties": {
+                "license": {
+                  "const": "generated"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "generated"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "license": {
+                  "enum": [
+                    "public-domain",
+                    "CC0",
+                    "CC-BY",
+                    "CC-BY-SA",
+                    "pexels",
+                    "pixabay"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "source_url"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "license": {
+                  "enum": [
+                    "CC-BY",
+                    "CC-BY-SA"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "credit"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "panel"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "required": [
+                "chapter",
+                "credit"
+              ],
+              "properties": {
+                "license": {
+                  "const": "fair-use-review"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "screen"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "properties": {
+                "license": {
+                  "const": "own"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "art"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "required": [
+                "credit",
+                "source_url"
+              ],
+              "properties": {
+                "license": {
+                  "const": "fair-use-review"
+                }
+              }
+            }
+          }
         ]
       }
     }

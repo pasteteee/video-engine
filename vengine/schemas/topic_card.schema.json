@@ -3,37 +3,199 @@
   "$id": "topic_card",
   "title": "Topic card: output of the topics agent, input of the researcher",
   "type": "object",
-  "required": ["slug", "working_title", "question", "signals", "known_layer", "angle", "scores"],
+  "required": [
+    "slug",
+    "working_title",
+    "question",
+    "signals",
+    "known_layer",
+    "angle",
+    "scores"
+  ],
   "properties": {
-    "slug": {"type": "string", "pattern": "^[a-z0-9_]+$"},
-    "working_title": {"type": "string"},
-    "question": {"type": "string", "description": "The one question the episode answers at the end"},
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "working_title": {
+      "type": "string"
+    },
+    "question": {
+      "type": "string",
+      "description": "The one question the episode answers at the end"
+    },
     "signals": {
-      "type": "array", "minItems": 1,
+      "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["kind", "detail"],
+        "required": [
+          "kind",
+          "detail"
+        ],
         "properties": {
-          "kind": {"enum": ["own_analytics", "yt_search_terms", "yt_suggest", "google_trends", "wiki_pageviews", "competitor_outlier", "news", "anniversary", "keyword_metrics", "comments"]},
-          "detail": {"type": "string"},
-          "value": {"type": ["number", "string"]},
-          "source": {"type": "string"}
+          "kind": {
+            "enum": [
+              "own_analytics",
+              "yt_search_terms",
+              "yt_suggest",
+              "google_trends",
+              "wiki_pageviews",
+              "competitor_outlier",
+              "news",
+              "anniversary",
+              "keyword_metrics",
+              "comments",
+              "site_data",
+              "community"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "number",
+              "string"
+            ]
+          },
+          "source": {
+            "type": "string"
+          }
         }
       }
     },
-    "known_layer": {"type": "array", "items": {"type": "string"}, "description": "What a viewer who saw the popular videos already knows"},
-    "angle": {"type": "string", "description": "What we show that the known layer lacks"},
-    "primary_sources_expected": {"type": "array", "items": {"type": "string"}},
-    "scores": {
-      "type": "object",
-      "required": ["demand", "competition", "material", "fit"],
-      "properties": {
-        "demand": {"type": "integer", "minimum": 1, "maximum": 5},
-        "competition": {"type": "integer", "minimum": 1, "maximum": 5, "description": "5 = little good competition"},
-        "material": {"type": "integer", "minimum": 1, "maximum": 5, "description": "Real photos/video/records available"},
-        "fit": {"type": "integer", "minimum": 1, "maximum": 5}
+    "known_layer": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "What a viewer who saw the popular videos already knows"
+    },
+    "angle": {
+      "type": "string",
+      "description": "What we show that the known layer lacks"
+    },
+    "primary_sources_expected": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
-    "risks": {"type": "array", "items": {"type": "string"}}
+    "scores": {
+      "type": "object",
+      "required": [
+        "demand",
+        "competition",
+        "material",
+        "fit"
+      ],
+      "properties": {
+        "demand": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "competition": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "5 = little good competition"
+        },
+        "material": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Real photos/video/records available"
+        },
+        "fit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "format": {
+      "type": "string",
+      "description": "Format id from the channel's `formats`; must match state.json"
+    },
+    "release": {
+      "type": "object",
+      "description": "The chapter the episode is about. Required by formats with release_gate.",
+      "required": [
+        "chapter",
+        "official_at",
+        "source"
+      ],
+      "properties": {
+        "chapter": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "official_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}",
+          "description": "Official release date (YYYY-MM-DD[THH:MM...]) on the official source"
+        },
+        "source": {
+          "type": "string",
+          "description": "Official source, e.g. MANGA Plus"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "lore_refs": {
+      "type": "array",
+      "description": "Site pages the episode is built on (theories, mysteries) with what they said when picked",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "ref"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "theory",
+              "mystery",
+              "wiki",
+              "feature"
+            ]
+          },
+          "ref": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "was": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        }
+      }
+    }
   }
 }

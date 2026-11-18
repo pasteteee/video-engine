@@ -1,6 +1,16 @@
 """Variety rules for a shot list: the fix for 'every video looks the same'.
 
 Defaults come from the channel profile (`variety`), these are fallbacks.
+
+`variety.groups` caps or floors a set of scene types, e.g. third-party manga
+panels (at most a third of the runtime, 3-5 s each, never two in a row, always
+with our commentary on screen) or the channel's own site screens in a promo:
+
+    "groups": {"manga_panels": {"scene_types": ["panel_callout", "panel_setup_payoff"],
+               "max_share": 0.33, "shot_min_s": 3, "shot_max_s": 5,
+               "max_consecutive": 1, "needs_on_screen_text": true}}
+
+Group rules are errors, not warnings: they usually protect against a strike.
 """
 from __future__ import annotations
 
@@ -102,6 +112,9 @@ def check(shotlist: dict, channel: dict | None = None) -> dict:
             add("warn", f"{run_reg} runs {run_len:.0f}s from {run_start}: switch register")
             run_len = -1e9  # report a run once
 
+    for name, rule in (cfg.get("groups") or {}).items():
+        probs += _group(name, rule, shots, total, stats)
+
     # shot lengths
     durs = [s["duration_s"] for s in shots]
     for s in shots:
@@ -119,3 +132,35 @@ def check(shotlist: dict, channel: dict | None = None) -> dict:
         add("warn", f"shot lengths barely vary (spread {spread:.1f}s): mix quick cuts and long holds")
 
     return {"ok": not any(p["level"] == "error" for p in probs), "problems": probs, "stats": stats}
+
+
+def _group(name: str, rule: dict, shots: list[dict], total: float, stats: dict) -> list[dict]:
+    types = set(rule.get("scene_types", []))
+    out = []
+
+    def err(msg):
+        out.append({"level": "error", "msg": f"{name}: {msg}"})
+
+    members = [s for s in shots if s["scene_type"] in types]
+    share = sum(s["duration_s"] for s in members) / total if total else 0.0
+    stats.setdefault("groups", {})[name] = {"shots": len(members), "share": round(share, 3)}
+    if "max_share" in rule and share > rule["max_share"]:
+        err(f"{share:.0%} of screen time, at most {rule['max_share']:.0%}: replace some with own graphics")
+    if "min_share" in rule and share < rule["min_share"]:
+        err(f"{share:.0%} of screen time, need at least {rule['min_share']:.0%}")
+    for s in members:
+        d = s["duration_s"]
+        if "shot_min_s" in rule and d < rule["shot_min_s"]:
+            err(f"{s['id']} holds {d}s, at least {rule['shot_min_s']}s so the comment can be read")
+        if "shot_max_s" in rule and d > rule["shot_max_s"]:
+            err(f"{s['id']} holds {d}s, at most {rule['shot_max_s']}s")
+        if rule.get("needs_on_screen_text") and not s.get("on_screen_text"):
+            err(f"{s['id']} has no on_screen_text: every frame of this kind carries our commentary")
+    limit = rule.get("max_consecutive")
+    if limit:
+        run = 0
+        for s in shots:
+            run = run + 1 if s["scene_type"] in types else 0
+            if run == limit + 1:
+                err(f"{s['id']} makes {run} in a row, at most {limit}: put own graphics between them")
+    return out

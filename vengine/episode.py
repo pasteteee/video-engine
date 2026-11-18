@@ -66,13 +66,26 @@ class Episode:
         self.state_path.write_text(json.dumps(st, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     @classmethod
-    def init(cls, folder: Path, channel_id: str, slug: str) -> "Episode":
+    def init(cls, folder: Path, channel_id: str, slug: str, fmt: str | None = None) -> "Episode":
         ep = cls(folder)
         for d in SUBDIRS:
             (ep.folder / d).mkdir(parents=True, exist_ok=True)
         if not ep.state_path.exists():
-            ep.save_state({"channel": channel_id, "slug": slug, "created": _now(), "approvals": {}})
+            st = {"channel": channel_id, "slug": slug, "created": _now(), "approvals": {}}
+            if fmt:
+                st["format"] = fmt
+            ep.save_state(st)
         return ep
+
+    def channel(self, channels_dir: Path | None = None) -> dict | None:
+        """The channel profile as the episode's format sees it, or None if unknown."""
+        from . import formats
+        st = self.state
+        try:
+            ch = load_channel(st["channel"], channels_dir) if st.get("channel") else None
+        except FileNotFoundError:
+            return None
+        return formats.effective(ch, st.get("format"))
 
     def approve(self, gate: str, note: str = "") -> None:
         if gate not in GATES:
@@ -100,12 +113,22 @@ class Episode:
             return bool(json.loads(p.read_text(encoding="utf-8")).get("video_id"))
         return True
 
-    def status(self) -> dict:
-        """Where the episode is: last finished stage, next stage, and whether the owner must act."""
+    def status(self, channel: dict | None = None) -> dict:
+        """Where the episode is: last finished stage, next stage, and whether the owner must act.
+
+        Stages the channel switches off (`pipeline.skip`, e.g. publish while a
+        channel only makes videos) are listed as skipped and never become next.
+        """
         approvals = self.state.get("approvals", {})
+        ch = channel if channel is not None else self.channel()
+        skip = set(((ch or {}).get("pipeline") or {}).get("skip", []))
         rows = []
         next_stage, waiting_gate = None, None
         for s in STAGES:
+            if s.key in skip:
+                rows.append({"stage": s.key, "agent": s.agent, "done": False, "skipped": True,
+                             "gate": None, "approved": False})
+                continue
             done = self.stage_done(s)
             rows.append({"stage": s.key, "agent": s.agent, "done": done,
                          "gate": s.gate, "approved": bool(s.gate and s.gate in approvals)})
@@ -114,8 +137,8 @@ class Episode:
                     next_stage = s.key
                 elif s.gate and s.gate not in approvals:
                     waiting_gate = s.gate
-        return {"folder": str(self.folder), "stages": rows,
-                "next": next_stage, "waiting_for_owner": waiting_gate}
+        return {"folder": str(self.folder), "format": self.state.get("format"), "stages": rows,
+                "next": next_stage, "waiting_for_owner": waiting_gate, "skipped": sorted(skip)}
 
 
 def _now() -> str:

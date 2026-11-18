@@ -24,3 +24,8 @@ description: Edit director and illustrator. Plans every shot from the approved s
 - Generated images only when profile `providers.image_gen` is not `none` (paid providers must be in `providers.paid_allowed`); otherwise use archival/public-domain media, maps and code-drawn scenes. Generator: the channel's `image_style_prompt`, `{ground}`/`{accent}` filled from `shotlist.look`; 3 variants, pick one; no text in the image (text is added by code); colour-grade to the episode look.
 - Animate 4–6 hero stills per episode with Veo (image → 5–8 s clip, camera move described in words). Everything else: depth-map parallax and particles in Remotion, free.
 - Every generated item goes into `media.json` with `license: generated` and the prompt; on screen it is labelled ILLUSTRATION or RECONSTRUCTION.
+
+## Manga channels (LoreSquare)
+- Extra scene types for the channel's `scene_domains`: `panel_callout`, `panel_setup_payoff` (manga), `site_screen` (site), `theory_card`, `claim_card`, `argument_duel`, `confidence_meter` (debate). Plus `art_backdrop` (manga): official art under slam type, always with on-screen text. The Remotion kit for all of them is `channels/loresquare/kit/scenes.tsx` (`LoreShort`, 9:16).
+- Panels: one detail per shot, 3–5 s, `on_screen_text` with our comment, `motion` (push-in, ring lands on the sync word), `source_line` "One Piece (c) Eiichiro Oda / Shueisha, Ch. N". Never two panel shots in a row, at most a third of the runtime; `vengine variety ... --channel loresquare --format <f>` enforces it.
+- The palette is fixed (Ink), skip `vengine look`.

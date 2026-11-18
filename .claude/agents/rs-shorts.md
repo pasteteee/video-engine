@@ -45,3 +45,6 @@ Big word-by-word captions from `words.json`: Archivo wdth 75, 84 px, bone with a
 - One left edge (x 80) for hook, kicker, captions and type scenes. Type is fitted to the 900 px column, never centred in empty space.
 - Captions break on phrases (≤ 22 chars, ≤ 4 words), never end on a weak word (the, of, in, and, was...), no karaoke colour.
 - The hook owns the first two seconds: balanced lines, stop block glued to the last word; a big number on the first shot waits until the hook leaves.
+
+## LoreSquare theory Shorts
+From a `top_theories` episode every theory segment becomes a Short with the 8-beat Ink structure of the existing series (`/mnt/project-files/shorts/series/`): hook slam → WANTED poster with `@author` → context slam → EXHIBIT 1 (chapter stamp) → twist slam → COUNTERPOINT → poster with the score stamp (was → now) → CTA "vote on LoreSquare". Panels obey the same 3–5 s rule; the credit line stays on every frame.

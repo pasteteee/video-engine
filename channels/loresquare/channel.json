@@ -1,0 +1,328 @@
+{
+  "id": "loresquare",
+  "name": "LoreSquare",
+  "language": "en",
+  "work_language": "ru",
+  "promise": "One Piece argued with chapter receipts: every video asks one question, shows the evidence and lets the community vote on the answer.",
+  "rules": [
+    "Only officially released chapters (MANGA Plus / Shonen Jump). No leaks, raws, spoiler scans or pirate-site screenshots, on screen or in words.",
+    "Every claim on screen carries its stamp: CANON (with chapter), INFERENCE, THEORY or COMMUNITY. Canon claims cite the chapter number on screen.",
+    "Manga images: only official releases and official art (volume covers, chapter title pages, colour spreads, panels). Raw panels at most a third of the runtime, 3-5 s each, never two in a row. Art under our type has no share cap but always carries our text and moves. Credit line on every frame with manga images. Fan art only with the artist's credit and permission.",
+    "No anime footage, anime screenshots, openings or OST: Toei Content ID. No other creators' videos or voices.",
+    "Recap at most a fifth of the narration; the rest is our argument. No template videos where only the chapter number changes.",
+    "Fan theories are credited to their LoreSquare author by handle; their confidence is a community signal, never presented as canon.",
+    "Readers' opinions are retold in our words with the source named, never read out verbatim.",
+    "Thumbnail and title: own graphics plus 2-4 words, no bare manga panel, no main twist of a chapter in its first days.",
+    "Description: timestamps, 'One Piece (c) Eiichiro Oda / Shueisha. Read it officially on MANGA Plus.', 'Fan analysis, not affiliated with Shueisha.', links to the LoreSquare pages used (utm tagged).",
+    "Synthetic voice and any generated image are disclosed in the description and in the upload flag."
+  ],
+  "episodes_root": "/mnt/project-files/loresquare-videos/{slug}",
+  "pipeline": {
+    "skip": [
+      "publish"
+    ],
+    "_note": "Owner (2026-11-18): video generation only for now; publishing comes later."
+  },
+  "source_work": {
+    "title": "One Piece",
+    "credit_line": "One Piece (c) Eiichiro Oda / Shueisha",
+    "official_source": "MANGA Plus",
+    "official_url": "https://mangaplus.shueisha.co.jp/"
+  },
+  "data_sources": {
+    "loresquare": {
+      "mcp_url": "https://loresquare.com/api/mcp",
+      "lore": "one-piece",
+      "connector_tools": [
+        "search_lore",
+        "get_mystery",
+        "get_theory",
+        "mystery_board"
+      ],
+      "site": "https://loresquare.com",
+      "_note": "Public read-only MCP endpoint; `python -m vengine lore ...` or the LoreSquare connector."
+    }
+  },
+  "youtube": {
+    "secrets_dir": "D:\\Work\\loresquare-secrets",
+    "default_privacy": "private",
+    "category_id": "24"
+  },
+  "style": {
+    "name": "Ink",
+    "guide": "channels/loresquare/brand/STYLEGUIDE.md",
+    "kit": "channels/loresquare/kit",
+    "reference_frames": "/mnt/project-files/shorts/series",
+    "palette": "fixed",
+    "tokens": {
+      "RED": "#e63946",
+      "YELLOW": "#ffd43b",
+      "BLUE": "#1f6feb",
+      "INK": "#0b0b0b",
+      "PAPER": "#ffffff",
+      "STAMP_RED": "#b3121f",
+      "STAMP_GREEN": "#1b6b2a",
+      "STAMP_NAVY": "#1b3a8a",
+      "CANON": "#2f9e44",
+      "INFERENCE": "#f0b400",
+      "THEORY": "#e64980",
+      "COMMUNITY": "#1f6feb"
+    },
+    "fonts": {
+      "display": "Dela Gothic One (slams, numbers, katakana SFX)",
+      "caption": "Inter 900 (word-by-word captions)",
+      "mono": "JetBrains Mono 700 (chapter stamps, labels)"
+    },
+    "type_rules": [
+      "slam words land one by one with a spring (scale 2.4 -> 1) and a camera shake; one key word per slam in yellow",
+      "manga art always moves (ken burns or parallax) under a dark/halftone/duotone treatment so our type reads first",
+      "katakana SFX (ドン, ゴゴゴ) as outline texture behind slams, never as information",
+      "chapter numbers as stamps: CH. 1192 in JetBrains Mono on a yellow tape",
+      "epistemic chip on every claim: canon green, inference yellow, theory pink, community blue"
+    ],
+    "image_style_refs": [],
+    "image_style_prompt": "none: the channel uses official manga panels (short, commented) and code-drawn graphics only",
+    "image_sources": [
+      "https://static.wikia.nocookie.net/onepiece/ (One Piece Wiki files: Volume N.png covers, Chapter N.png title pages, Manga Infobox portraits)",
+      "LoreSquare theory covers (credit the theory author)"
+    ]
+  },
+  "voice": {
+    "provider": "kokoro",
+    "voice": "am_michael",
+    "alternatives": {
+      "ru": {
+        "provider": "silero",
+        "voice": "eugene"
+      }
+    },
+    "base_direction": "Friendly lore host talking to fellow readers: clear American English, steady pace, a little playful on the hook and the vote, calm on the evidence. Names read the way the anime cast says them.",
+    "one_direction_for_all_lines": true,
+    "max_pause_ms": 300,
+    "lexicon": {
+      "Imu": "EE-moo",
+      "Vegapunk": "VEH-gah-punk",
+      "Elbaph": "EL-baf",
+      "Oda": "OH-dah",
+      "LoreSquare": "lore square"
+    },
+    "check": "transcribe the voice (faster-whisper small) and re-record every name that comes back wrong"
+  },
+  "scene_types": "all",
+  "scene_domains": [
+    "manga",
+    "site",
+    "debate"
+  ],
+  "variety": {
+    "archival_min_share": 0.0,
+    "min_distinct_types": 6,
+    "max_register_run_s": 60,
+    "shot_min_s": 1.5,
+    "shot_max_s": 6,
+    "max_static_s": 4,
+    "custom_min": 1,
+    "unredact_max": 0,
+    "groups": {
+      "manga_panels": {
+        "scene_types": [
+          "panel_callout",
+          "panel_setup_payoff"
+        ],
+        "max_share": 0.33,
+        "shot_min_s": 3,
+        "shot_max_s": 5,
+        "max_consecutive": 1,
+        "needs_on_screen_text": true
+      },
+      "manga_art": {
+        "scene_types": [
+          "art_backdrop"
+        ],
+        "needs_on_screen_text": true,
+        "shot_max_s": 6,
+        "_note": "Official art under our type: no share cap (owner 2026-11-18: more manga images), but never without our text on top and never a static hold."
+      }
+    },
+    "_note": "Real material here = manga panels (capped, risky) and site screens; no floor by default so no format is pushed towards more panels."
+  },
+  "script": {
+    "target_minutes": [
+      0.75,
+      1.0
+    ],
+    "open_loop_every_s": 15,
+    "words_per_minute": 165,
+    "max_numbers": 6,
+    "golden_facts": [
+      2,
+      3
+    ]
+  },
+  "providers": {
+    "_note": "Free stack: Kokoro (EN) or Silero (RU) on the owner's PC or here, Remotion/Playwright + ffmpeg render, Claude frame-sheet QA, no image generation.",
+    "video_qa": "claude_frames",
+    "image_gen": "none",
+    "tts": "kokoro",
+    "paid_allowed": []
+  },
+  "formats": {
+    "top_theories": {
+      "name": "Top theories from LoreSquare",
+      "what": "Short countdown of the 3 strongest LoreSquare theories: claim, author, one clue, one counterpoint and the community score for each, over official manga art.",
+      "aspect": "9:16",
+      "data": [
+        "vengine lore top --n 5 (ranked theories with arguments and confidence history)",
+        "get_mystery for each theory's question"
+      ],
+      "structure": [
+        "Hook 0-2 s: the boldest number or claim, slam over art",
+        "#3, #2, #1: claim + @author, one chapter clue, the counterpoint, score (was -> now), ~15 s each",
+        "Vote CTA: which breaks first"
+      ],
+      "required_beats": [
+        "hook",
+        "countdown",
+        "theory",
+        "author_credit",
+        "evidence",
+        "counter",
+        "score",
+        "cta"
+      ],
+      "claims_required": true,
+      "release_gate": false,
+      "shorts": "the video is the Short; each theory can also get its own 35-45 s Short",
+      "script": {
+        "target_minutes": [
+          0.75,
+          1.0
+        ]
+      }
+    },
+    "chapter_breakdown": {
+      "name": "New chapter breakdown",
+      "what": "Short analysis of the newest officially released chapter: one question, the key detail, its setup in an old chapter, a theory, a counterpoint and a testable prediction.",
+      "aspect": "9:16",
+      "data": [
+        "chapter text and pages (official release only)",
+        "search_lore / get_mystery for every mystery the chapter touches",
+        "community discussion of the chapter (retold, credited)"
+      ],
+      "structure": [
+        "Hook 0-2 s: the paradox of the chapter",
+        "The question",
+        "Recap: only what the argument needs",
+        "Motive or author's design, one beat",
+        "Setup -> payoff with an old chapter",
+        "Theory and counterpoint",
+        "Prediction, viewer question, CTA"
+      ],
+      "required_beats": [
+        "hook",
+        "question",
+        "recap",
+        "setup_payoff",
+        "theory",
+        "counter",
+        "prediction",
+        "cta"
+      ],
+      "max_recap_share": 0.2,
+      "claims_required": true,
+      "release_gate": true,
+      "shorts": "the video is the Short",
+      "script": {
+        "target_minutes": [
+          0.75,
+          1.5
+        ]
+      }
+    },
+    "chapter_moments": {
+      "name": "Moments that will matter",
+      "what": "Short on one or two small moments of recent chapters that set up future plot or move a LoreSquare mystery.",
+      "aspect": "9:16",
+      "data": [
+        "chapter pages of the moments (official release only)",
+        "get_mystery for the question each moment moves, with its competing theories",
+        "search_lore for older chapters with the same motif"
+      ],
+      "structure": [
+        "Hook: the smallest detail with the biggest consequence",
+        "The question: what did the last chapters quietly set up",
+        "For each moment: the panel (commented), the echo in an old chapter (setup -> payoff), the mystery it moves and how confidence in its theories may shift",
+        "Ranking of the moments by how soon they pay off",
+        "Prediction: which one pays off first, checkable",
+        "Viewer question, CTA: follow the mystery on LoreSquare"
+      ],
+      "required_beats": [
+        "hook",
+        "evidence",
+        "setup_payoff",
+        "prediction",
+        "cta"
+      ],
+      "max_recap_share": 0.25,
+      "claims_required": true,
+      "release_gate": true,
+      "shorts": "the video is the Short",
+      "script": {
+        "target_minutes": [
+          0.5,
+          1.0
+        ]
+      }
+    },
+    "site_promo": {
+      "name": "LoreSquare promo",
+      "what": "Vertical 30-45 s promo of one LoreSquare feature (theory board, confidence votes, mystery board, chapter timeline, AI connector), shown on the real site with a real theory or mystery as the example.",
+      "aspect": "9:16",
+      "data": [
+        "the live site (screens of the feature)",
+        "one real theory or mystery as the example (mystery_board / get_theory)"
+      ],
+      "structure": [
+        "Hook 0-2 s: the reader's problem (a theory buried in a thread, no way to see who was right)",
+        "The feature on the real site, one action per shot",
+        "A real example: a theory with its confidence moving",
+        "CTA: what to do on the site, the link in the description and pinned comment"
+      ],
+      "required_beats": [
+        "hook",
+        "feature",
+        "cta"
+      ],
+      "claims_required": false,
+      "release_gate": false,
+      "script": {
+        "target_minutes": [
+          0.5,
+          0.75
+        ],
+        "open_loop_every_s": 20,
+        "golden_facts": [
+          1,
+          2
+        ]
+      },
+      "variety": {
+        "archival_min_share": 0.4,
+        "min_distinct_types": 4,
+        "shot_max_s": 5,
+        "groups": {
+          "manga_panels": {
+            "max_share": 0.15
+          },
+          "site_screens": {
+            "scene_types": [
+              "site_screen"
+            ],
+            "min_share": 0.4
+          }
+        }
+      }
+    }
+  },
+  "aspect": "9:16"
+}
