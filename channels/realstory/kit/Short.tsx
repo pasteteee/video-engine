@@ -22,7 +22,7 @@ export const shortFrames = (s: Short) => Math.round((s.shots[s.shots.length - 1]
 const med = (id: string) => staticFile('ep/' + MEDIA[id].src);
 const Bg: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
   <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 38%, ${GROUND2} 0%, ${GROUND} 75%)` }}>{children}</AbsoluteFill>;
-const Shade = () => <AbsoluteFill style={{ background: `linear-gradient(180deg, ${rgba(GROUND, 0.55)} 0%, ${rgba(GROUND, 0)} 22%, ${rgba(GROUND, 0)} 55%, ${rgba(GROUND, 0.75)} 100%)` }} />;
+const Shade = () => <AbsoluteFill style={{ background: `linear-gradient(180deg, ${rgba(GROUND, 0.55)} 0%, ${rgba(GROUND, 0)} 22%, ${rgba(GROUND, 0)} 45%, ${rgba(GROUND, 0.62)} 68%, ${rgba(GROUND, 0.8)} 100%)` }} />;
 
 // A 9:16 camera into a photo: the crop follows from→to ([x, y, zoom], image fractions), clamped inside the image.
 const VPhoto: React.FC<{ id: string; from: number[]; to: number[]; d: number; filter?: string }> = ({ id, from, to, d, filter }) => {
