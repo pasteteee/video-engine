@@ -45,13 +45,15 @@ def _gauss_smooth(a, sigma):
 def brighten(c, amount):
     import colorsys
     h, l, s = colorsys.rgb_to_hls(*c)
+    if amount == 1.0:                    # the renderer works in linear light now: the yarn colours go in as they are
+        return list(c)
     l2 = l + (1 - l) * (amount - 1) * 0.9 if 0.22 < l < 0.92 else l
-    return list(colorsys.hls_to_rgb(h, min(0.95, l2), min(1, s * 1.12)))
+    return list(colorsys.hls_to_rgb(h, min(0.95, l2), min(1, s * amount)))
 
 
 class Grow:
     def __init__(self, spec, size=(1080, 1920), dur=16.0, reveal=3.5, ss=3, soft=1.35, core=0.3, core_shade=0.85,
-                 bright=1.12, mblur=4, turn=250.0, max_px=6.0, ao=0.6):
+                 bright=1.0, mblur=4, turn=250.0, max_px=6.0, ao=0.6):
         from .render import Renderer
         from .toy import toy_yarn
         self.W, self.H = size
@@ -278,7 +280,7 @@ def main(argv=None):
     ap.add_argument('--frames', help='a:b, frame range'); ap.add_argument('--part', default='0/1', help='i/n of all frames')
     ap.add_argument('--still', help='comma separated times in seconds: write OUT/still.jpg')
     ap.add_argument('--core', type=float, default=0.3); ap.add_argument('--soft', type=float, default=1.35)
-    ap.add_argument('--bright', type=float, default=1.12); ap.add_argument('--mblur', type=int, default=4)
+    ap.add_argument('--bright', type=float, default=1.0); ap.add_argument('--mblur', type=int, default=4)
     a = ap.parse_args(argv)
     from PIL import Image
     W, H = [int(v) for v in a.size.split('x')]
