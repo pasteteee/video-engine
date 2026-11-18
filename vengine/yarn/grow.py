@@ -50,8 +50,8 @@ def brighten(c, amount):
 
 
 class Grow:
-    def __init__(self, spec, size=(1080, 1920), dur=16.0, reveal=3.5, ss=3, soft=1.2, core=0.3, core_shade=0.55,
-                 bright=1.12, mblur=4, turn=250.0, max_px=6.0):
+    def __init__(self, spec, size=(1080, 1920), dur=16.0, reveal=3.5, ss=3, soft=1.35, core=0.3, core_shade=0.85,
+                 bright=1.12, mblur=4, turn=250.0, max_px=6.0, ao=0.6):
         from .render import Renderer
         from .toy import toy_yarn
         self.W, self.H = size
@@ -64,8 +64,9 @@ class Grow:
         pal2 = [brighten(c, bright) for c in pal]
         self.NP = len(pal2)
         pal2 = pal2 + [[v * core_shade for v in p] for p in pal2]
-        # a hidden core: the same yarn pushed inwards, a shade darker, so the backdrop does not shine through between
-        # stitches (bright specks there are the worst flicker of all: they are the highest-contrast edges)
+        # a hidden core: the same yarn pushed inwards, only a little darker, so what shows between the stitches is yarn of
+        # the same colour in soft shade (as in a real dense amigurumi), never the backdrop or a black hole; bright specks
+        # of backdrop were also the worst flicker (the highest-contrast edges)
         self.core = []
         if core > 0:
             for p in self.pieces:
@@ -78,7 +79,7 @@ class Grow:
                 self.core.append((p['start'], p['end'], seg - nrm * core * d))
         r = d / 2 / soft
         self.taper = max(4, int(round(2.0 * d / 0.5)))         # nodes over which the growing tip swells to full size
-        self.rn = Renderer(self.W, self.H, ss=ss, r=r, h=0.5, soft=soft, palette=pal2)
+        self.rn = Renderer(self.W, self.H, ss=ss, r=r, h=0.5, soft=soft, palette=pal2, ao=ao)
         scene = [X] + [Xc for _, _, Xc in self.core]
         self.core_off = np.cumsum([len(X)] + [len(Xc) for _, _, Xc in self.core])[:-1]
         self.rn.set_scene(np.concatenate(scene))
@@ -276,7 +277,7 @@ def main(argv=None):
     ap.add_argument('--reveal', type=float, default=3.5); ap.add_argument('--ss', type=int, default=3)
     ap.add_argument('--frames', help='a:b, frame range'); ap.add_argument('--part', default='0/1', help='i/n of all frames')
     ap.add_argument('--still', help='comma separated times in seconds: write OUT/still.jpg')
-    ap.add_argument('--core', type=float, default=0.3); ap.add_argument('--soft', type=float, default=1.2)
+    ap.add_argument('--core', type=float, default=0.3); ap.add_argument('--soft', type=float, default=1.35)
     ap.add_argument('--bright', type=float, default=1.12); ap.add_argument('--mblur', type=int, default=4)
     a = ap.parse_args(argv)
     from PIL import Image
