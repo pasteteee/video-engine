@@ -1,0 +1,1754 @@
+{
+ "fps": 30,
+ "width": 1920,
+ "height": 1080,
+ "look": {
+  "ground": "#1a130d",
+  "ground_2": "#2e2219",
+  "accent": "#d98a4a",
+  "tint": "#b8a58a",
+  "why": "Season direction: mudflat brown ground (dark mud of the staging flats) + rufous-orange accent sampled from the godwit plumage (#9a6939 in m_flight, lifted to #d98a4a for contrast 6.7:1 on ground). vengine look gave an olive ground #171101 and a sky-blue accent; the blue sat on the sky, not on the bird, so the director overrode it with the plumage hue."
+ },
+ "music_cues": [
+  {
+   "at_shot": "s01",
+   "level": 1
+  },
+  {
+   "at_shot": "s07",
+   "level": 2
+  },
+  {
+   "at_shot": "s20",
+   "level": 2
+  },
+  {
+   "at_shot": "s31",
+   "level": 2
+  },
+  {
+   "at_shot": "s36",
+   "level": 2
+  },
+  {
+   "at_shot": "s51",
+   "level": 2
+  },
+  {
+   "at_shot": "s64",
+   "level": 2
+  },
+  {
+   "at_shot": "s75",
+   "level": 2
+  }
+ ],
+ "shots": [
+  {
+   "id": "s01",
+   "line_ids": [
+    "l01"
+   ],
+   "scene_type": "film_clip",
+   "duration_s": 7.014,
+   "media_ids": [
+    "m_ocean2"
+   ],
+   "params": {
+    "trim": 3,
+    "tag": "PACIFIC OCEAN \u00b7 FROM THE ISS",
+    "start_s": 0
+   },
+   "variant": "full_frame",
+   "source_line": "Video: NASA ISS Earth Views \u00b7 public domain",
+   "sfx": [
+    "riser_soft"
+   ],
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s02",
+   "line_ids": [
+    "l02"
+   ],
+   "scene_type": "counter_ticker",
+   "duration_s": 4.504,
+   "media_ids": [],
+   "params": {
+    "days": 11,
+    "hours": 1,
+    "label": "TIME IN THE AIR",
+    "note": "NOT ONE LANDING",
+    "start_s": 7.014
+   },
+   "variant": "flip_digits",
+   "sfx": [
+    "tick"
+   ],
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s03",
+   "line_ids": [
+    "l03"
+   ],
+   "scene_type": "globe_route",
+   "duration_s": 5.175,
+   "media_ids": [],
+   "params": {
+    "a": 0,
+    "b": 1,
+    "labels": [
+     "ALASKA",
+     "TASMANIA"
+    ],
+    "km": true,
+    "start_s": 11.518
+   },
+   "variant": "night_side",
+   "source_line": "Route: approximate, rebuilt from published waypoints (USGS)",
+   "sfx": [
+    "whoosh"
+   ],
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s04",
+   "line_ids": [
+    "l04"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 3.989,
+   "media_ids": [
+    "m_flight"
+   ],
+   "params": {
+    "label": "A MIRACLE OF THE BODY?",
+    "start_s": 16.693
+   },
+   "variant": "push_in",
+   "source_line": "Photo: USFWS \u00b7 public domain \u00b7 not B6",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s05",
+   "line_ids": [
+    "l04"
+   ],
+   "scene_type": "custom",
+   "duration_s": 3.989,
+   "media_ids": [
+    "m_b6_hand"
+   ],
+   "params": {
+    "start_s": 20.682
+   },
+   "source_line": "Photo: USGS \u00b7 D. Ruthrauff \u00b7 public domain",
+   "custom": {
+    "component": "TagPing",
+    "brief": "A 5-gram satellite tag on a sketch of its back pings; a typed telemetry log scrolls: dates, positions, the last line flags OFF COURSE in accent.",
+    "register": "blueprint"
+   },
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s06",
+   "line_ids": [
+    "l05"
+   ],
+   "scene_type": "kinetic_type",
+   "duration_s": 6.316,
+   "media_ids": [],
+   "params": {
+    "words": [
+     "NEVER",
+     "SUPPOSED",
+     "TO",
+     "GO",
+     "THERE"
+    ],
+    "red": 4,
+    "start_s": 24.671
+   },
+   "variant": "stagger_weight",
+   "sfx": [
+    "hit"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s07",
+   "line_ids": [
+    "l06"
+   ],
+   "scene_type": "chapter_card",
+   "duration_s": 2.4,
+   "media_ids": [],
+   "params": {
+    "n": 1,
+    "title": "THE CHICK",
+    "start_s": 30.987
+   },
+   "variant": "hairline_index",
+   "sfx": [
+    "impact"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s08",
+   "line_ids": [
+    "l06"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 3.225,
+   "media_ids": [
+    "m_habitat"
+   ],
+   "params": {
+    "label": "SEWARD PENINSULA, ALASKA",
+    "start_s": 33.387
+   },
+   "variant": "lateral_drift",
+   "source_line": "Photo: USGS \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s09",
+   "line_ids": [
+    "l07"
+   ],
+   "scene_type": "photo_lighttable",
+   "duration_s": 6.672,
+   "media_ids": [
+    "m_tracking"
+   ],
+   "params": {
+    "label": "U.S. GEOLOGICAL SURVEY \u00b7 SUMMER 2022",
+    "start_s": 36.612
+   },
+   "variant": "single_print",
+   "source_line": "Photo: USGS \u00b7 public domain",
+   "sfx": [
+    "paper"
+   ],
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s10",
+   "line_ids": [
+    "l08"
+   ],
+   "scene_type": "photo_detail_zoom",
+   "duration_s": 5.159,
+   "media_ids": [
+    "m_b6_hand"
+   ],
+   "params": {
+    "fr": [
+     0.5,
+     0.5,
+     1.0
+    ],
+    "to": [
+     0.3,
+     0.55,
+     1.5
+    ],
+    "circle": [
+     0.19,
+     0.55
+    ],
+    "hand": "hard to spot",
+    "start_s": 43.284
+   },
+   "variant": "circle_lands",
+   "source_line": "Photo: USGS \u00b7 D. Ruthrauff \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s11",
+   "line_ids": [
+    "l09"
+   ],
+   "scene_type": "big_number",
+   "duration_s": 3.79,
+   "media_ids": [],
+   "params": {
+    "value": 5,
+    "unit": "GRAMS",
+    "label": "SATELLITE TAG",
+    "note": "SOLAR POWERED \u00b7 ON ITS BACK",
+    "start_s": 48.443
+   },
+   "variant": "odometer",
+   "sfx": [
+    "tick"
+   ],
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s12",
+   "line_ids": [
+    "l09"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 3.79,
+   "media_ids": [
+    "m_b6_band"
+   ],
+   "params": {
+    "label": "ABOUT 5 GRAMS",
+    "start_s": 52.233
+   },
+   "variant": "push_in",
+   "source_line": "Photo: USGS \u00b7 D. Ruthrauff \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s13",
+   "line_ids": [
+    "l10"
+   ],
+   "scene_type": "photo_detail_zoom",
+   "duration_s": 4.982,
+   "media_ids": [
+    "m_b6"
+   ],
+   "params": {
+    "fr": [
+     0.5,
+     0.5,
+     1.0
+    ],
+    "to": [
+     0.6,
+     0.6,
+     1.5
+    ],
+    "circle": [
+     0.61,
+     0.66
+    ],
+    "hand": "leg flag B6",
+    "start_s": 56.022
+   },
+   "variant": "crop_marks",
+   "source_line": "Photo: USGS \u00b7 D. Ruthrauff \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s14",
+   "line_ids": [
+    "l11"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 3.662,
+   "media_ids": [
+    "m_habitat"
+   ],
+   "params": {
+    "label": "TWO TAGS FELL OFF",
+    "start_s": 61.004
+   },
+   "variant": "lateral_drift",
+   "source_line": "Photo: USGS \u00b7 D. Ruthrauff \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s15",
+   "line_ids": [
+    "l11"
+   ],
+   "scene_type": "kinetic_type",
+   "duration_s": 3.662,
+   "media_ids": [],
+   "params": {
+    "words": [
+     "TRANSMITTING",
+     "FROM",
+     "THE",
+     "GRASS"
+    ],
+    "red": 0,
+    "start_s": 64.666
+   },
+   "variant": "rise_narrow",
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s16",
+   "line_ids": [
+    "l12"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 1.665,
+   "media_ids": [
+    "m_sunrise"
+   ],
+   "params": {
+    "label": "THEN THE ADULTS LEFT",
+    "start_s": 68.328
+   },
+   "variant": "rack_focus",
+   "source_line": "Photo: USFWS \u00b7 public domain \u00b7 not B6",
+   "sfx": [
+    "riser_soft"
+   ],
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s17",
+   "line_ids": [
+    "l13"
+   ],
+   "scene_type": "photo_compare",
+   "duration_s": 3.599,
+   "media_ids": [
+    "m_flock",
+    "m_b6"
+   ],
+   "params": {
+    "labels": [
+     "ADULTS \u00b7 LEAVE FIRST",
+     "JUVENILE \u00b7 WEEKS LATER"
+    ],
+    "start_s": 69.993
+   },
+   "variant": "side_by_side",
+   "source_line": "Photo: USGS \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s18",
+   "line_ids": [
+    "l13"
+   ],
+   "scene_type": "timeline_scroll",
+   "duration_s": 3.599,
+   "media_ids": [],
+   "params": {
+    "events": [
+     [
+      "AUG",
+      "ADULTS LEAVE"
+     ],
+     [
+      "SEPT",
+      "JUVENILES FEED ALONE"
+     ],
+     [
+      "OCT 13",
+      "B6 LEAVES"
+     ]
+    ],
+    "hl": 2,
+    "start_s": 73.592
+   },
+   "variant": "rail_travel",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s19",
+   "line_ids": [
+    "l14"
+   ],
+   "scene_type": "kinetic_type",
+   "duration_s": 4.598,
+   "media_ids": [],
+   "params": {
+    "words": [
+     "NO",
+     "LEADER.",
+     "NO",
+     "MAP."
+    ],
+    "red": 3,
+    "start_s": 77.191
+   },
+   "variant": "stagger_weight",
+   "sfx": [
+    "hit"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s20",
+   "line_ids": [
+    "l15"
+   ],
+   "scene_type": "chapter_card",
+   "duration_s": 2.4,
+   "media_ids": [],
+   "params": {
+    "n": 2,
+    "title": "FUEL",
+    "start_s": 81.789
+   },
+   "variant": "big_index",
+   "sfx": [
+    "impact"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s21",
+   "line_ids": [
+    "l15"
+   ],
+   "scene_type": "satellite_reveal",
+   "duration_s": 3.505,
+   "media_ids": [
+    "m_yukon"
+   ],
+   "params": {
+    "fr": [
+     0.5,
+     0.5,
+     1.0
+    ],
+    "to": [
+     0.55,
+     0.6,
+     1.8
+    ],
+    "label": "WESTERN ALASKA DELTAS",
+    "start_s": 84.189
+   },
+   "variant": "orbit_dive",
+   "source_line": "Image: NASA \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s22",
+   "line_ids": [
+    "l16"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 5.576,
+   "media_ids": [
+    "m_flock"
+   ],
+   "params": {
+    "label": "CLAMS \u00b7 WORMS \u00b7 BERRIES",
+    "start_s": 87.694
+   },
+   "variant": "push_in",
+   "source_line": "Photo: USGS \u00b7 Egegik, Alaska \u00b7 not B6",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s23",
+   "line_ids": [
+    "l17"
+   ],
+   "scene_type": "diagram_build",
+   "duration_s": 6.898,
+   "media_ids": [],
+   "params": {
+    "step": 0,
+    "start_s": 93.27
+   },
+   "variant": "part_by_part",
+   "source_line": "Source: Gill et al. 2009, Proc. R. Soc. B",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s24",
+   "line_ids": [
+    "l18"
+   ],
+   "scene_type": "photo_detail_zoom",
+   "duration_s": 4.903,
+   "media_ids": [
+    "m_flight"
+   ],
+   "params": {
+    "fr": [
+     0.5,
+     0.5,
+     1.0
+    ],
+    "to": [
+     0.45,
+     0.5,
+     1.5
+    ],
+    "start_s": 100.168
+   },
+   "variant": "magnifier",
+   "source_line": "Photo: USFWS \u00b7 public domain \u00b7 not B6",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s25",
+   "line_ids": [
+    "l19"
+   ],
+   "scene_type": "chart_bar_race",
+   "duration_s": 7.037,
+   "media_ids": [],
+   "params": {
+    "bars": [
+     [
+      "E7 \u00b7 2007 \u00b7 ADULT FEMALE",
+      11680,
+      0
+     ]
+    ],
+    "max": 14000,
+    "unit": "KM",
+    "start_s": 105.071
+   },
+   "variant": "race",
+   "source_line": "Source: Gill et al. 2009, Proc. R. Soc. B",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s26",
+   "line_ids": [
+    "l19"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 7.037,
+   "media_ids": [
+    "m_flock"
+   ],
+   "params": {
+    "label": "FIRST NONSTOP CROSSING TRACKED",
+    "start_s": 112.108
+   },
+   "variant": "lateral_drift",
+   "source_line": "Photo: USGS \u00b7 Egegik, Alaska \u00b7 not B6",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s27",
+   "line_ids": [
+    "l20"
+   ],
+   "scene_type": "kinetic_type",
+   "duration_s": 4.676,
+   "media_ids": [],
+   "params": {
+    "words": [
+     "THE",
+     "PART",
+     "THAT",
+     "MATTERS"
+    ],
+    "red": 3,
+    "start_s": 119.145
+   },
+   "variant": "rise_narrow",
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s28",
+   "line_ids": [
+    "l21"
+   ],
+   "scene_type": "photo_detail_zoom",
+   "duration_s": 8.349,
+   "media_ids": [
+    "m_b6_band"
+   ],
+   "params": {
+    "fr": [
+     0.5,
+     0.5,
+     1.0
+    ],
+    "to": [
+     0.47,
+     0.7,
+     1.5
+    ],
+    "circle": [
+     0.47,
+     0.74
+    ],
+    "hand": "no webbed feet",
+    "start_s": 123.821
+   },
+   "variant": "circle_lands",
+   "source_line": "Photo: USGS \u00b7 D. Ruthrauff \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s29",
+   "line_ids": [
+    "l22"
+   ],
+   "scene_type": "film_clip",
+   "duration_s": 8.027,
+   "media_ids": [
+    "m_ocean1"
+   ],
+   "params": {
+    "trim": 4,
+    "tag": "NOWHERE TO LAND",
+    "start_s": 132.17
+   },
+   "variant": "projector_flicker",
+   "source_line": "Video: NASA ISS Earth Views \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s30",
+   "line_ids": [
+    "l23"
+   ],
+   "scene_type": "question_card",
+   "duration_s": 3.732,
+   "media_ids": [],
+   "params": {
+    "q": [
+     "WHEN DO",
+     "YOU LEAVE?"
+    ],
+    "sub": "THE TIMING PROBLEM",
+    "start_s": 140.197
+   },
+   "variant": "rise_narrow",
+   "sfx": [
+    "hit"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s31",
+   "line_ids": [
+    "l24"
+   ],
+   "scene_type": "chapter_card",
+   "duration_s": 2.4,
+   "media_ids": [],
+   "params": {
+    "n": 3,
+    "title": "THE WIND",
+    "start_s": 143.929
+   },
+   "variant": "hairline_index",
+   "sfx": [
+    "impact"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s32",
+   "line_ids": [
+    "l24"
+   ],
+   "scene_type": "satellite_reveal",
+   "duration_s": 3.251,
+   "media_ids": [
+    "m_aleut_clouds"
+   ],
+   "params": {
+    "fr": [
+     0.5,
+     0.3,
+     1.0
+    ],
+    "to": [
+     0.5,
+     0.55,
+     1.4
+    ],
+    "label": "WIND OVER THE BERING SEA",
+    "start_s": 146.329
+   },
+   "variant": "tile_assemble",
+   "source_line": "Image: NASA \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s33",
+   "line_ids": [
+    "l25"
+   ],
+   "scene_type": "globe_route",
+   "duration_s": 7.057,
+   "media_ids": [],
+   "params": {
+    "a": 0,
+    "b": 1,
+    "labels": [
+     "ALASKA",
+     "NEW ZEALAND"
+    ],
+    "wind": true,
+    "start_s": 149.58
+   },
+   "variant": "terminator_line",
+   "source_line": "Route: approximate, rebuilt from published waypoints (USGS)",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s34",
+   "line_ids": [
+    "l26"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 4.986,
+   "media_ids": [
+    "m_sunrise"
+   ],
+   "params": {
+    "label": "STILL NOT KNOWN",
+    "start_s": 156.637
+   },
+   "variant": "push_in",
+   "source_line": "Photo: USFWS \u00b7 public domain \u00b7 not B6",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s35",
+   "line_ids": [
+    "l27"
+   ],
+   "scene_type": "stock_broll",
+   "duration_s": 3.715,
+   "media_ids": [
+    "m_ocean3"
+   ],
+   "params": {
+    "trim": 2,
+    "label": "OCT 13, 2022",
+    "start_s": 161.623
+   },
+   "variant": "graded",
+   "source_line": "Video: NASA ISS Earth Views \u00b7 public domain",
+   "sfx": [
+    "whoosh_big"
+   ],
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s36",
+   "line_ids": [
+    "l28"
+   ],
+   "scene_type": "chapter_card",
+   "duration_s": 2.114,
+   "media_ids": [],
+   "params": {
+    "n": 4,
+    "title": "THE CROSSING",
+    "start_s": 165.338
+   },
+   "variant": "big_index",
+   "sfx": [
+    "impact"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s37",
+   "line_ids": [
+    "l28"
+   ],
+   "scene_type": "satellite_reveal",
+   "duration_s": 2.584,
+   "media_ids": [
+    "m_aleut"
+   ],
+   "params": {
+    "fr": [
+     0.5,
+     0.5,
+     1.0
+    ],
+    "to": [
+     0.4,
+     0.62,
+     1.7
+    ],
+    "label": "ALEUTIAN ISLANDS",
+    "start_s": 167.452
+   },
+   "variant": "orbit_dive",
+   "source_line": "Image: NASA \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s38",
+   "line_ids": [
+    "l29"
+   ],
+   "scene_type": "map_zoom",
+   "duration_s": 3.046,
+   "media_ids": [],
+   "params": {
+    "a": 0.05,
+    "b": 0.33,
+    "label": "WEST OF HAWAII",
+    "center": [
+     -170,
+     35
+    ],
+    "scale": 520,
+    "pins": [
+     "hawaii"
+    ],
+    "start_s": 170.036
+   },
+   "variant": "pan_along",
+   "source_line": "Route: approximate, rebuilt from published waypoints (USGS)",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s39",
+   "line_ids": [
+    "l30"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 4.43,
+   "media_ids": [
+    "m_kiribati"
+   ],
+   "params": {
+    "label": "KIRIBATI \u00b7 OCT 19",
+    "start_s": 173.082
+   },
+   "variant": "lateral_drift",
+   "source_line": "Image: NASA \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s40",
+   "line_ids": [
+    "l31"
+   ],
+   "scene_type": "satellite_reveal",
+   "duration_s": 4.642,
+   "media_ids": [
+    "m_newcal"
+   ],
+   "params": {
+    "fr": [
+     0.5,
+     0.5,
+     1.0
+    ],
+    "to": [
+     0.45,
+     0.45,
+     1.5
+    ],
+    "label": "NEW CALEDONIA",
+    "start_s": 177.512
+   },
+   "variant": "tile_assemble",
+   "source_line": "Image: NASA \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s41",
+   "line_ids": [
+    "l32"
+   ],
+   "scene_type": "kinetic_type",
+   "duration_s": 3.854,
+   "media_ids": [],
+   "params": {
+    "words": [
+     "ISLANDS.",
+     "BEACHES.",
+     "FOOD."
+    ],
+    "red": 2,
+    "start_s": 182.154
+   },
+   "variant": "stagger_weight",
+   "sfx": [
+    "hit"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s42",
+   "line_ids": [
+    "l33"
+   ],
+   "scene_type": "big_number",
+   "duration_s": 6.146,
+   "media_ids": [],
+   "params": {
+    "value": 51,
+    "unit": "KM/H",
+    "label": "13,560 KM \u00f7 265 HOURS",
+    "note": "AVERAGE \u00b7 DAY AND NIGHT \u00b7 OUR CALCULATION",
+    "start_s": 186.008
+   },
+   "variant": "fill_count",
+   "sfx": [
+    "tick"
+   ],
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s43",
+   "line_ids": [
+    "l33"
+   ],
+   "scene_type": "film_clip",
+   "duration_s": 6.146,
+   "media_ids": [
+    "m_ocean4"
+   ],
+   "params": {
+    "trim": 5,
+    "tag": "AROUND THE CLOCK",
+    "start_s": 192.154
+   },
+   "variant": "full_frame",
+   "source_line": "Video: NASA ISS Earth Views \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s44",
+   "line_ids": [
+    "l34"
+   ],
+   "scene_type": "question_card",
+   "duration_s": 5.009,
+   "media_ids": [],
+   "params": {
+    "q": [
+     "THE BIRD",
+     "OR THE SKY?"
+    ],
+    "sub": "HOW MUCH WAS FREE PUSH",
+    "start_s": 198.3
+   },
+   "variant": "hold_cursor",
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s45",
+   "line_ids": [
+    "l35"
+   ],
+   "scene_type": "film_freeze_annotate",
+   "duration_s": 4.855,
+   "media_ids": [
+    "m_ocean2"
+   ],
+   "params": {
+    "trim": 20,
+    "note": "RAW TRACK: NOT PUBLIC",
+    "start_s": 203.309
+   },
+   "variant": "freeze_trace",
+   "source_line": "Video: NASA ISS Earth Views \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s46",
+   "line_ids": [
+    "l35"
+   ],
+   "scene_type": "map_zoom",
+   "duration_s": 4.855,
+   "media_ids": [],
+   "params": {
+    "a": 0,
+    "b": 1,
+    "label": "APPROXIMATE ROUTE",
+    "center": [
+     -178,
+     10
+    ],
+    "scale": 300,
+    "pins": [],
+    "dots": true,
+    "start_s": 208.164
+   },
+   "variant": "topo_lines",
+   "source_line": "Route: approximate, rebuilt from published waypoints (USGS)",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s47",
+   "line_ids": [
+    "l36"
+   ],
+   "scene_type": "custom",
+   "duration_s": 7.884,
+   "media_ids": [],
+   "params": {
+    "mode": "share",
+    "start_s": 213.019
+   },
+   "source_line": "Data: NOAA GFS analyses \u00b7 our calculation, approximate route",
+   "custom": {
+    "component": "WindBelts",
+    "brief": "The Pacific route with hundreds of small wind arrows streaming along it; arrows that help glow in accent, a gauge fills to 9 of 10 hours.",
+    "register": "blueprint"
+   },
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s48",
+   "line_ids": [
+    "l37"
+   ],
+   "scene_type": "big_number",
+   "duration_s": 4.078,
+   "media_ids": [],
+   "params": {
+    "value": 20,
+    "unit": "KM/H",
+    "label": "AVERAGE TAILWIND",
+    "note": "FREE PUSH \u00b7 OUR CALCULATION",
+    "start_s": 220.903
+   },
+   "variant": "unredact",
+   "source_line": "Data: NOAA GFS analyses \u00b7 our calculation, approximate route",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s49",
+   "line_ids": [
+    "l37"
+   ],
+   "scene_type": "custom",
+   "duration_s": 4.078,
+   "media_ids": [],
+   "params": {
+    "mode": "lat",
+    "start_s": 224.981
+   },
+   "source_line": "Data: NOAA GFS analyses \u00b7 our calculation, approximate route",
+   "custom": {
+    "component": "WindBelts",
+    "brief": "The Pacific route with hundreds of small wind arrows streaming along it; arrows that help glow in accent, a gauge fills to 9 of 10 hours.",
+    "register": "blueprint"
+   },
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s50",
+   "line_ids": [
+    "l38"
+   ],
+   "scene_type": "film_clip",
+   "duration_s": 6.28,
+   "media_ids": [
+    "m_ocean3"
+   ],
+   "params": {
+    "trim": 22,
+    "tag": "THE WIND BELTS OF THE PACIFIC",
+    "start_s": 229.058
+   },
+   "variant": "projector_flicker",
+   "source_line": "Video: NASA ISS Earth Views \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s51",
+   "line_ids": [
+    "l39"
+   ],
+   "scene_type": "chapter_card",
+   "duration_s": 1.683,
+   "media_ids": [],
+   "params": {
+    "n": 5,
+    "title": "THE TURN",
+    "start_s": 235.338
+   },
+   "variant": "hairline_index",
+   "sfx": [
+    "impact"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s52",
+   "line_ids": [
+    "l39"
+   ],
+   "scene_type": "kinetic_type",
+   "duration_s": 2.057,
+   "media_ids": [],
+   "params": {
+    "words": [
+     "THE",
+     "WIND",
+     "STOPPED",
+     "EXPLAINING"
+    ],
+    "red": 2,
+    "start_s": 237.021
+   },
+   "variant": "type_on",
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s53",
+   "line_ids": [
+    "l40"
+   ],
+   "scene_type": "map_zoom",
+   "duration_s": 5.129,
+   "media_ids": [],
+   "params": {
+    "a": 0.7,
+    "b": 0.82,
+    "label": "USUAL DESTINATIONS",
+    "center": [
+     160,
+     -33
+    ],
+    "scale": 900,
+    "pins": [
+     "nz",
+     "sydney"
+    ],
+    "usual": true,
+    "start_s": 239.078
+   },
+   "variant": "dive",
+   "source_line": "Route: approximate, rebuilt from published waypoints (USGS)",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s54",
+   "line_ids": [
+    "l41"
+   ],
+   "scene_type": "map_compare_scale",
+   "duration_s": 6.73,
+   "media_ids": [],
+   "params": {
+    "start_s": 244.207
+   },
+   "variant": "overlay_drop",
+   "source_line": "Route: approximate, rebuilt from published waypoints (USGS)",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s55",
+   "line_ids": [
+    "l42"
+   ],
+   "scene_type": "satellite_reveal",
+   "duration_s": 4.803,
+   "media_ids": [
+    "m_tasmania"
+   ],
+   "params": {
+    "fr": [
+     0.5,
+     0.5,
+     1.0
+    ],
+    "to": [
+     0.5,
+     0.45,
+     1.4
+    ],
+    "label": "THE TASMAN SEA",
+    "start_s": 250.937
+   },
+   "variant": "orbit_dive",
+   "source_line": "Image: NASA \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s56",
+   "line_ids": [
+    "l43"
+   ],
+   "scene_type": "custom",
+   "duration_s": 4.54,
+   "media_ids": [],
+   "params": {
+    "mode": "turn",
+    "start_s": 255.74
+   },
+   "source_line": "Data: NOAA GFS analyses \u00b7 our calculation, approximate route",
+   "sfx": [
+    "whoosh"
+   ],
+   "custom": {
+    "component": "TurnWind",
+    "brief": "Close-up of the Tasman Sea: the track bends sharply west on Oct 23; a clock runs through the morning while a wind arrow from the north points south, then swings to the northeast.",
+    "register": "blueprint"
+   },
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s57",
+   "line_ids": [
+    "l44"
+   ],
+   "scene_type": "question_card",
+   "duration_s": 6.708,
+   "media_ids": [],
+   "params": {
+    "q": [
+     "BLOWN OFF COURSE",
+     "OR ON PURPOSE?"
+    ],
+    "sub": "A FOUR-MONTH-OLD BIRD",
+    "start_s": 260.28
+   },
+   "variant": "unredact",
+   "sfx": [
+    "hit"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s58",
+   "line_ids": [
+    "l45"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 4.328,
+   "media_ids": [
+    "m_tracking"
+   ],
+   "params": {
+    "label": "EASTERLY WINDS?",
+    "start_s": 266.988
+   },
+   "variant": "push_in",
+   "source_line": "Photo: USGS \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s59",
+   "line_ids": [
+    "l46"
+   ],
+   "scene_type": "custom",
+   "duration_s": 4.523,
+   "media_ids": [],
+   "params": {
+    "mode": "north",
+    "start_s": 271.316
+   },
+   "source_line": "Data: NOAA GFS analyses \u00b7 our calculation, approximate route",
+   "custom": {
+    "component": "TurnWind",
+    "brief": "Close-up of the Tasman Sea: the track bends sharply west on Oct 23; a clock runs through the morning while a wind arrow from the north points south, then swings to the northeast.",
+    "register": "blueprint"
+   },
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s60",
+   "line_ids": [
+    "l46"
+   ],
+   "scene_type": "photo_detail_zoom",
+   "duration_s": 4.523,
+   "media_ids": [
+    "m_tasmania"
+   ],
+   "params": {
+    "fr": [
+     0.5,
+     0.5,
+     1.0
+    ],
+    "to": [
+     0.4,
+     0.5,
+     1.5
+    ],
+    "start_s": 275.84
+   },
+   "variant": "crop_marks",
+   "source_line": "Image: NASA \u00b7 public domain",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s61",
+   "line_ids": [
+    "l47"
+   ],
+   "scene_type": "custom",
+   "duration_s": 8.319,
+   "media_ids": [],
+   "params": {
+    "mode": "ne",
+    "start_s": 280.363
+   },
+   "source_line": "Data: NOAA GFS analyses \u00b7 our calculation, approximate route",
+   "custom": {
+    "component": "TurnWind",
+    "brief": "Close-up of the Tasman Sea: the track bends sharply west on Oct 23; a clock runs through the morning while a wind arrow from the north points south, then swings to the northeast.",
+    "register": "blueprint"
+   },
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s62",
+   "line_ids": [
+    "l48"
+   ],
+   "scene_type": "split_screen",
+   "duration_s": 5.661,
+   "media_ids": [],
+   "params": {
+    "a": [
+     "OVERSHOOT",
+     "WIND EXPLAINS IT"
+    ],
+    "b": [
+     "THE TURN",
+     "NOT CLEARLY"
+    ],
+    "start_s": 288.682
+   },
+   "variant": "two_up",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s63",
+   "line_ids": [
+    "l49"
+   ],
+   "scene_type": "film_clip",
+   "duration_s": 5.733,
+   "media_ids": [
+    "m_ocean1"
+   ],
+   "params": {
+    "trim": 24,
+    "tag": "A CLUE, NOT A VERDICT",
+    "start_s": 294.343
+   },
+   "variant": "full_frame",
+   "source_line": "Video: NASA ISS Earth Views \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s64",
+   "line_ids": [
+    "l50"
+   ],
+   "scene_type": "chapter_card",
+   "duration_s": 1.565,
+   "media_ids": [],
+   "params": {
+    "n": 6,
+    "title": "THE RECORD",
+    "start_s": 300.076
+   },
+   "variant": "big_index",
+   "sfx": [
+    "impact"
+   ],
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s65",
+   "line_ids": [
+    "l50"
+   ],
+   "scene_type": "kinetic_type",
+   "duration_s": 1.913,
+   "media_ids": [],
+   "params": {
+    "words": [
+     "NOBODY",
+     "KNOWS",
+     "YET"
+    ],
+    "red": 2,
+    "start_s": 301.641
+   },
+   "variant": "rise_narrow",
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s66",
+   "line_ids": [
+    "l51"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 7.569,
+   "media_ids": [
+    "m_flock"
+   ],
+   "params": {
+    "label": "COMMON? OR RARE?",
+    "start_s": 303.554
+   },
+   "variant": "lateral_drift",
+   "source_line": "Photo: USGS \u00b7 Egegik, Alaska \u00b7 not B6",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s67",
+   "line_ids": [
+    "l52"
+   ],
+   "scene_type": "counter_ticker",
+   "duration_s": 5.183,
+   "media_ids": [],
+   "params": {
+    "days": 11,
+    "hours": 1,
+    "label": "13,560 KM",
+    "note": "NO FOOD \u00b7 NO WATER \u00b7 NO REST",
+    "start_s": 311.123
+   },
+   "variant": "clock_dial",
+   "sfx": [
+    "tick"
+   ],
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s68",
+   "line_ids": [
+    "l52"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 5.183,
+   "media_ids": [
+    "m_flight"
+   ],
+   "params": {
+    "label": "13,560 KM",
+    "start_s": 316.306
+   },
+   "variant": "push_in",
+   "source_line": "Photo: USFWS \u00b7 public domain \u00b7 not B6",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s69",
+   "line_ids": [
+    "l53"
+   ],
+   "scene_type": "chart_bar_race",
+   "duration_s": 5.68,
+   "media_ids": [],
+   "params": {
+    "bars": [
+     [
+      "E7 \u00b7 2007",
+      11680,
+      0
+     ],
+     [
+      "4BBRW \u00b7 2020 \u00b7 ADULT",
+      12200,
+      0
+     ],
+     [
+      "B6 \u00b7 2022 \u00b7 JUVENILE",
+      13560,
+      1
+     ]
+    ],
+    "max": 14000,
+    "unit": "KM",
+    "start_s": 321.489
+   },
+   "variant": "stack_build",
+   "source_line": "Source: Guinness World Records \u00b7 USGS",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s70",
+   "line_ids": [
+    "l54"
+   ],
+   "scene_type": "photo_lighttable",
+   "duration_s": 3.265,
+   "media_ids": [
+    "m_b6",
+    "m_b6_hand",
+    "m_b6_band"
+   ],
+   "params": {
+    "label": "ITS FIRST MIGRATION",
+    "start_s": 327.169
+   },
+   "variant": "contact_strip",
+   "source_line": "Photo: USGS \u00b7 D. Ruthrauff \u00b7 public domain",
+   "sfx": [
+    "paper"
+   ],
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s71",
+   "line_ids": [
+    "l55"
+   ],
+   "scene_type": "globe_route",
+   "duration_s": 3.827,
+   "media_ids": [],
+   "params": {
+    "a": 0.85,
+    "b": 1,
+    "labels": [
+     "",
+     "ANSONS BAY"
+    ],
+    "end": true,
+    "start_s": 330.434
+   },
+   "variant": "flat_unroll",
+   "source_line": "Route: approximate, rebuilt from published waypoints (USGS)",
+   "transition_in": "push",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s72",
+   "line_ids": [
+    "l55"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 3.827,
+   "media_ids": [
+    "m_tasmania"
+   ],
+   "params": {
+    "label": "TASMANIA \u00b7 OCT 24",
+    "start_s": 334.261
+   },
+   "variant": "lateral_drift",
+   "source_line": "Image: NASA \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s73",
+   "line_ids": [
+    "l56"
+   ],
+   "scene_type": "film_clip",
+   "duration_s": 3.555,
+   "media_ids": [
+    "m_ocean4"
+   ],
+   "params": {
+    "trim": 25,
+    "tag": "SLEEP IN FLIGHT \u00b7 NOT MEASURED",
+    "start_s": 338.088
+   },
+   "variant": "projector_flicker",
+   "source_line": "Video: NASA ISS Earth Views \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s74",
+   "line_ids": [
+    "l57"
+   ],
+   "scene_type": "photo_parallax",
+   "duration_s": 6.329,
+   "media_ids": [
+    "m_b6"
+   ],
+   "params": {
+    "label": "",
+    "start_s": 341.643
+   },
+   "variant": "rack_focus",
+   "source_line": "Photo: USGS \u00b7 D. Ruthrauff \u00b7 public domain",
+   "transition_in": "dissolve",
+   "motion": "camera push/drift and animated elements the whole shot"
+  },
+  {
+   "id": "s75",
+   "line_ids": [
+    "l57"
+   ],
+   "scene_type": "chapter_card",
+   "duration_s": 3.6,
+   "media_ids": [],
+   "params": {
+    "end": true,
+    "start_s": 347.972
+   },
+   "variant": "unredact",
+   "transition_in": "cut",
+   "motion": "camera push/drift and animated elements the whole shot"
+  }
+ ]
+}

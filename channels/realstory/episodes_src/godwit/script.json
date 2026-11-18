@@ -1,0 +1,704 @@
+{
+ "meta": {
+  "slug": "godwit",
+  "language": "en",
+  "title_options": [
+   "This Bird Flew 11 Days Without Landing. Then It Turned the Wrong Way",
+   "A 4-Month-Old Bird Flew 13,560 km Nonstop. Nobody Showed It the Way",
+   "We Checked the Wind Behind the Longest Bird Flight Ever Recorded"
+  ],
+  "thumbnail_text_options": [
+   "NEVER LANDED",
+   "WRONG TURN?",
+   "4 MONTHS OLD"
+  ],
+  "target_duration_s": 390
+ },
+ "lines": [
+  {
+   "id": "l01",
+   "chapter": "cold",
+   "text": "In October 2022, a bird that was about four months old took off from Alaska.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_age",
+    "f_dates"
+   ],
+   "hook": "cold_open"
+  },
+  {
+   "id": "l02",
+   "chapter": "cold",
+   "text": "For the next eleven days, it did not land. Not once.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_duration"
+   ]
+  },
+  {
+   "id": "l03",
+   "chapter": "cold",
+   "text": "It crossed at least 13,560 kilometers of open Pacific.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_distance"
+   ]
+  },
+  {
+   "id": "l04",
+   "chapter": "cold",
+   "text": "This story is usually told as a miracle of the body. The satellite tag on its back recorded something stranger.",
+   "emotion": "curious",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [],
+   "hook": "open_loop"
+  },
+  {
+   "id": "l05",
+   "chapter": "cold",
+   "text": "Near the end, the bird turned toward a place it was never supposed to go.",
+   "emotion": "curious",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_turn"
+   ],
+   "hook": "open_loop"
+  },
+  {
+   "id": "l06",
+   "chapter": "chick",
+   "text": "Summer 2022. The tundra of the Seward Peninsula, near Nome, Alaska.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_tag_site"
+   ]
+  },
+  {
+   "id": "l07",
+   "chapter": "chick",
+   "text": "Biologists from the U.S. Geological Survey were searching the grass for bar-tailed godwit chicks.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_tag_site"
+   ]
+  },
+  {
+   "id": "l08",
+   "chapter": "chick",
+   "text": "The chicks are small, scattered and hard to see against the tundra.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": []
+  },
+  {
+   "id": "l09",
+   "chapter": "chick",
+   "text": "A few of them got a satellite tag that weighs about five grams, powered by a tiny solar panel.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_tag"
+   ]
+  },
+  {
+   "id": "l10",
+   "chapter": "chick",
+   "text": "One young bird carried a leg flag with a short code: B6.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_b6"
+   ]
+  },
+  {
+   "id": "l11",
+   "chapter": "chick",
+   "text": "On two of the other chicks, the tags slipped off. They kept transmitting from the grass, going nowhere.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_slip"
+   ]
+  },
+  {
+   "id": "l12",
+   "chapter": "chick",
+   "text": "Then the adults left.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_adults"
+   ],
+   "hook": "stakes"
+  },
+  {
+   "id": "l13",
+   "chapter": "chick",
+   "text": "Adult godwits leave Alaska weeks before their young. The juveniles make their first migration on their own.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_adults"
+   ]
+  },
+  {
+   "id": "l14",
+   "chapter": "chick",
+   "text": "No leader. No map. No practice flight over the ocean.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_adults"
+   ]
+  },
+  {
+   "id": "l15",
+   "chapter": "fuel",
+   "text": "B6 moved south to the coastal mudflats of western Alaska and fed for weeks.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_staging"
+   ]
+  },
+  {
+   "id": "l16",
+   "chapter": "fuel",
+   "text": "Godwits on these flats eat clams, worms and berries, and they put on fat fast.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_fat"
+   ]
+  },
+  {
+   "id": "l17",
+   "chapter": "fuel",
+   "text": "Studies of adults show what happens next. Before departure, more than half of the body weight can be fat.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_fat"
+   ]
+  },
+  {
+   "id": "l18",
+   "chapter": "fuel",
+   "text": "The gut and liver shrink, and the heart and flight muscles grow.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_organs"
+   ]
+  },
+  {
+   "id": "l19",
+   "chapter": "fuel",
+   "text": "In 2007, a tagged adult female, known as E7, flew about 11,700 kilometers from Alaska to New Zealand in roughly eight days. It was the first nonstop crossing ever tracked.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_e7"
+   ]
+  },
+  {
+   "id": "l20",
+   "chapter": "fuel",
+   "text": "That part is famous. The part that matters more is simpler.",
+   "emotion": "curious",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": []
+  },
+  {
+   "id": "l21",
+   "chapter": "fuel",
+   "text": "A godwit cannot rest on the sea. It has no webbed feet, and it is not built to take off from water.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_noland"
+   ],
+   "hook": "stakes"
+  },
+  {
+   "id": "l22",
+   "chapter": "fuel",
+   "text": "So once it leaves the coast, it flaps, day and night, until it reaches land on the other side.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_noland"
+   ]
+  },
+  {
+   "id": "l23",
+   "chapter": "wind",
+   "text": "Which raises a practical question. When do you leave?",
+   "emotion": "curious",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [],
+   "hook": "question"
+  },
+  {
+   "id": "l24",
+   "chapter": "wind",
+   "text": "Tracking of adult godwits suggests they do not just wait for a calm day.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_weather"
+   ]
+  },
+  {
+   "id": "l25",
+   "chapter": "wind",
+   "text": "They tend to leave on winds that help them across the whole ocean, not only at takeoff.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_weather"
+   ]
+  },
+  {
+   "id": "l26",
+   "chapter": "wind",
+   "text": "How a bird reads weather thousands of kilometers away is still not known.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_weather"
+   ]
+  },
+  {
+   "id": "l27",
+   "chapter": "wind",
+   "text": "On October 13th, B6 left Alaska.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_dates"
+   ]
+  },
+  {
+   "id": "l28",
+   "chapter": "crossing",
+   "text": "It flew south, out over the Aleutian Islands, and into open water.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_route"
+   ]
+  },
+  {
+   "id": "l29",
+   "chapter": "crossing",
+   "text": "It passed west of Hawaii without stopping.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_route"
+   ]
+  },
+  {
+   "id": "l30",
+   "chapter": "crossing",
+   "text": "Around October 19th, it crossed Kiribati, near the equator.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_route"
+   ]
+  },
+  {
+   "id": "l31",
+   "chapter": "crossing",
+   "text": "A couple of days later it was over Vanuatu, then New Caledonia.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_route"
+   ]
+  },
+  {
+   "id": "l32",
+   "chapter": "crossing",
+   "text": "Islands. Beaches. Food. It flew past all of them.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_route"
+   ]
+  },
+  {
+   "id": "l33",
+   "chapter": "crossing",
+   "text": "Here is one number we worked out ourselves. 13,560 kilometers in 11 days and 1 hour is about 51 kilometers per hour, on average, around the clock.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_speed"
+   ],
+   "hook": "reveal"
+  },
+  {
+   "id": "l34",
+   "chapter": "crossing",
+   "text": "How much of that speed was the bird, and how much was the sky?",
+   "emotion": "curious",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [],
+   "hook": "question"
+  },
+  {
+   "id": "l35",
+   "chapter": "crossing",
+   "text": "B6's raw track is not public, so we rebuilt an approximate route from the published waypoints and checked it against a global weather model.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_wind"
+   ]
+  },
+  {
+   "id": "l36",
+   "chapter": "crossing",
+   "text": "At about 1,500 meters, the wind along that route blew the bird's way about nine hours out of ten.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_wind"
+   ]
+  },
+  {
+   "id": "l37",
+   "chapter": "crossing",
+   "text": "On average, that is roughly 20 kilometers per hour of free push, strongest in the north and weakest near the equator.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_wind"
+   ],
+   "hook": "payoff"
+  },
+  {
+   "id": "l38",
+   "chapter": "crossing",
+   "text": "That is not luck. The route follows the big wind belts of the Pacific.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_wind"
+   ]
+  },
+  {
+   "id": "l39",
+   "chapter": "turn",
+   "text": "Then, near the end, the wind stopped explaining things.",
+   "emotion": "curious",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [],
+   "hook": "twist",
+   "closes_loop": "l05"
+  },
+  {
+   "id": "l40",
+   "chapter": "turn",
+   "text": "Alaskan godwits usually fly to New Zealand or eastern Australia.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_usual"
+   ]
+  },
+  {
+   "id": "l41",
+   "chapter": "turn",
+   "text": "B6 went past them. It passed about 600 kilometers off Sydney, still heading south.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_turn"
+   ]
+  },
+  {
+   "id": "l42",
+   "chapter": "turn",
+   "text": "It reached the latitude of New Zealand, far to the west of it.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_turn"
+   ]
+  },
+  {
+   "id": "l43",
+   "chapter": "turn",
+   "text": "On October 23rd, it turned sharply west, toward Tasmania.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_turn"
+   ],
+   "closes_loop": "l04"
+  },
+  {
+   "id": "l44",
+   "chapter": "turn",
+   "text": "So which was it? A youngster blown off course, or a bird that knew where it was going?",
+   "emotion": "curious",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [],
+   "hook": "question"
+  },
+  {
+   "id": "l45",
+   "chapter": "turn",
+   "text": "One researcher suggested strong easterly winds pushed it west.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_easterly"
+   ]
+  },
+  {
+   "id": "l46",
+   "chapter": "turn",
+   "text": "We looked at the weather model at the turn. On the morning of the 23rd, the wind there came mostly from the north.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_turnwind"
+   ]
+  },
+  {
+   "id": "l47",
+   "chapter": "turn",
+   "text": "It pushed south, not west. Winds from the northeast arrived later that day and helped it the rest of the way.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_turnwind"
+   ]
+  },
+  {
+   "id": "l48",
+   "chapter": "turn",
+   "text": "So the wind can explain why it overshot. It does not clearly explain the turn.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_turnwind"
+   ],
+   "hook": "payoff"
+  },
+  {
+   "id": "l49",
+   "chapter": "turn",
+   "text": "Our route is approximate, so treat that as a clue, not a verdict.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_turnwind"
+   ]
+  },
+  {
+   "id": "l50",
+   "chapter": "record",
+   "text": "The honest answer is that nobody knows yet.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": []
+  },
+  {
+   "id": "l51",
+   "chapter": "record",
+   "text": "Researchers do not know how often young godwits take this route. It could be common. It could be rare.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_unknown"
+   ]
+  },
+  {
+   "id": "l52",
+   "chapter": "record",
+   "text": "Here is what is certain. 13,560 kilometers. Eleven days and one hour. No food, no water, no rest on the sea.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_distance",
+    "f_duration"
+   ],
+   "hook": "payoff"
+  },
+  {
+   "id": "l53",
+   "chapter": "record",
+   "text": "The previous record belonged to an adult male, at about 12,200 kilometers.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_prev"
+   ]
+  },
+  {
+   "id": "l54",
+   "chapter": "record",
+   "text": "B6 beat it on its very first migration.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_prev"
+   ]
+  },
+  {
+   "id": "l55",
+   "chapter": "record",
+   "text": "It came down at Ansons Bay, in northeast Tasmania, having likely lost about half of its body weight.",
+   "emotion": "somber",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_landing",
+    "f_weight"
+   ]
+  },
+  {
+   "id": "l56",
+   "chapter": "record",
+   "text": "How it slept up there, nobody has measured.",
+   "emotion": "neutral",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [
+    "f_sleep"
+   ]
+  },
+  {
+   "id": "l57",
+   "chapter": "record",
+   "text": "A bird that was never shown the way changed what scientists thought a young godwit could do.",
+   "emotion": "warm",
+   "delivery": {
+    "pace": "normal"
+   },
+   "fact_ids": [],
+   "hook": "payoff"
+  }
+ ]
+}

@@ -1,0 +1,370 @@
+{
+ "sources": [
+  {
+   "id": "s_usgs",
+   "title": "USGS Alaska Science Center: Juvenile bar-tailed godwit B6 sets world record",
+   "url": "https://www.usgs.gov/centers/alaska-science-center/news/juvenile-bar-tailed-godwit-b6-sets-world-record",
+   "kind": "primary",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_gwr",
+   "title": "Guinness World Records: Longest non-stop migration by a bird",
+   "url": "https://www.guinnessworldrecords.com/world-records/86385-longest-non-stop-migration-by-a-bird",
+   "kind": "primary",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_gwr_news",
+   "title": "Guinness World Records news, Jan 2023",
+   "url": "https://www.guinnessworldrecords.com/news/2023/1/the-record-breaking-bird-that-flew-from-alaska-to-australia-731576",
+   "kind": "secondary",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_adn",
+   "title": "Anchorage Daily News, Oct 30 2022",
+   "url": "https://www.adn.com/alaska-news/wildlife/2022/10/30/a-juvenile-shorebird-tagged-in-alaska-flew-nonstop-for-11-days-and-arrived-in-tasmania/",
+   "kind": "secondary",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_guardian",
+   "title": "The Guardian, Oct 27 2022",
+   "url": "https://www.theguardian.com/environment/2022/oct/27/bar-tailed-godwit-sets-world-record-with-13560km-continuous-flight-from-alaska-to-southern-australia",
+   "kind": "secondary",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_npr",
+   "title": "NPR, Oct 28 2022",
+   "url": "https://www.npr.org/2022/10/28/1132171095/a-non-stop-flight-from-alaska-to-tasmania-may-be-for-the-birds-and-a-possible-re",
+   "kind": "secondary",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_cbc",
+   "title": "CBC, Oct 28 2022",
+   "url": "https://www.cbc.ca/news/science/godwit-migration-alaska-tasmania-record-1.6632658",
+   "kind": "secondary",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_gill",
+   "title": "Gill et al. 2009, Extreme endurance flights by landbirds crossing the Pacific Ocean, Proc. R. Soc. B",
+   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC2664343/fullTextXML",
+   "kind": "primary",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_usgs_wx",
+   "title": "USGS: Ultra-marathon champion bird may plan flights based on weather across the Pacific",
+   "url": "https://www.usgs.gov/news/national-news-release/ultra-marathon-champion-bird-may-plan-flights-based-weather-across",
+   "kind": "primary",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_usgs_data",
+   "title": "USGS tracking data, bar-tailed godwits",
+   "url": "https://www.usgs.gov/data/tracking-data-bar-tailed-godwits-limosa-lapponica",
+   "kind": "data",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_gfs",
+   "title": "NOAA NCEI GFS 1-degree analyses, Oct 12-25 2022 (925-700 hPa wind)",
+   "url": "https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast",
+   "kind": "data",
+   "accessed": "2026-11-18"
+  },
+  {
+   "id": "s_own",
+   "title": "Real Story own analysis: approximate route + NOAA GFS winds (see calculations)",
+   "url": "https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast",
+   "kind": "data",
+   "accessed": "2026-11-18"
+  }
+ ],
+ "facts": [
+  {
+   "id": "f_age",
+   "text": "B6 was a juvenile about four months old (USGS; some press say five).",
+   "source_ids": [
+    "s_usgs"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_dates",
+   "text": "B6 left Alaska on Oct 13, 2022 and landed in Tasmania on Oct 24 (UTC).",
+   "source_ids": [
+    "s_usgs",
+    "s_gwr"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_duration",
+   "text": "The flight lasted 11 days and 1 hour without landing.",
+   "source_ids": [
+    "s_gwr",
+    "s_usgs"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_distance",
+   "text": "At least 13,560 km nonstop.",
+   "source_ids": [
+    "s_gwr"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_tag_site",
+   "text": "USGS biologists tagged juvenile godwits on the Seward Peninsula near Nome in summer 2022.",
+   "source_ids": [
+    "s_usgs",
+    "s_adn"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_tag",
+   "text": "5 g solar-powered satellite tag.",
+   "source_ids": [
+    "s_usgs",
+    "s_adn"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_b6",
+   "text": "The bird carried leg flag B6.",
+   "source_ids": [
+    "s_usgs"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_slip",
+   "text": "Tags came off two other tagged chicks and kept transmitting from the ground.",
+   "source_ids": [
+    "s_adn"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_adults",
+   "text": "Adults leave Alaska weeks before juveniles; juveniles migrate without adults.",
+   "source_ids": [
+    "s_usgs",
+    "s_adn",
+    "s_npr"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_staging",
+   "text": "Juveniles stage on coastal mudflats of western Alaska (Kuskokwim/Yukon deltas) before departure.",
+   "source_ids": [
+    "s_usgs",
+    "s_gill"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_fat",
+   "text": "Before departure fat can exceed half of body mass; diet includes clams, worms, berries.",
+   "source_ids": [
+    "s_gill",
+    "s_adn"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_organs",
+   "text": "Digestive organs shrink and flight muscles and heart enlarge before departure.",
+   "source_ids": [
+    "s_gill"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_e7",
+   "text": "Female E7 flew ~11,680 km Alaska to New Zealand in ~8.1 days in 2007, first tracked nonstop crossing.",
+   "source_ids": [
+    "s_gill"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_noland",
+   "text": "Godwits cannot rest on the sea (no webbed feet), so must fly nonstop over the ocean.",
+   "source_ids": [
+    "s_guardian",
+    "s_npr",
+    "s_gill"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_weather",
+   "text": "Adult godwits time departures to favorable winds over the whole route.",
+   "source_ids": [
+    "s_usgs_wx"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_route",
+   "text": "Route: Aleutians, west of Hawaii, Kiribati (~Oct 19), Vanuatu, New Caledonia.",
+   "source_ids": [
+    "s_usgs",
+    "s_adn"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_usual",
+   "text": "Alaska godwits winter in New Zealand and eastern Australia.",
+   "source_ids": [
+    "s_usgs",
+    "s_gill"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_turn",
+   "text": "B6 passed ~600 km off Sydney, reached NZ latitude ~1,500 km west of it, and turned west toward Tasmania on Oct 23.",
+   "source_ids": [
+    "s_usgs",
+    "s_adn"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_easterly",
+   "text": "A researcher suggested strong easterly winds may have pushed it west.",
+   "source_ids": [
+    "s_adn",
+    "s_cbc"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_unknown",
+   "text": "How often juveniles take this route is unknown.",
+   "source_ids": [
+    "s_adn",
+    "s_npr"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_prev",
+   "text": "Previous record: adult male 4BBRW, ~12,200 km (2020).",
+   "source_ids": [
+    "s_gwr_news",
+    "s_guardian"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_landing",
+   "text": "B6 landed at Ansons Bay, northeast Tasmania.",
+   "source_ids": [
+    "s_usgs",
+    "s_gwr"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_weight",
+   "text": "It likely lost about half of its body weight (researcher estimate).",
+   "source_ids": [
+    "s_guardian"
+   ],
+   "status": "likely"
+  },
+  {
+   "id": "f_sleep",
+   "text": "Sleep in flight has not been measured in godwits.",
+   "source_ids": [
+    "s_npr"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_speed",
+   "text": "13,560 km in 265 h is ~51 km/h average (our calculation).",
+   "source_ids": [
+    "s_gwr",
+    "s_own"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_wind",
+   "text": "Along the approximate route, GFS wind at ~850 hPa helped ~9 of 10 hours, ~20 km/h mean, strongest north, weakest near equator (our analysis).",
+   "source_ids": [
+    "s_own",
+    "s_gfs"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "f_turnwind",
+   "text": "At the turn on Oct 23 morning the model wind was mostly from the north; NE winds later that day (our analysis).",
+   "source_ids": [
+    "s_own",
+    "s_gfs"
+   ],
+   "status": "verified"
+  }
+ ],
+ "calculations": [
+  {
+   "id": "c_speed",
+   "question": "Average ground speed",
+   "inputs": [
+    "f_distance",
+    "f_duration"
+   ],
+   "method": "13560 km / 265 h",
+   "result": "51.2 km/h average"
+  },
+  {
+   "id": "c_wind",
+   "question": "How much did the wind help along the route?",
+   "inputs": [
+    "f_route",
+    "f_dates"
+   ],
+   "method": "Approximate route rebuilt from published waypoints (13,087 km smoothed); GFS 1-degree analyses every 6 h, wind at ~850 hPa (~1,500 m) projected on the flight direction (project analysis, Nov 2026)",
+   "result": "Tailwind component positive ~9 of 10 hours; mean ~20 km/h; strongest north, weakest near equator"
+  },
+  {
+   "id": "c_turn",
+   "question": "Did wind push it west at the turn?",
+   "inputs": [
+    "f_turn",
+    "f_easterly"
+   ],
+   "method": "GFS analysis at the turn area, Oct 23 00-06 UTC",
+   "result": "Wind mostly from the north (pushing south); NE winds arrived later that day"
+  }
+ ],
+ "conclusions": [
+  {
+   "id": "k1",
+   "statement": "The wind explains the overshoot better than the westward turn.",
+   "based_on": [
+    "c_wind",
+    "c_turn"
+   ],
+   "confidence": "medium",
+   "counterpoint": "Route is approximate; GFS 1-degree resolution is coarse."
+  }
+ ]
+}

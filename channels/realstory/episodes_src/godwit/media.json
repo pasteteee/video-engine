@@ -1,0 +1,206 @@
+{
+ "items": [
+  {
+   "id": "m_b6",
+   "path": "media/usgs_juvenile-bar-tailed-godwit-b6.jpg",
+   "kind": "photo",
+   "source_url": "https://www.usgs.gov/media/images/juvenile-bar-tailed-godwit-b6",
+   "credit": "USGS (D. Ruthrauff)",
+   "license": "public-domain",
+   "shows": "Biologist holding juvenile godwit B6; leg flag B6 visible",
+   "width": 1103,
+   "height": 876
+  },
+  {
+   "id": "m_b6_hand",
+   "path": "media/usgs_juvenile-bar-tailed-godwit-b6-after-capture.jpg",
+   "kind": "photo",
+   "source_url": "https://www.usgs.gov/media/images/juvenile-bar-tailed-godwit-b6-after-capture",
+   "credit": "USGS (D. Ruthrauff)",
+   "license": "public-domain",
+   "shows": "Juvenile godwit B6 standing in the grass after capture",
+   "width": 1800,
+   "height": 1196
+  },
+  {
+   "id": "m_b6_band",
+   "path": "media/usgs_juvenile-bar-tailed-godwit-b6-metal-leg-band.jpg",
+   "kind": "photo",
+   "source_url": "https://www.usgs.gov/media/images/juvenile-bar-tailed-godwit-b6-metal-leg-band",
+   "credit": "USGS (D. Ruthrauff)",
+   "license": "public-domain",
+   "shows": "Juvenile godwit chick held in hands, long legs and toes visible",
+   "width": 1800,
+   "height": 2400
+  },
+  {
+   "id": "m_tracking",
+   "path": "media/usgs_tracking-juvenile-bar-tailed-godwits.jpg",
+   "kind": "photo",
+   "source_url": "https://www.usgs.gov/media/images/tracking-juvenile-bar-tailed-godwits",
+   "credit": "USGS",
+   "license": "public-domain",
+   "shows": "Biologist with antenna tracking juveniles on tundra, Seward Peninsula",
+   "width": 1800,
+   "height": 1350
+  },
+  {
+   "id": "m_habitat",
+   "path": "media/usgs_bar-tailed-godwit-habitat-seward-peninsula.jpg",
+   "kind": "photo",
+   "source_url": "https://www.usgs.gov/media/images/bar-tailed-godwit-habitat-seward-peninsula",
+   "credit": "USGS",
+   "license": "public-domain",
+   "shows": "Tundra habitat on the Seward Peninsula",
+   "width": 1280,
+   "height": 960
+  },
+  {
+   "id": "m_flock",
+   "path": "media/usgs_bar-tailed-godwits-flight-near-egegik-alaska.jpg",
+   "kind": "photo",
+   "source_url": "https://www.usgs.gov/media/images/bar-tailed-godwits-flight-near-egegik-alaska",
+   "credit": "USGS",
+   "license": "public-domain",
+   "shows": "Flock of bar-tailed godwits in flight near Egegik, Alaska (not B6)",
+   "width": 1800,
+   "height": 1200
+  },
+  {
+   "id": "m_flight",
+   "path": "media/commons_Bar-tailed_godwit_in_flight_53707907003_.jpg",
+   "kind": "photo",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bar-tailed_godwit_in_flight_(53707907003).jpg",
+   "credit": "USFWS",
+   "license": "public-domain",
+   "shows": "Bar-tailed godwit in flight against blue sky (not B6)",
+   "width": 1800,
+   "height": 1200
+  },
+  {
+   "id": "m_sunrise",
+   "path": "media/commons_Bar-tailed_godwit_at_sunrise_53703695656_.jpg",
+   "kind": "photo",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Bar-tailed_godwit_at_sunrise_(53703695656).jpg",
+   "credit": "USFWS",
+   "license": "public-domain",
+   "shows": "Godwit silhouette at sunrise on tundra (not B6)",
+   "width": 1800,
+   "height": 1350
+  },
+  {
+   "id": "m_aleut",
+   "path": "media/nasa_GSFC_20171208_Archive_e001085.jpg",
+   "kind": "photo",
+   "source_url": "https://images.nasa.gov/details/GSFC_20171208_Archive_e001085",
+   "credit": "NASA GSFC",
+   "license": "public-domain",
+   "shows": "Satellite image of the Aleutian Islands arc",
+   "width": 1920,
+   "height": 1476
+  },
+  {
+   "id": "m_aleut_clouds",
+   "path": "media/nasa_GSFC_20171208_Archive_e002158.jpg",
+   "kind": "photo",
+   "source_url": "https://images.nasa.gov/details/GSFC_20171208_Archive_e002158",
+   "credit": "NASA GSFC",
+   "license": "public-domain",
+   "shows": "Cloud streets off the Aleutian Islands, satellite",
+   "width": 1440,
+   "height": 1920
+  },
+  {
+   "id": "m_newcal",
+   "path": "media/nasa_PIA12502.jpg",
+   "kind": "photo",
+   "source_url": "https://images.nasa.gov/details/PIA12502",
+   "credit": "NASA/JPL",
+   "license": "public-domain",
+   "shows": "Lagoons of New Caledonia from orbit",
+   "width": 1280,
+   "height": 830
+  },
+  {
+   "id": "m_yukon",
+   "path": "media/nasa_PIA25124.jpg",
+   "kind": "photo",
+   "source_url": "https://images.nasa.gov/details/PIA25124",
+   "credit": "NASA/JPL",
+   "license": "public-domain",
+   "shows": "Yukon Delta, Alaska from orbit",
+   "width": 1919,
+   "height": 1707
+  },
+  {
+   "id": "m_kiribati",
+   "path": "media/nasa_iss053e180184.jpg",
+   "kind": "photo",
+   "source_url": "https://images.nasa.gov/details/iss053e180184",
+   "credit": "NASA (ISS crew)",
+   "license": "public-domain",
+   "shows": "Pacific atolls seen from the ISS",
+   "width": 1920,
+   "height": 1078
+  },
+  {
+   "id": "m_tasmania",
+   "path": "media/nasa_iss073e1047879.jpg",
+   "kind": "photo",
+   "source_url": "https://images.nasa.gov/details/iss073e1047879",
+   "credit": "NASA (ISS crew)",
+   "license": "public-domain",
+   "shows": "Clouds around Tasmania seen from the ISS",
+   "width": 1920,
+   "height": 1280
+  },
+  {
+   "id": "m_ocean1",
+   "path": "media/film_ocean1.mp4",
+   "kind": "video",
+   "source_url": "https://images.nasa.gov/details/NHQ_2020_1221_Earth%20Views",
+   "credit": "NASA (ISS Earth Views)",
+   "license": "public-domain",
+   "shows": "ISS view of ocean and clouds",
+   "width": 1280,
+   "height": 720,
+   "duration_s": 40
+  },
+  {
+   "id": "m_ocean2",
+   "path": "media/film_ocean2.mp4",
+   "kind": "video",
+   "source_url": "https://images.nasa.gov/details/NHQ_2020_1221_Earth%20Views",
+   "credit": "NASA (ISS Earth Views)",
+   "license": "public-domain",
+   "shows": "ISS view of ocean and clouds",
+   "width": 1280,
+   "height": 720,
+   "duration_s": 40
+  },
+  {
+   "id": "m_ocean3",
+   "path": "media/film_ocean3.mp4",
+   "kind": "video",
+   "source_url": "https://images.nasa.gov/details/NHQ_2020_1221_Earth%20Views",
+   "credit": "NASA (ISS Earth Views)",
+   "license": "public-domain",
+   "shows": "ISS view of cloud bands over ocean",
+   "width": 1280,
+   "height": 720,
+   "duration_s": 40
+  },
+  {
+   "id": "m_ocean4",
+   "path": "media/film_ocean4.mp4",
+   "kind": "video",
+   "source_url": "https://images.nasa.gov/details/NHQ_2020_1221_Earth%20Views",
+   "credit": "NASA (ISS Earth Views)",
+   "license": "public-domain",
+   "shows": "ISS view of ocean",
+   "width": 1280,
+   "height": 720,
+   "duration_s": 40
+  }
+ ]
+}
