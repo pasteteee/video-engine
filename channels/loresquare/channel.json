@@ -18,7 +18,9 @@
   ],
   "episodes_root": "/mnt/project-files/loresquare-videos/{slug}",
   "pipeline": {
-    "skip": ["publish"],
+    "skip": [
+      "publish"
+    ],
     "_note": "Owner (2026-11-18): video generation only for now; publishing comes later."
   },
   "source_work": {
@@ -31,7 +33,12 @@
     "loresquare": {
       "mcp_url": "https://loresquare.com/api/mcp",
       "lore": "one-piece",
-      "connector_tools": ["search_lore", "get_mystery", "get_theory", "mystery_board"],
+      "connector_tools": [
+        "search_lore",
+        "get_mystery",
+        "get_theory",
+        "mystery_board"
+      ],
       "site": "https://loresquare.com",
       "_note": "Public read-only MCP endpoint; `python -m vengine lore ...` or the LoreSquare connector."
     }
@@ -78,19 +85,34 @@
   "voice": {
     "provider": "kokoro",
     "voice": "am_michael",
-    "alternatives": {"ru": {"provider": "silero", "voice": "eugene"}},
+    "alternatives": {
+      "ru": {
+        "provider": "silero",
+        "voice": "eugene"
+      }
+    },
     "base_direction": "Friendly lore host talking to fellow readers: clear American English, steady pace, a little playful on the hook and the vote, calm on the evidence. Names read the way the anime cast says them.",
     "one_direction_for_all_lines": true,
     "max_pause_ms": 300,
-    "lexicon": {"Imu": "EE-moo", "Vegapunk": "VEH-gah-punk", "Elbaph": "EL-baf", "Oda": "OH-dah", "LoreSquare": "lore square"},
+    "lexicon": {
+      "Imu": "EE-moo",
+      "Vegapunk": "VEH-gah-punk",
+      "Elbaph": "EL-baf",
+      "Oda": "OH-dah",
+      "LoreSquare": "lore square"
+    },
     "check": "transcribe the voice (faster-whisper small) and re-record every name that comes back wrong"
   },
   "scene_types": "all",
-  "scene_domains": ["manga", "site", "debate"],
+  "scene_domains": [
+    "manga",
+    "site",
+    "debate"
+  ],
   "variety": {
-    "archival_min_share": 0.15,
+    "archival_min_share": 0.0,
     "min_distinct_types": 8,
-    "max_register_run_s": 30,
+    "max_register_run_s": 60,
     "shot_min_s": 1.5,
     "shot_max_s": 8,
     "max_static_s": 4,
@@ -98,21 +120,31 @@
     "unredact_max": 0,
     "groups": {
       "manga_panels": {
-        "scene_types": ["panel_callout", "panel_setup_payoff"],
+        "scene_types": [
+          "panel_callout",
+          "panel_setup_payoff"
+        ],
         "max_share": 0.33,
         "shot_min_s": 3,
         "shot_max_s": 5,
         "max_consecutive": 1,
         "needs_on_screen_text": true
       }
-    }
+    },
+    "_note": "Real material here = manga panels (capped, risky) and site screens; no floor by default so no format is pushed towards more panels."
   },
   "script": {
-    "target_minutes": [8, 12],
+    "target_minutes": [
+      8,
+      12
+    ],
     "open_loop_every_s": 60,
     "words_per_minute": 155,
     "max_numbers": 14,
-    "golden_facts": [3, 5]
+    "golden_facts": [
+      3,
+      5
+    ]
   },
   "providers": {
     "_note": "Free stack: Kokoro (EN) or Silero (RU) on the owner's PC or here, Remotion/Playwright + ffmpeg render, Claude frame-sheet QA, no image generation.",
@@ -126,7 +158,10 @@
       "name": "Top theories from LoreSquare",
       "what": "Countdown of the 3-5 strongest fan theories on LoreSquare right now: each theory credited to its author, argued with chapter clues, challenged with the best counterpoint, scored by the community.",
       "aspect": "16:9",
-      "data": ["vengine lore top --n 5 (ranked theories with arguments and confidence history)", "get_mystery for each theory's question"],
+      "data": [
+        "vengine lore top --n 5 (ranked theories with arguments and confidence history)",
+        "get_mystery for each theory's question"
+      ],
       "structure": [
         "Hook 0-15 s: the boldest claim of the countdown as a question, no greeting",
         "The question of the video: which theory holds up best right now",
@@ -135,17 +170,37 @@
         "#1 gets the longest segment and a testable prediction",
         "Viewer question with 2-3 options, CTA: vote or post a rival theory on LoreSquare"
       ],
-      "required_beats": ["hook", "question", "countdown", "theory", "author_credit", "evidence", "counter", "score", "viewer_question", "cta"],
+      "required_beats": [
+        "hook",
+        "question",
+        "countdown",
+        "theory",
+        "author_credit",
+        "evidence",
+        "counter",
+        "score",
+        "viewer_question",
+        "cta"
+      ],
       "claims_required": true,
       "release_gate": false,
       "shorts": "rs-shorts cuts each theory segment into its own 35-45 s Short (hook, author, context, clue 1, clue 2, counter, score, CTA): the existing Ink theory Shorts series",
-      "script": {"target_minutes": [6, 10]}
+      "script": {
+        "target_minutes": [
+          6,
+          10
+        ]
+      }
     },
     "chapter_breakdown": {
       "name": "New chapter breakdown",
       "what": "Analysis of the newest officially released chapter: one question the chapter raises, answered through motives, the author's design, setup and payoff, a theory and its counterpoint, the community view and a testable prediction.",
       "aspect": "16:9",
-      "data": ["chapter text and pages (official release only)", "search_lore / get_mystery for every mystery the chapter touches", "community discussion of the chapter (retold, credited)"],
+      "data": [
+        "chapter text and pages (official release only)",
+        "search_lore / get_mystery for every mystery the chapter touches",
+        "community discussion of the chapter (retold, credited)"
+      ],
       "structure": [
         "Hook 0-15 s: the paradox of the chapter, no 'today chapter N'",
         "The question of the video, said and shown",
@@ -158,18 +213,40 @@
         "Prediction for the next chapter, checkable",
         "One-line answer, viewer question, CTA to the mystery on LoreSquare"
       ],
-      "required_beats": ["hook", "question", "recap", "motive", "author_intent", "setup_payoff", "theory", "counter", "community", "prediction", "viewer_question", "cta"],
+      "required_beats": [
+        "hook",
+        "question",
+        "recap",
+        "motive",
+        "author_intent",
+        "setup_payoff",
+        "theory",
+        "counter",
+        "community",
+        "prediction",
+        "viewer_question",
+        "cta"
+      ],
       "max_recap_share": 0.2,
       "claims_required": true,
       "release_gate": true,
       "shorts": "one 30-45 s Short from the strongest setup -> payoff or the prediction, no main twist in the title",
-      "script": {"target_minutes": [8, 14]}
+      "script": {
+        "target_minutes": [
+          8,
+          14
+        ]
+      }
     },
     "chapter_moments": {
       "name": "Moments that will matter",
       "what": "3-5 small moments of recent chapters that most readers skimmed but that set up future plot or feed a big community question: each moment, what it echoes, which LoreSquare mystery it moves and what to watch for.",
       "aspect": "16:9",
-      "data": ["chapter pages of the moments (official release only)", "get_mystery for the question each moment moves, with its competing theories", "search_lore for older chapters with the same motif"],
+      "data": [
+        "chapter pages of the moments (official release only)",
+        "get_mystery for the question each moment moves, with its competing theories",
+        "search_lore for older chapters with the same motif"
+      ],
       "structure": [
         "Hook: the smallest detail with the biggest consequence",
         "The question: what did the last chapters quietly set up",
@@ -178,35 +255,73 @@
         "Prediction: which one pays off first, checkable",
         "Viewer question, CTA: follow the mystery on LoreSquare"
       ],
-      "required_beats": ["hook", "question", "evidence", "setup_payoff", "theory", "prediction", "viewer_question", "cta"],
+      "required_beats": [
+        "hook",
+        "question",
+        "evidence",
+        "setup_payoff",
+        "theory",
+        "prediction",
+        "viewer_question",
+        "cta"
+      ],
       "max_recap_share": 0.25,
       "claims_required": true,
       "release_gate": true,
       "shorts": "every moment is a Short of its own (detail -> echo -> question)",
-      "script": {"target_minutes": [4, 7]}
+      "script": {
+        "target_minutes": [
+          4,
+          7
+        ]
+      }
     },
     "site_promo": {
       "name": "LoreSquare promo",
       "what": "Vertical 30-45 s promo of one LoreSquare feature (theory board, confidence votes, mystery board, chapter timeline, AI connector), shown on the real site with a real theory or mystery as the example.",
       "aspect": "9:16",
-      "data": ["the live site (screens of the feature)", "one real theory or mystery as the example (mystery_board / get_theory)"],
+      "data": [
+        "the live site (screens of the feature)",
+        "one real theory or mystery as the example (mystery_board / get_theory)"
+      ],
       "structure": [
         "Hook 0-2 s: the reader's problem (a theory buried in a thread, no way to see who was right)",
         "The feature on the real site, one action per shot",
         "A real example: a theory with its confidence moving",
         "CTA: what to do on the site, the link in the description and pinned comment"
       ],
-      "required_beats": ["hook", "feature", "cta"],
+      "required_beats": [
+        "hook",
+        "feature",
+        "cta"
+      ],
       "claims_required": false,
       "release_gate": false,
-      "script": {"target_minutes": [0.5, 0.75], "open_loop_every_s": 20, "golden_facts": [1, 2]},
+      "script": {
+        "target_minutes": [
+          0.5,
+          0.75
+        ],
+        "open_loop_every_s": 20,
+        "golden_facts": [
+          1,
+          2
+        ]
+      },
       "variety": {
         "archival_min_share": 0.4,
         "min_distinct_types": 4,
         "shot_max_s": 5,
         "groups": {
-          "manga_panels": {"max_share": 0.15},
-          "site_screens": {"scene_types": ["site_screen"], "min_share": 0.4}
+          "manga_panels": {
+            "max_share": 0.15
+          },
+          "site_screens": {
+            "scene_types": [
+              "site_screen"
+            ],
+            "min_share": 0.4
+          }
         }
       }
     }
