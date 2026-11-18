@@ -27,6 +27,13 @@ from pathlib import Path
 import numpy as np
 
 FPS = 30
+FOV = 18.0                    # a long lens, as a product photo (85 mm on full frame is about 16 degrees across)
+VIEW = dict(az=32.0, el=12.0)  # the studio photo's usual angle: three quarters, camera a little above the eyes
+FLOOR = 0.42
+# where the finished toy sits in the last frame (centre x, centre y, max width, max height; fractions of the frame):
+# about 70% of the Shorts safe width, between the title band (Done!, y < 0.27) and the caption band (y > 0.70)
+BOX_PORTRAIT = (0.5, 0.48, 0.62, 0.40)
+BOX_WIDE = (0.5, 0.52, 0.62, 0.72)
 
 
 def _smoothstep(x):
@@ -51,12 +58,22 @@ def brighten(c, amount):
 
 class Grow:
     def __init__(self, spec, size=(1080, 1920), dur=16.0, reveal=3.5, ss=3, soft=1.35, core=0.3, core_shade=0.85,
-                 bright=1.12, mblur=4, turn=250.0, max_px=6.0, ao=0.6):
+                 bright=1.12, mblur=4, turn=250.0, max_px=6.0, ao=0.6, fov=FOV, view=None, floor=FLOOR, bg=None,
+                 rest=None, box=None):
+        """view: the final view {az, el[, fov]} (from `vengine yarn match`), default the photo's usual angle.
+        floor: strength of the toy's shadow on the floor under it (0: no floor).  bg: (top, bottom) backdrop colours,
+        sRGB 0..1.  rest: film seconds when the final turn comes to rest (default the last frame).  box: where the
+        finished toy sits in the last frame, (cx, cy, w, h) as fractions of the frame (default BOX)."""
         from .render import Renderer
         from .toy import toy_yarn
         self.W, self.H = size
         self.turn, self.max_px = float(turn), float(max_px)
         self.dur, self.reveal, self.mblur = float(dur), float(reveal), int(mblur)
+        view = dict(view or {})
+        self.fov = float(view.get('fov', fov))
+        self.view = dict(az=float(view.get('az', VIEW['az'])), el=float(view.get('el', VIEW['el'])), fov=self.fov)
+        self.rest = rest
+        self.box = tuple(box or (BOX_PORTRAIT if self.H > self.W else BOX_WIDE))
         X, D, C, pal, d, toy = toy_yarn(spec)
         self.X, self.D, self.C, self.d, self.toy = X, D, C, d, toy
         self.pieces = toy.yarn_pieces
@@ -79,7 +96,12 @@ class Grow:
                 self.core.append((p['start'], p['end'], seg - nrm * core * d))
         r = d / 2 / soft
         self.taper = max(4, int(round(2.0 * d / 0.5)))         # nodes over which the growing tip swells to full size
-        self.rn = Renderer(self.W, self.H, ss=ss, r=r, h=0.5, soft=soft, palette=pal2, ao=ao)
+        # the floor: a plane under the lowest yarn of the finished toy, catching the toy's shadow (pieces worked in the
+        # air then show where they hang); the backdrop colours of the photo when given
+        kw = dict(shadow_floor=float(floor), backdrop_y=float(X[:, 1].min()) - 0.5 * r) if floor > 0 else {}
+        if bg is not None:
+            kw.update(bg_top=tuple(bg[0]), bg_bot=tuple(bg[1]))
+        self.rn = Renderer(self.W, self.H, ss=ss, r=r, h=0.5, soft=soft, palette=pal2, ao=ao, **kw)
         scene = [X] + [Xc for _, _, Xc in self.core]
         self.core_off = np.cumsum([len(X)] + [len(Xc) for _, _, Xc in self.core])[:-1]
         self.rn.set_scene(np.concatenate(scene))
@@ -138,20 +160,43 @@ class Grow:
             rad.append(max(16.0, rr, 0.8 * rm))
         tg = _gauss_smooth(np.array(tg), 0.8 * FPS)
         rad = _gauss_smooth(np.array(rad), 0.8 * FPS)
-        for k, f in enumerate(self.plan):                   # the last part of the build pulls back to the whole toy
+        az_f, el_f = self.view['az'], self.view['el']
+        tg_f, rad_f = self._final_frame(az_f, el_f)
+        for k, f in enumerate(self.plan):     # the last part of the build pulls back to the final framing of the toy
             w = _smoothstep((f['t'] / self.dur - 0.7) / 0.25)
-            tg[k] = tg[k] * (1 - w) + gall * w
-            rad[k] = rad[k] * (1 - w) + Rall * w
+            tg[k] = tg[k] * (1 - w) + tg_f * w
+            rad[k] = rad[k] * (1 - w) + rad_f * w
         self.tg, self.rad = tg, rad
-        self.el = np.array([48.0 - 36.0 * _smoothstep(min(1.0, f['t'] / self.dur) / 0.65) for f in self.plan])
+        self.el = np.array([48.0 - (48.0 - el_f) * _smoothstep(min(1.0, f['t'] / self.dur) / 0.65) for f in self.plan])
         # the turn.  The wanted speed rises gently from v0 to v1 deg/s during the build, but it is capped so that the
         # yarn never slides more than `max_px` pixels a frame on screen (a close-up of a big piece turning at the same
         # angular speed as a small one slides much faster); the cap is smoothed so the speed has no corners.
-        # The reveal then keeps turning at the speed it has and settles, at rest, facing the viewer.
+        # The reveal then keeps turning at the speed it has and settles, at rest, in the final view (the photo's).
         v0, v1 = 6.0, 2.0 * self.turn / self.dur - 6.0
         want = np.array([(v0 + (v1 - v0) * _smoothstep(min(k / FPS, self.dur) / self.dur)) / FPS for k in range(self.NF)])
+        kr = self.NF - 1 if self.rest is None else int(np.clip(round(self.rest * FPS), self.NB + FPS, self.NF - 1))
+        L = max(1, kr - self.NB) / FPS
+        az, step = self._turn(25.0, want)
+        # where the build starts turning is free: shift it so the reveal needs to cover about 0.42 of v_end * L to land
+        # on the final azimuth (a plain slow-down, between (1 - u)^2 and linear; a longer way would speed up first)
+        a_end, v_end = az[self.NB], step[self.NB - 1] * FPS
+        want_end = a_end + 0.42 * v_end * L
+        target = az_f + 360.0 * round((want_end - az_f) / 360.0)
+        az, step = self._turn(25.0 + target - want_end, want)
+        a_end, v_end = az[self.NB], step[self.NB - 1] * FPS
+        # the nearest turn to the final azimuth that needs no reversing
+        target = az_f + 360.0 * math.ceil((a_end + v_end * L / 3.0 - az_f) / 360.0)
+        self.az, self.k_rest = az, kr
+        for k in range(self.NB + 1, self.NF):                # cubic Hermite: starts at speed v_end, ends at rest
+            u = min(1.0, (k - self.NB) / max(1, kr - self.NB))
+            h10 = u ** 3 - 2 * u ** 2 + u
+            h01 = -2 * u ** 3 + 3 * u ** 2
+            self.az[k] = a_end + h10 * v_end * L + h01 * (target - a_end)
+
+    def _turn(self, a0, want):
+        """Azimuth per frame through the build, starting at a0: the wanted speed under the on-screen speed cap."""
         cap = np.empty(self.NF)
-        a = 25.0
+        a = a0
         for k in range(self.NF):
             if k > self.NB:
                 cap[k] = want[k]
@@ -167,17 +212,42 @@ class Grow:
             cap[k] = max(0.15 * want[k], (self.max_px - trans) / max(per_deg, 1e-6))
             a += min(want[k], cap[k])
         step = _gauss_smooth(np.minimum(want, cap), 0.5 * FPS)
-        self.az = np.zeros(self.NF)
-        self.az[0] = 25.0
+        az = np.zeros(self.NF)
+        az[0] = a0
         for k in range(1, self.NB + 1):
-            self.az[k] = self.az[k - 1] + step[k - 1]
-        a_end, v_end, L = self.az[self.NB], step[self.NB - 1] * FPS, max(1, self.NF - 1 - self.NB) / FPS
-        target = 360.0 * math.ceil((a_end + v_end * L / 3.0) / 360.0)   # the nearest front that needs no reversing
-        for k in range(self.NB + 1, self.NF):                # cubic Hermite: starts at speed v_end, ends at rest
-            u = min(1.0, (k - self.NB) / max(1, self.NF - 1 - self.NB))
-            h10 = u ** 3 - 2 * u ** 2 + u
-            h01 = -2 * u ** 3 + 3 * u ** 2
-            self.az[k] = a_end + h10 * v_end * L + h01 * (target - a_end)
+            az[k] = az[k - 1] + step[k - 1]
+        return az, step
+
+    def _final_frame(self, az, el):
+        """Camera target and `rad` (distance / lens factor) that put the finished toy, seen from (az, el), in `box`."""
+        from .render import Camera
+        pts = self.X[::max(1, len(self.X) // 6000)]
+        if len(self.spheres):
+            pts = np.concatenate([pts, self.spheres[:, :3]])
+        lo, hi = pts.min(0), pts.max(0)
+        tg = (lo + hi) / 2
+        rad = float(np.linalg.norm(hi - lo) / 2)
+        cx, cy, bw, bh = self.box
+        want = np.array([(cx - 0.5) * self.W, (0.5 - cy) * self.H])       # box centre, x right / y up from the middle
+        fpx = 0.5 * self.W / math.tan(math.radians(self.fov) / 2)
+        for _ in range(8):
+            cam = self._cam(az, el, tg, rad)
+            p = self._project(cam, pts)
+            plo, phi = p.min(0), p.max(0)
+            k = max((phi[0] - plo[0]) / (bw * self.W), (phi[1] - plo[1]) / (bh * self.H))
+            dist = float(np.linalg.norm(cam.pos - tg))
+            B = cam.basis()
+            off = ((plo + phi) / 2 - want) * dist / fpx
+            tg = tg + B[0] * off[0] + B[1] * off[1]
+            rad *= k
+        return tg, rad
+
+    def final_box(self):
+        """Screen box (x0, y0, x1, y1 pixels) of the finished toy in the last frame."""
+        cam = self.cam_at(self.NF - 1)
+        p = self._project(cam, self.X[::max(1, len(self.X) // 6000)])
+        lo, hi = p.min(0), p.max(0)
+        return [float(lo[0] + self.W / 2), float(self.H / 2 - hi[1]), float(hi[0] + self.W / 2), float(self.H / 2 - lo[1])]
 
     def _pts(self, k, m=1500):
         """A fixed sample of the yarn made by frame k (for screen-motion estimates)."""
@@ -188,8 +258,9 @@ class Grow:
         from .render import Camera
         az, el = math.radians(az), math.radians(el)
         e = np.array([math.sin(az) * math.cos(el), math.sin(el), math.cos(az) * math.cos(el)])
-        dist = rad * (3.1 if self.H > self.W else 2.6)
-        return Camera(tg + e * dist, tg, up=(0, 1, 0), fov=30)
+        # same framing for any lens: the distance grows as the field of view narrows (3.1 / 2.6 radii at 30 degrees)
+        dist = rad * (3.1 if self.H > self.W else 2.6) * math.tan(math.radians(15.0)) / math.tan(math.radians(self.fov) / 2)
+        return Camera(tg + e * dist, tg, up=(0, 1, 0), fov=self.fov)
 
     def _project(self, cam, pts):
         B = cam.basis()
@@ -279,14 +350,35 @@ def main(argv=None):
     ap.add_argument('--still', help='comma separated times in seconds: write OUT/still.jpg')
     ap.add_argument('--core', type=float, default=0.3); ap.add_argument('--soft', type=float, default=1.35)
     ap.add_argument('--bright', type=float, default=1.12); ap.add_argument('--mblur', type=int, default=4)
+    ap.add_argument('--view', help='match.json of `vengine yarn match` (or az,el): the final view, the photo\'s angle')
+    ap.add_argument('--fov', type=float, default=FOV, help='lens, degrees across the frame width')
+    ap.add_argument('--floor', type=float, default=FLOOR, help='shadow on the floor, 0 = no floor')
+    ap.add_argument('--bg', help='backdrop colours top,bottom as hex (#fbf3e7,#f3e6cf); default: match.json, else the renderer\'s')
+    ap.add_argument('--rest', type=float, help='film seconds when the final turn comes to rest (default: the last frame)')
     a = ap.parse_args(argv)
     from PIL import Image
     W, H = [int(v) for v in a.size.split('x')]
+    view, bg = None, None
+    if a.view:
+        if os.path.exists(a.view):
+            view = json.loads(Path(a.view).read_text())
+            if view.get('bg_top') and view.get('bg_bot'):
+                bg = (view['bg_top'], view['bg_bot'])
+        else:
+            az, el = (float(v) for v in a.view.split(','))
+            view = dict(az=az, el=el)
+        view.setdefault('fov', a.fov)
+    if a.bg:
+        bg = tuple([int(h.strip().lstrip('#')[i:i + 2], 16) / 255 for i in (0, 2, 4)] for h in a.bg.split(','))
     g = Grow(json.loads(Path(a.spec).read_text()), (W, H), a.dur, a.reveal, ss=a.ss, soft=a.soft, core=a.core,
-             bright=a.bright, mblur=a.mblur)
+             bright=a.bright, mblur=a.mblur, fov=a.fov, view=view, floor=a.floor, bg=bg, rest=a.rest)
     os.makedirs(a.out, exist_ok=True)
+    final = dict(g.view, frame=g.NF - 1, rest_frame=int(g.k_rest), mask='final-mask.png',
+                 box=[round(v, 1) for v in g.final_box()], matched=bool(view and 'iou' in view))
+    if view and 'iou' in view:
+        final.update(iou=view['iou'], photo=view.get('photo'))
     _atomic_json(dict(plan=g.plan, pieces=[dict(p) for p in g.pieces], fps=FPS, size=[W, H], dur=a.dur,
-                      reveal=a.reveal, renderer='yarn'), os.path.join(a.out, 'plan.json'))
+                      reveal=a.reveal, renderer='yarn', final=final), os.path.join(a.out, 'plan.json'))
     if a.still:
         ims = [Image.fromarray(g.frame(int(round(float(t) * FPS)))).resize((W // 3, H // 3), Image.LANCZOS)
                for t in a.still.split(',')]
@@ -307,6 +399,11 @@ def main(argv=None):
         tmp = fn + '.tmp.png'
         Image.fromarray(g.frame(k)).save(tmp)
         os.replace(tmp, fn)
+        if k == g.k_rest:
+            # the exact silhouette of the toy in the still final view (frames from here on do not move): the montage
+            # lays the photo over it; cutting it out of the frame would also pick up the shadow on the floor
+            m = Image.fromarray(((g.rn.idb > 0) * 255).astype(np.uint8)).resize((W, H), Image.BOX)
+            m.save(os.path.join(a.out, 'final-mask.png'))
     return 0
 
 

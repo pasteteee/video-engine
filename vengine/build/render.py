@@ -24,6 +24,7 @@ from . import storyboard as SB
 from .comp import Compositor
 
 KNIT_DIR = "06_render/knit"
+MATCH = "06_render/match.json"
 
 
 def _load(ep: Episode):
@@ -37,21 +38,38 @@ def spec_path(ep: Episode, sb: dict) -> Path:
     return p if p.is_absolute() else ep.folder / p
 
 
+def photo_path(ep: Episode, sb: dict) -> Path | None:
+    """The studio photo the knit dissolves into (photos.real, else photos.hook), if there is one."""
+    ph = sb.get("photos", {})
+    rel = ph.get("real") or ph.get("hook")
+    if not rel:
+        return None
+    p = Path(rel)
+    p = p if p.is_absolute() else ep.folder / p
+    return p if p.exists() else None
+
+
 def run_knit(ep: Episode, jobs: int | None = None, still: str | None = None) -> Path:
     sb, ch = _load(ep)
     b = ch.get("build", {})
     tm = SB.timing(sb, ch)
     ka = tm.knit_args()
     out = ep.path(KNIT_DIR if not still else "06_render/knit_still")
+    view, rest = None, None
+    photo = photo_path(ep, sb)
+    if K.renderer(b["knit"]) == "yarn" and photo and b["knit"].get("match", True):
+        # end the knit on the studio photo's angle, at rest just before the photo comes in
+        view = K.match(b["knit"], spec_path(ep, sb), photo, ep.path(MATCH), ep.path("07_qa/frames/match.jpg"))
+        rest = tm.grow + tm.done - 0.2
     return K.run(b["knit"], spec_path(ep, sb), out, ka["dur"], ka["reveal"], b.get("size", "1080x1920"),
-                 int(b.get("fps", 30)), jobs, still)
+                 int(b.get("fps", 30)), jobs, still, view, rest)
 
 
 def compositor(ep: Episode) -> Compositor:
     sb, ch = _load(ep)
     b = ch.get("build", {})
     from .comp import DESIGN
-    frames = K.KnitFrames(ep.path(KNIT_DIR), K.smooth_for(b.get("knit", {})), DESIGN)
+    frames = K.KnitFrames(ep.path(KNIT_DIR), K.smooth_for(b.get("knit", {})), DESIGN, K.lift_of(b.get("knit", {})))
     return Compositor(ep.folder, sb, ch, frames)
 
 

@@ -12,6 +12,17 @@
     "dur": {"type": "number", "description": "Seconds of the build (the yarn is complete at about 0.94 * dur)"},
     "reveal": {"type": "number", "description": "Seconds of the finished-toy turn after the build"},
     "frames": {"type": "string", "default": "%04d.png"},
+    "final": {
+      "type": "object",
+      "description": "The view the knit ends in (yarn renderer): when matched to the studio photo, the compositor dissolves the last knit frame into the photo laid over it",
+      "properties": {
+        "az": {"type": "number"}, "el": {"type": "number"}, "fov": {"type": "number"},
+        "matched": {"type": "boolean", "description": "az/el come from `vengine yarn match` on the photo"},
+        "iou": {"type": "number"}, "photo": {"type": ["string", "null"]},
+        "frame": {"type": "integer"}, "rest_frame": {"type": "integer", "description": "first frame of the still final view"},
+        "box": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4, "description": "x0 y0 x1 y1 of the toy in the last frame, pixels"}
+      }
+    },
     "plan": {
       "type": "array", "minItems": 2,
       "items": {

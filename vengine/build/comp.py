@@ -2,6 +2,11 @@
 
 Ported from the channel's goat-sweater-2027 short (comp.py) and made data-driven: the words come from the
 storyboard, colours and fonts from the channel profile, the moments from the knit plan.
+
+When the knit ends at rest in the studio photo's angle (plan.json `final.matched`, see vengine/yarn/match.py), the
+"real life" section opens with a dissolve: the photo is laid over the last knit frame so the two silhouettes coincide
+(same `align` as the match), its seamless backdrop extended to the whole frame, and faded in over `DISSOLVE` seconds;
+then it drifts in slowly.  Without a match the section opens with the old white flash on a cropped photo.
 """
 from __future__ import annotations
 
@@ -17,6 +22,8 @@ from . import storyboard as SB
 from .knit import KnitFrames
 
 DESIGN = (1080, 1920)
+DISSOLVE = 0.5          # seconds of the knit → photo dissolve
+DRIFT = 0.06            # slow zoom on the photo over the real-life section (matched mode)
 
 
 def hex_rgb(h: str) -> tuple[int, int, int]:
@@ -97,6 +104,8 @@ class Compositor:
         self.photo_cta = self._photo(ph.get("cta")) or self.photo_real
         self.focus_hook = ph.get("hook_focus", [0.40, 0.34])
         self.focus_real = ph.get("real_focus", [0.5, 0.55])
+        self._placed = None
+        self.matched = bool(self.photo_real is not None and knit.final.get("matched"))
         g0, g1 = self.brand.ground
         self.cta_bg = Image.new("RGB", (self.W, self.H)); d = ImageDraw.Draw(self.cta_bg)
         for y in range(self.H):
@@ -119,6 +128,62 @@ class Compositor:
         if self.final_knit is None:
             self.final_knit = self.knit.frame(len(self.plan) - 1)
         return self.final_knit
+
+    # ------------------------------------------------ the dissolve into the photo
+    def knit_at(self, t) -> Image.Image:
+        """The knit frame shown at film time t, at the design size."""
+        k = int(np.clip(int((t - self.tm.t_grow) * self.fps), 0, len(self.plan) - 1))
+        cv = self.knit.frame(k)
+        return cv if cv.size == (self.W, self.H) else cv.resize((self.W, self.H), Image.LANCZOS)
+
+    def placement(self):
+        """(scale, tx, ty): photo pixel P lands on scale * P + (tx, ty) of the frame, toy over the knit toy, and the
+        silhouette IoU of that fit.  Measured on the knit frame at the start of the real-life section."""
+        if self._placed is None:
+            from ..yarn.match import align, toy_mask
+            from ..yarn.match import WORK
+            last = self.knit_at(self.tm.t_real)
+            mp = toy_mask(self.photo_real, WORK)
+            mf = self.knit.folder / self.knit.final.get("mask", "final-mask.png")
+            if mf.exists():                     # the renderer's own silhouette of the still final view
+                m = Image.open(mf).convert("L").resize(last.size, Image.BILINEAR)
+                sk0 = WORK / max(last.size)
+                mk = np.asarray(m.resize((round(last.width * sk0), round(last.height * sk0)), Image.BILINEAR)) > 127
+            else:
+                mk = toy_mask(last, WORK)
+            f = align(mp, mk)
+            sk, sp = WORK / max(last.size), WORK / max(self.photo_real.size)
+            self._placed = (f["s"] * sp / sk, f["tx"] / sk, f["ty"] / sk, f["iou"])
+        return self._placed
+
+    def _extended(self):
+        """The photo on a canvas three times its size, the seamless backdrop carried on past its edges."""
+        if getattr(self, "_ext", None) is None:
+            ph = self.photo_real
+            w, h = ph.size
+            q = 4
+            small = np.asarray(ph.resize((w // q, h // q), Image.BILINEAR), np.float32)
+            pad = np.pad(small, ((h // q, h // q), (w // q, w // q), (0, 0)), mode="edge")
+            from scipy.ndimage import gaussian_filter
+            pad = gaussian_filter(pad, (6, 30, 0), mode="nearest")   # the backdrop varies slowly across: no streaks
+            big = Image.fromarray(np.clip(pad + 0.5, 0, 255).astype(np.uint8)).resize((3 * w, 3 * h), Image.BICUBIC)
+            m = Image.new("L", (w, h), 0)
+            e = max(8, w // 40)                          # feather the photo's own edge into the carried backdrop
+            ImageDraw.Draw(m).rectangle((e, e, w - e, h - e), fill=255)
+            big.paste(ph, (w, h), m.filter(ImageFilter.GaussianBlur(e / 2)))
+            self._ext = big
+        return self._ext
+
+    def placed_photo(self, zoom=1.0) -> Image.Image:
+        """The photo laid over the knit frame (see placement), zoomed by `zoom` about the toy's centre."""
+        s, tx, ty, _ = self.placement()
+        x0, y0, x1, y1 = self.knit.final.get("box") or (0, 0, self.W, self.H)
+        cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+        s2, tx2, ty2 = s * zoom, cx + (tx - cx) * zoom, cy + (ty - cy) * zoom
+        w, h = self.photo_real.size
+        # frame pixel K shows extended-canvas pixel (K - t) / s + (w, h)
+        data = (1 / s2, 0, w - tx2 / s2, 0, 1 / s2, h - ty2 / s2)
+        return self._extended().transform((self.W, self.H), Image.AFFINE, data, Image.BICUBIC)
 
     # ------------------------------------------------ drawing helpers
     def text_img(self, s, size, fill, face="U"):
@@ -268,10 +333,17 @@ class Compositor:
     def real(self, t):
         tm, W = self.tm, self.W
         tr = t - tm.t_real
-        src = self.photo_real or self.finished()
-        fx, fy = self.focus_real if self.photo_real else (0.5, 0.5)
-        cv = self.cover(src, fx, fy, 1.12 - 0.08 * ease(tr / max(0.5, tm.real)))
-        self.snow(cv, t); cv = self.flash(cv, tr, 0.35, 0.9)
+        if self.matched:
+            cv = self.placed_photo(1 + DRIFT * ease(tr / max(0.5, tm.real)))
+            a = ease(tr / DISSOLVE)
+            if a < 1:
+                cv = Image.blend(self.knit_at(t), cv, a)
+            self.snow(cv, t)
+        else:
+            src = self.photo_real or self.finished()
+            fx, fy = self.focus_real if self.photo_real else (0.5, 0.5)
+            cv = self.cover(src, fx, fy, 1.12 - 0.08 * ease(tr / max(0.5, tm.real)))
+            self.snow(cv, t); cv = self.flash(cv, tr, 0.35, 0.9)
         lines = self.sb["real"]["lines"]
         if lines:
             self.words(cv, lines[0], 380, 104, tr - 0.15)

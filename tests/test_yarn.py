@@ -126,7 +126,15 @@ def test_grow_plan_and_camera_are_smooth(tmp_path):
     v = np.diff(g.az)
     assert (v >= -1e-9).all()                                # always turning the same way
     assert abs(np.diff(v)).max() < 0.6                       # no jumps in speed
-    assert abs(g.az[-1] % 360) < 1e-6 or abs(g.az[-1] % 360 - 360) < 1e-6   # ends facing the viewer
+    assert abs((g.az[-1] - 32.0) % 360) < 1e-6 or abs((g.az[-1] - 32.0) % 360 - 360) < 1e-6   # ends in the photo's view
+    assert g.el[-1] == pytest.approx(12.0) and g.fov == 18.0
+    x0, y0, x1, y1 = g.final_box()                          # the finished toy fills the box: 62% wide or 40% tall
+    assert max((x1 - x0) / 108 / 0.62, (y1 - y0) / 192 / 0.40) == pytest.approx(1.0, abs=0.03)
+    assert ((x0 + x1) / 2 / 108) == pytest.approx(0.5, abs=0.02) and ((y0 + y1) / 2 / 192) == pytest.approx(0.48, abs=0.02)
+    h = Grow(TOY, (108, 192), dur=4.0, reveal=2.0, ss=1, view=dict(az=50.0, el=6.0), rest=5.0)
+    assert h.k_rest == 150 and h.az[150] == pytest.approx(h.az[-1]) and h.el[-1] == pytest.approx(6.0)
+    assert (h.az[-1] - 50.0) % 360 == pytest.approx(0.0, abs=1e-6) or (h.az[-1] - 50.0) % 360 == pytest.approx(360.0)
+    assert (np.diff(h.az) >= -1e-9).all() and abs(np.diff(np.diff(h.az))).max() < 0.6
     spec = tmp_path / "spec.json"
     spec.write_text(json.dumps(TOY))
     out = tmp_path / "frames"
@@ -135,6 +143,45 @@ def test_grow_plan_and_camera_are_smooth(tmp_path):
     assert (out / "0000.png").exists() and (out / "0001.png").exists()
     plan = json.loads((out / "plan.json").read_text())
     assert len(plan["plan"]) == 90 and plan["renderer"] == "yarn"
+    assert plan["final"]["az"] == 32.0 and not plan["final"]["matched"] and len(plan["final"]["box"]) == 4
     mtime = (out / "0000.png").stat().st_mtime_ns
     main([str(spec), str(out), "--size", "108x192", "--dur", "2", "--reveal", "1", "--ss", "1", "--frames", "0:1"])
     assert (out / "0000.png").stat().st_mtime_ns == mtime       # existing frames are kept
+
+
+# ------------------------------------------------------------------------------------------- the photo's angle (match)
+def _blob(shape, cx, cy, s):
+    """A toy-like silhouette: a body, a head and two ears, centred at cx, cy, size s (pixels)."""
+    yy, xx = np.mgrid[0:shape[0], 0:shape[1]]
+    m = ((xx - cx) / (0.5 * s)) ** 2 + ((yy - cy - 0.25 * s) / (0.45 * s)) ** 2 < 1
+    m |= (xx - cx) ** 2 + (yy - cy + 0.35 * s) ** 2 < (0.38 * s) ** 2
+    for e in (-1, 1):
+        m |= ((xx - cx - e * 0.45 * s) / (0.2 * s)) ** 2 + ((yy - cy + 0.45 * s) / (0.1 * s)) ** 2 < 1
+    return m
+
+
+def test_align_recovers_scale_and_shift():
+    from vengine.yarn.match import align, iou, warp
+    a = _blob((200, 200), 90, 110, 100)
+    b = _blob((300, 260), 140, 160, 130)
+    f = align(a, b)
+    assert f["iou"] > 0.96 and f["s"] == pytest.approx(1.3, abs=0.04)
+    assert iou(warp(a, f["s"], f["tx"], f["ty"], b.shape), b) == pytest.approx(f["iou"])
+
+
+def test_toy_mask_keeps_the_toy_and_drops_its_shadow():
+    from vengine.yarn.match import toy_mask
+    H = W = 240
+    yy, xx = np.mgrid[0:H, 0:W]
+    bg = np.stack([246 + 6 * yy / H, 231 + 9 * yy / H, 216 + 12 * yy / H], -1)       # warm seamless backdrop
+    img = bg.copy()
+    from scipy.ndimage import gaussian_filter
+    sh = ((xx - 150) / 70.0) ** 2 + ((yy - 200) / 18.0) ** 2 < 1                   # soft contact shadow
+    k = gaussian_filter(sh.astype(float), 6)[..., None]
+    img = img * (1 - k * (1 - np.array([0.82, 0.78, 0.72])))
+    toy = _blob((H, W), 110, 120, 110)
+    rng = np.random.default_rng(1)
+    img[toy] = np.array([200, 30, 35]) + rng.normal(0, 18, (toy.sum(), 1))         # red yarn with texture
+    m = toy_mask(img.clip(0, 255).astype(np.uint8), W)
+    assert (m & toy).sum() / toy.sum() > 0.97
+    assert (m & sh & ~toy).sum() / (sh & ~toy).sum() < 0.1

@@ -185,6 +185,57 @@ def test_knit_commands_for_each_renderer(tmp_path):
     assert K.smooth_for({"renderer": "yarn", "smooth": {"crochetsim": [0.2, 0.6, 0.2]}}) == [0.0, 1.0, 0.0]
     cm = K.commands({"renderer": "command", "command": ["r", "{spec}", "{out}", "{a}-{b}"]}, spec, out, 1, 1, "1x1", 30, 2)
     assert cm[1] == ["r", str(spec), str(out), "30-60"]
+    view = tmp_path / "match.json"
+    view.write_text(json.dumps({"az": 35, "el": 8, "fov": 18, "iou": 0.92, "bg_top": [0.95, 0.9, 0.84],
+                                "bg_bot": [0.98, 0.94, 0.89]}))
+    ys = K.commands({"renderer": "yarn"}, spec, out, 16, 3.5, "1080x1920", 30, 1, None, view, 17.8)
+    c = ys[0]
+    assert c[c.index("--view") + 1] == str(view) and c[c.index("--rest") + 1] == "17.8"
+    top, bot = c[c.index("--bg") + 1].split(",")
+    lifted = 1 - (1 - int(top[1:3], 16) / 255) ** K.LIFT                 # through the montage lift: the photo's colour
+    assert lifted == pytest.approx(0.95, abs=0.006)
+
+
+def _photo_like_knit(size, box):
+    """An image with a red rounded toy in `box` on a cream backdrop (stands in for a knit frame or the photo)."""
+    from PIL import ImageDraw
+    im = Image.new("RGB", size, (246, 232, 217))
+    d = ImageDraw.Draw(im)
+    x0, y0, x1, y1 = box
+    d.ellipse((x0, y0 + (y1 - y0) * 0.35, x1, y1), fill=(190, 30, 34))
+    d.ellipse((x0 + (x1 - x0) * 0.2, y0, x1 - (x1 - x0) * 0.2, y0 + (y1 - y0) * 0.55), fill=(180, 40, 40))
+    a = np.asarray(im, np.int16)
+    a = a + (np.random.default_rng(2).normal(0, 9, a.shape[:2])[..., None] * (a[..., 1:2] < 100))
+    return Image.fromarray(a.clip(0, 255).astype(np.uint8))
+
+
+def test_matched_knit_dissolves_into_the_photo(tmp_path):
+    """The real-life section opens on the knit frame and dissolves into the photo laid over it: no jump in position,
+    size or backdrop colour from frame to frame."""
+    ep, knit = make_ep(tmp_path)
+    W, H = 216, 384
+    box = (40, 120, 176, 270)
+    kd = ep.folder / "06_render/knit"
+    data = json.loads((kd / "plan.json").read_text())
+    data["final"] = {"az": 35, "el": 8, "fov": 18, "matched": True, "box": list(box)}
+    (kd / "plan.json").write_text(json.dumps(data))
+    for i in range(len(data["plan"])):
+        _photo_like_knit((W, H), box).save(kd / f"{i:04d}.png")
+    _photo_like_knit((400, 400), (110, 60, 330, 300)).save(ep.folder / "02_research/photo.png")
+    sb = dict(SB_MIN, photos={"hook": "02_research/photo.png", "real": "02_research/photo.png"},
+              timing=dict(SB_MIN["timing"], real=2.0))
+    ch = json.loads(json.dumps(CH))
+    ch["build"]["size"] = f"{W}x{H}"
+    c = Compositor(ep.folder, sb, ch, K.KnitFrames(kd, (0, 1, 0), (1080, 1920), lift=1.0))
+    assert c.matched
+    s, tx, ty, fit = c.placement()
+    assert fit > 0.9 and s == pytest.approx(5 * 136 / 220, rel=0.06)       # knit frames are scaled 5x to the design
+    k0 = int(round(c.tm.t_real * FPS))
+    fr = [np.asarray(c.frame(k).resize((W, H)), float) for k in range(k0 - 2, k0 + int(0.7 * FPS))]
+    steps = [np.abs(b - a).mean() for a, b in zip(fr, fr[1:])]
+    assert max(steps) < 6                                                  # a dissolve, not a cut or a flash
+    top = [f[: H // 10].reshape(-1, 3).mean(0) for f in fr]
+    assert max(np.abs(b - a).max() for a, b in zip(top, top[1:])) < 4       # the backdrop colour glides
 
 
 def test_music_render_short():

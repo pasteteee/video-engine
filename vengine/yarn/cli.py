@@ -1,9 +1,11 @@
 """python -m vengine yarn <command> ...
 
   grow   SPEC.json OUTDIR [--size WxH] [--dur S] [--reveal S] [--frames a:b | --part i/n] [--still t1,t2]
+         [--view match.json|az,el] [--fov 18] [--floor 0.42] [--bg #top,#bottom] [--rest S]
          growth-shot frames OUTDIR/%04d.png + OUTDIR/plan.json (existing frames are skipped)
   still  SPEC.json OUT.png [--size N] [--views front,34,back]   look check of the finished toy
   probe  SPEC.json OUTDIR [--size WxH]                          frame-to-frame flicker numbers (stable.py)
+  match  SPEC.json PHOTO [--out match.json] [--sheet look.jpg]   the studio photo's angle (match.py), for grow --view
 """
 from __future__ import annotations
 
@@ -20,6 +22,9 @@ def main(argv=None):
     if cmd == 'grow':
         from .grow import main as grow_main
         return grow_main(rest)
+    if cmd == 'match':
+        from .match import main as match_main
+        return match_main(rest)
     if cmd == 'probe':
         from .stable import main as probe_main
         return probe_main(rest)
