@@ -46,12 +46,12 @@ const VPhotoPan: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   </AbsoluteFill>;
 };
 const VFilm: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
-  const f = useCurrentFrame(); const P = s.params ?? {}; const z = 1 + 0.06 * interpolate(f, [0, d], [0, 1], C);
+  const f = useCurrentFrame(); const P = s.params ?? {}; const z = (P.z0 ?? 1) * (1 + 0.06 * interpolate(f, [0, d], [0, 1], C)); // z0 + oy crop a burned-in logo off one edge
   const m = MEDIA[s.media_ids![0]]; const k = P.unpillar ?? (P.pillar43 ? 1.335 : undefined) ?? (PLAN as any).unpillar ?? 1; // 1.335 for 4:3 film inside a 16:9 file
   const h = H * 1.0, w = (h * m.w) / m.h * k; // a 9:16 window travels across the clip
   const x = (P.x ?? 0.5) * (w - W);
   return <AbsoluteFill style={{ background: '#000', overflow: 'hidden' }}>
-    <div style={{ position: 'absolute', left: -x, top: 0, width: w, height: h, transform: `scale(${z})`, transformOrigin: `${x + W / 2}px 50%` }}>
+    <div style={{ position: 'absolute', left: -x, top: 0, width: w, height: h, transform: `scale(${z})`, transformOrigin: `${x + W / 2}px ${P.oy ?? 50}%` }}>
       <OffthreadVideo src={med(s.media_ids![0])} startFrom={Math.round((P.trim ?? 1) * FPS)} muted style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'contrast(1.06)' }} /></div>
     <Shade />
   </AbsoluteFill>;

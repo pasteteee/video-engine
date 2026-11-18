@@ -21,6 +21,7 @@ SAY = {
     r"\bhPa\b": "hectopascals", r"\bEF(\d)\b": r"E F \1", r"\bF(\d)\b": r"F \1",
     r"\bCAPCOM\b": "cap-com", r"\bSOFAR\b": "so-far", r"\bAgena\b": "uh-jee-nuh",
     r"\bJezero\b": "jez-er-oh", r"\bHunga Tonga\b": "Hoonga Tonga", r"\bHa'apai\b": "Ha-ah-pie",
+    r"\bOkeanos\b": "Oh-kee-uh-nos", r"\bVecchione\b": "Veh-kee-oh-nee", r"\bocto?pods\b": "octo-pods", r"\boctopod\b": "octo-pod",
 }
 
 def say(text: str) -> str:
