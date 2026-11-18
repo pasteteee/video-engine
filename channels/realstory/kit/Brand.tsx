@@ -1,7 +1,7 @@
 // Brand primitives: corner brackets, typed mono tags, blueprint grid, vignette, grain, underline, hand note, frame.
 import React from 'react';
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
-import { AMBER, C, DISP, FONT, GROUND, INK, MUTED, NAVY, NAVY2, RED, io, rgba } from './tokens';
+import { AMBER, C, DISP, FONT, GROUND, INK, MUTED, NAVY, NAVY2, RED, TINT, io, rgba } from './tokens';
 
 // Amber corner brackets. p: 0→1 (use a spring). Brackets fly in from outside the box.
 export const Corners: React.FC<{ x: number; y: number; w: number; h: number; p: number; len?: number; color?: string; width?: number }> = ({ x, y, w, h, p, len = 46, color = AMBER, width = 6 }) => {
@@ -30,8 +30,8 @@ export const Grid: React.FC<{ opacity?: number; shift?: number }> = ({ opacity =
   const { width, height } = useVideoConfig();
   return (
     <svg width={width} height={height} style={{ position: 'absolute', opacity }}>
-      <defs><pattern id="psg1" width="40" height="40" patternUnits="userSpaceOnUse" x={shift} y={shift * 0.4}><path d="M40 0 L0 0 0 40" fill="none" stroke="rgba(160,200,255,0.06)" strokeWidth={1} /></pattern>
-        <pattern id="psg2" width="200" height="200" patternUnits="userSpaceOnUse" x={shift} y={shift * 0.4}><path d="M200 0 L0 0 0 200" fill="none" stroke="rgba(160,200,255,0.12)" strokeWidth={1.2} /></pattern></defs>
+      <defs><pattern id="psg1" width="40" height="40" patternUnits="userSpaceOnUse" x={shift} y={shift * 0.4}><path d="M40 0 L0 0 0 40" fill="none" stroke={rgba(TINT, 0.06)} strokeWidth={1} /></pattern>
+        <pattern id="psg2" width="200" height="200" patternUnits="userSpaceOnUse" x={shift} y={shift * 0.4}><path d="M200 0 L0 0 0 200" fill="none" stroke={rgba(TINT, 0.12)} strokeWidth={1.2} /></pattern></defs>
       <rect width={width} height={height} fill="url(#psg1)" /><rect width={width} height={height} fill="url(#psg2)" />
     </svg>
   );
