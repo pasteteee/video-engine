@@ -7,6 +7,7 @@ import SL from '../ep/shotlist.json';
 const LOOK = { ground: '#0e0f11', ground_2: '#1b1d21', accent: '#e8b430', tint: '#a4a199', ...((SL as any).look ?? {}) };
 const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
 const mix = (a: string, b: string, t: number) => '#' + hex(a).map((v, i) => Math.round(v + (hex(b)[i] - v) * t).toString(16).padStart(2, '0')).join('');
+export const mixT = (a: string, b: string, t: number) => mix(a, b, t);
 export const rgba = (h: string, a: number) => `rgba(${hex(h).join(',')},${a})`;
 
 // channel (never change per episode)

@@ -1,7 +1,7 @@
 // Real Story motion typography. No plates, no frames: the words are the animation.
 import React from 'react';
 import { interpolate, useCurrentFrame } from 'remotion';
-import { ACCENT_EP, BONE, C, DISP, FONT, MUTED, SHADOW, SIGNAL, TINT, exitE, io, out } from './tokens';
+import { ACCENT_EP, BONE, C, DISP, FONT, MUTED, SHADOW, SIGNAL, TINT, exitE, io, mixT, out } from './tokens';
 
 const ease4 = (t: number) => 1 - Math.pow(1 - t, 4);
 
@@ -27,7 +27,7 @@ export const Unredact: React.FC<{ lines: string[]; top: number; size: number; f0
         return <div key={i} style={{ height: lh, lineHeight: `${lh}px` }}>
           <span style={{ position: 'relative', display: 'inline-block', ...DISP(size), lineHeight: `${lh}px`, color: colors[i] ?? BONE, textShadow: SHADOW }}>
             <span style={{ opacity: shown ? 1 : 0 }}>{t}</span>
-            <span style={{ position: 'absolute', top: '0.13em', height: '0.68em', left, width, background: SIGNAL }} />
+            <span style={{ position: 'absolute', top: '0.13em', height: '0.68em', left, width, background: last ? mixT(ACCENT_EP, SIGNAL, lift) : ACCENT_EP }} /* bars in the episode accent; the last one becomes the red stop block */ />
           </span>
           {last ? <span style={{ display: 'inline-block', width: (gap + sw) * size }} /> : null}
         </div>;
