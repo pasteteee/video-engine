@@ -16,6 +16,8 @@ import argparse, json, math, os, sys
 from pathlib import Path
 import numpy as np
 
+from .details import build as build_details, warn, with_ribbing
+
 AMIKIT = os.environ.get('AMIKIT', '/home/user')       # folder that holds the amikit package
 
 
@@ -28,21 +30,39 @@ def _toy(spec):
 
 # a single crochet as points (dv rounds below the top of its round, du in half-widths from its centre, n in yarn
 # diameters out of the surface).  'L'/'R': into the left / right base stitch; 'C': at the stitch itself.
-SC = [                            # a sc seen from the front: a plump V (legs stay up, no pointed leaf ends)
-    ('C', 0.00, -1.00, 0.24),     # where the previous stitch's top ended
-    ('C', 0.24, -0.84, 0.46),     # left front leg, upper
-    ('C', 0.55, -0.46, 0.44),     # left front leg, middle
-    ('L', 0.85, 0.00, 0.30),      # left front leg, lower: into the base stitch
+SC = [                            # a sc seen from the front: a short plump V, wider than tall (as on a real toy)
+    ('C', 0.04, -1.00, 0.20),     # where the previous stitch's top ended
+    ('C', 0.12, -0.92, 0.40),     # left front leg, upper: starts wide, at the corner of the stitch
+    ('C', 0.44, -0.56, 0.46),     # left front leg, middle: leans in at about 45 degrees
+    ('L', 0.80, 0.00, 0.30),      # left front leg, lower: into the base stitch
     ('B', 1.00, 0.00, -0.05),     # through the fabric under the base V
     ('C', 0.55, 0.00, -0.42),     # the bar on the wrong side
-    ('R', 0.88, 0.00, 0.24),      # back to the front, at the base
-    ('C', 0.55, 0.46, 0.44),      # right front leg, middle
-    ('C', 0.24, 0.84, 0.46),      # right front leg, upper
-    ('C', 0.02, 0.86, 0.38),      # top: front loop along the edge
-    ('C', -0.06, 1.00, 0.14),     # round the end of the top loop
+    ('R', 0.82, 0.00, 0.24),      # back to the front, at the base
+    ('C', 0.44, 0.56, 0.46),      # right front leg, middle
+    ('C', 0.12, 0.92, 0.40),      # right front leg, upper
+    ('C', 0.02, 1.00, 0.26),      # top: front loop along the edge, tucked under the next round's legs
+    ('C', -0.03, 1.06, 0.06),     # round the end of the top loop
     ('C', 0.00, 0.80, -0.30),     # back loop
     ('C', 0.04, 1.00, -0.10),
 ]
+
+
+# rounds 1-2 of a piece begun in a magic ring: the ring is pulled tight, so the stitches are short radial spokes into
+# the centre and their tops make a smooth closed circle (a plain V there opens into a star or a flower)
+SC_RING = [
+    ('C', 0.02, -1.00, 0.20),
+    ('C', 0.16, -0.42, 0.26),     # left leg: nearly radial, close to the right one
+    ('L', 0.85, 0.00, 0.14),
+    ('B', 1.00, 0.00, -0.05),
+    ('C', 0.55, 0.00, -0.36),
+    ('R', 0.85, 0.00, 0.14),
+    ('C', 0.16, 0.42, 0.26),
+    ('C', 0.02, 0.62, 0.26),      # the top runs on round the circle: one even edge, no scallops
+    ('C', -0.02, 1.00, 0.16),
+    ('C', 0.00, 0.80, -0.30),
+    ('C', 0.04, 1.00, -0.10),
+]
+RING_ROUNDS = 2
 
 
 def _catmull(P, per, tag=None):
@@ -80,7 +100,9 @@ def piece_yarn(inst, lean, d, rmax=None, with_stitch=False):
     rounds = p.rounds[:rmax] if rmax else p.rounds
     T, TH, NN, SID = [], [], [], []
     prev_n = None
+    ring = counts[0] <= 8                                    # begun in a magic ring (not a chain ring of 48)
     for i, rd in enumerate(rounds, 1):
+        tmpl = SC_RING if ring and i <= RING_ROUNDS else SC
         n_i = counts[i - 1]
         hw = math.pi / n_i                                  # half a stitch, in angle
         k = 0; j = 0
@@ -90,7 +112,7 @@ def piece_yarn(inst, lean, d, rmax=None, with_stitch=False):
             for q in range(outs):
                 thc = 2 * math.pi * (k + 0.5 - lean * (i - 0.5)) / n_i
                 if prev_n is None:                          # round 1: into the ring
-                    bl = br = thc; tb = 0.18
+                    bl = br = thc; tb = 0.04
                     hb = 0.0
                 else:
                     hb = math.pi / prev_n
@@ -102,11 +124,13 @@ def piece_yarn(inst, lean, d, rmax=None, with_stitch=False):
                     else:
                         bl = br = thb
                     tb = i - 1
-                for kind, dv, du, nn in SC:
+                for kind, dv, du, nn in tmpl:
+                    # the tip of the V sits between the base stitch and the stitch's own centre: the column still
+                    # leans (amikit LEAN), but the two legs stay the same length instead of one long and one steep
                     if kind == 'L':
-                        t, th = max(tb, i - dv), bl - 0.35 * hb
+                        t, th = max(tb, i - dv), 0.6 * bl + 0.4 * thc - 0.12 * hb
                     elif kind == 'R':
-                        t, th = max(tb, i - dv), br + 0.35 * hb
+                        t, th = max(tb, i - dv), 0.6 * br + 0.4 * thc + 0.12 * hb
                     elif kind == 'B':
                         t, th = max(tb - 0.02, i - dv), 0.5 * (bl + br)
                     else:
@@ -159,22 +183,33 @@ def directors(X):
     return D
 
 
+def yarn_width(yarn):
+    """The yarn as it looks in the fabric: a soft cotton yarn is squashed flat by its neighbours, so its visible width
+    is about 0.58 of the stitch (2.3 mm at a 4 mm stitch), more than its nominal round thickness."""
+    t = float(yarn.get('thickness_mm', 1.9))
+    return max(t, 0.58 * float(yarn.get('stitch_mm', 4.0)))
+
+
 def toy_yarn(spec, rmax=None, parts=None):
     """All pieces as one chain with gaps between them.  Returns X, D, colour index per node, palette, gap."""
     toy, lean = _toy(spec)
-    d = float(toy.yarn.get('thickness_mm', 1.9))
+    d = yarn_width(toy.yarn)
     cols = {}
     Xs, Cs = [], []
     pieces = []
+    applique = []                                          # flat pieces sewn on (cheeks, motifs): details.py
     for name, inst in toy.inst.items():
         if parts and name.split('_')[0] not in parts:
             continue
+        if getattr(inst, 'app', None) is not None or getattr(inst.p, 'motif', None) is not None:
+            applique.append(inst); continue
         if not hasattr(inst.p, 'rounds') or not hasattr(inst.p, 'counts'):
-            continue
+            warn(f'piece {name!r} has no rounds: not drawn'); continue
         try:
             Xp, sid = piece_yarn(inst, lean, d, rmax, with_stitch=True)
-        except Exception as e:                              # flat / motif pieces are not laid yet
-            print('skip', name, e); continue
+            Xp, sid = with_ribbing(inst, lean, d, Xp, sid)  # ribbed rounds: posts in vertical ribs
+        except Exception as e:
+            warn(f'piece {name!r} not drawn: {e}'); continue
         col = inst.p.colour
         ci = cols.setdefault(col, len(cols))
         cnode = np.full(len(Xp), ci, np.int32)
@@ -193,66 +228,32 @@ def toy_yarn(spec, rmax=None, parts=None):
         pieces.append(dict(name=name, part=name.split('_')[0], start=n0, end=n0 + len(Xp), counts=list(inst.p.counts[:rmax] if rmax else inst.p.counts),
                            name_ru=next((q.get('name_ru') for q in spec['parts'] if q['id'] == name.split('_')[0]), name)))
         Xs.append(Xp); Cs.append(cnode)
-    # the face: eyes, noses and satin as a tight spiral of yarn (a dome), embroidery as a strand on the surface
-    spheres = []
-
-    def dome(P0, n0, wx, wy, hgt, off=(0.0, 0.0), pitch=0.4):
-        up = np.array([0.0, 1.0, 0.0])
-        e1 = np.cross(up, n0); e1 = e1 / (np.linalg.norm(e1) + 1e-9); e2 = np.cross(n0, e1)
-        P0 = P0 + off[0] * e1 + off[1] * e2
-        R = 0.5 * max(wx, wy)
-        a = np.linspace(0, 2 * np.pi * R / (pitch * d), max(200, int(40 * R)))
-        u = a / a[-1]
-        x = u * (0.5 * wx - d / 2) * np.cos(a); y = u * (0.5 * wy - d / 2) * np.sin(a)
-        z = d * 0.45 + hgt * np.sqrt(np.clip(1 - u ** 2, 0, 1))
-        return P0 + np.outer(x, e1) + np.outer(y, e2) + np.outer(z, n0)
-
-    for f in spec.get('face', []):
-        hosts = [k for k in toy.inst if k == f['on'] or k.startswith(f['on'] + '_')]
-        if not hosts or f['type'] not in ('safety_eye', 'safety_nose', 'satin', 'stitch'):
-            continue
-        inst = toy.inst[hosts[0]]
-        col = f.get('colour', 'black')
-        ci = cols.setdefault(col, len(cols))
-        if f['type'] == 'stitch':
-            pts = [inst.point(rnd, az) for rnd, az in f['points']]
-            P = np.array([q + nq * 0.5 * d for q, nq in pts])   # sunk between the stitches: reads as a thin thread
-            Xp = _resample(_catmull(P, 0.3), 0.5)
-            Xs.append(Xp); Cs.append(np.full(len(Xp), ci, np.int32))
-            continue
-        if len(hosts) > 1:                                  # on a mirrored pair of pieces: the same place on each
-            where = [(toy.inst[hn], f['at']['az']) for hn in hosts]
-        elif f.get('mirror'):
-            where = [(inst, f['at']['az']), (inst, -f['at']['az'])]
-        else:
-            where = [(inst, f['at']['az'])]
-        for hi, az in where:
-            P0, n0 = hi.point(f['at']['round'], az)
-            sz = f.get('size_mm', 10)
-            wx, wy = (sz if isinstance(sz, list) else [sz, sz]) if f['type'] != 'satin' else (f.get('width_mm', 6), f.get('height_mm', 6))
-            hgt = {'safety_eye': 0.3 * max(wx, wy), 'safety_nose': 0.3 * max(wx, wy)}.get(f['type'], f.get('thickness_mm', 1.0) * 0.6)
-            off = f.get('offset_mm', [0.0, 0.0])
-            off = (off[0] * (1 if az >= 0 or not f.get('mirror') else -1), off[1])
-            if f['type'] == 'safety_eye':                   # a glossy plastic half-ball, traced by the renderer
-                up_ = np.array([0.0, 1.0, 0.0]); e1 = np.cross(up_, n0); e1 /= np.linalg.norm(e1) + 1e-9
-                e2 = np.cross(n0, e1); Rr = 0.5 * max(wx, wy)
-                c = P0 + n0 * (f.get('lift_mm', 0.0) + 0.55 * d - 0.35 * Rr) + off[0] * e1 + off[1] * e2
-                spheres.append([c[0], c[1], c[2], Rr, ci])
-                continue
-            if f['type'] == 'satin':                        # a cheek: a small flat crocheted circle sewn on
-                up_ = np.array([0.0, 1.0, 0.0]); e1 = np.cross(up_, n0); e1 /= np.linalg.norm(e1) + 1e-9
-                e2 = np.cross(n0, e1)
-                Xp = flat_circle(P0 + n0 * (f.get('lift_mm', 0.0) + 0.15 * d) + off[0] * e1 + off[1] * e2, n0, e1, e2,
-                                 0.5 * wx, 0.5 * wy, d)
-                Xs.append(Xp); Cs.append(np.full(len(Xp), ci, np.int32))
-                continue
-            flat = False
-            Xp = _resample(dome(P0 + n0 * f.get('lift_mm', 0.0), n0, wx, wy, hgt * (0.5 if flat else 1.0), off,
-                                pitch=0.95 if flat else 0.4), 0.5)
-            Xs.append(Xp); Cs.append(np.full(len(Xp), ci, np.int32))
     X = np.concatenate(Xs); C = np.concatenate(Cs)
+    # the face, felt, embroidery and the pieces sewn on flat, over the finished yarn (details.py)
+    det, spheres, blush = build_details(spec, toy, X, cols, d, applique)
+    for P0, rad, cname, strength, host in blush:           # a blush dyes the yarn of its piece under it, fading out
+        w = strength * np.exp(-(np.linalg.norm(X - P0, axis=1) / rad) ** 2 * 1.6)
+        mine = np.zeros(len(X), bool)
+        for q in pieces:
+            if q['name'] == host:
+                mine[q['start']:q['end']] = True
+        w = np.where(mine, w, 0.0)
+        lv = np.floor(w / max(strength, 1e-6) * 3.0 + 0.5).astype(int)   # three steps of strength
+        for k in (1, 2, 3):
+            m = lv == k
+            if not m.any():
+                continue
+            for base in np.unique(C[m]):
+                bname = next(nm for nm, ii in cols.items() if ii == base)
+                key = f'{bname}+{cname}@{k}'
+                if key not in toy.colours:
+                    a = strength * k / 3.0
+                    toy.colours[key] = (1 - a) * np.asarray(toy.colours.get(bname, (0.8, 0.8, 0.8)), float) + \
+                        a * np.asarray(toy.colours.get(cname, (0.95, 0.6, 0.65)), float)
+                C[m & (C == base)] = cols.setdefault(key, len(cols))
     pal = [list(toy.colours.get(k, (0.8, 0.8, 0.8))) for k in cols]
-    toy.spheres = np.array(spheres, float).reshape(-1, 5)
+    toy.spheres = spheres
+    toy.details = det
     toy.yarn_pieces = pieces                                # node ranges of the pieces, for captions and cameras
     return X, directors(X), C, pal, d, toy
 
@@ -273,6 +274,6 @@ def still(spec_path, out, size=900, views='front,34,back', rmax=None, parts=None
     for v in views.split(','):
         e = np.array(dirs[v], float); e /= np.linalg.norm(e)
         cam = Camera(g + e * ext * 2.2, g, up=(0, 1, 0) if abs(e[1]) < 0.9 else (0, 0, 1), fov=30)
-        ims.append(rn.render(X, D, cam, colnode=C, spheres=toy.spheres))
+        ims.append(rn.render(X, D, cam, colnode=C, spheres=toy.spheres, details=toy.details))
     Image.fromarray(np.concatenate(ims, 1)).save(out)
     return out

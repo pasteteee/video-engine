@@ -22,6 +22,7 @@ description: Build-short maker for the amigurumi channel. Writes the storyboard 
 
 ## 2. Knit
 - `python -m vengine build knit <episode> [--jobs N]` runs the channel's knit renderer (`build.knit.renderer`) in parallel; resumable.
+- A "made with a hook" short: `"knit": {"hook": true}` in the storyboard draws the crochet hook (the pattern's size) working the newest stitch; `"size": "810x1440", "ss": 2` halves the render time.
 - `python -m vengine build still <episode> --at 0.8,3,8,12,16,18,21,26` and look at the strip before the full render: the camera keeps the piece in frame, the colours hold still between frames, the face lands at the end.
 
 ## 3. Render

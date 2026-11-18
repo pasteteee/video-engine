@@ -185,3 +185,134 @@ def test_toy_mask_keeps_the_toy_and_drops_its_shadow():
     m = toy_mask(img.clip(0, 255).astype(np.uint8), W)
     assert (m & toy).sum() / toy.sum() > 0.97
     assert (m & sh & ~toy).sum() / (sh & ~toy).sum() < 0.1
+
+# --- light, material and set (studio look) -------------------------------------------------------------------------
+
+def test_srgb_round_trip():
+    from vengine.yarn.render import _lin, _srgb
+    for c in (0.0, 0.02, 0.2, 0.5, 0.8, 0.97, 1.0):
+        assert abs(_srgb(_lin(c)) - c) < 1e-6
+    assert abs(_lin(0.5) - 0.214) < 0.002              # mid grey is ~21% of the light, not 50%
+
+
+def _dome(n=2600, h=0.5, R=8.0):
+    """A dome of yarn coiled round and up (like the top of a head), resting on y = 0."""
+    s = np.arange(n) * h
+    turns = s / (2 * np.pi * R)
+    th = 2 * np.pi * turns
+    phi = np.clip(turns * 1.6 / R * 1.0, 0, np.pi / 2 * 0.98)
+    X = np.stack([R * np.cos(phi) * np.cos(th), R * np.sin(phi) + 0.8, R * np.cos(phi) * np.sin(th)], 1)
+    T = np.gradient(X, axis=0)
+    T /= np.linalg.norm(T, axis=1)[:, None]
+    D = np.cross(T, [0.0, 1.0, 0.0])
+    D /= np.linalg.norm(D, axis=1)[:, None] + 1e-12
+    return X, D
+
+
+def test_white_yarn_stays_white_and_matte():
+    """Off-white yarn under the studio light reads white (as on the photo), not grey with white glints."""
+    X, D = _dome()
+    rn = Renderer(160, 160, ss=2, r=0.8, palette=[[0.969, 0.949, 0.918]])     # #f7f2ea
+    rn.set_scene(X)
+    cam = Camera([0.0, 9.0, 34.0], [0.0, 3.5, 0.0], fov=40)
+    img = rn.render(X, D, cam).astype(float)
+    from scipy.ndimage import binary_erosion
+    yarn = binary_erosion(rn.idb.reshape(160, 2, 160, 2).min(axis=(1, 3)) == 1, iterations=3)
+    lum = img[yarn] @ [0.3, 0.59, 0.11]
+    p5, p50, p95 = np.percentile(lum, [5, 50, 95])
+    assert p50 > 225, p50                               # was ~150 before the linear-light pipeline
+    assert p95 < 254.5                                  # no clipped glints
+    assert p5 > 165, p5                                 # crevices stay light, in the yarn's colour
+
+
+def test_red_shade_deepens_in_its_dye():
+    """A red yarn in shade gets darker red, not grey or brown: the hue holds."""
+    X, D = _dome()
+    rn = Renderer(160, 160, ss=2, r=0.8, palette=[[0.784, 0.196, 0.227]])     # #c8323a
+    rn.set_scene(X)
+    img = rn.render(X, D, Camera([0.0, 9.0, 34.0], [0.0, 3.5, 0.0], fov=40)).astype(float)
+    from scipy.ndimage import binary_erosion
+    yarn = binary_erosion(rn.idb.reshape(160, 2, 160, 2).min(axis=(1, 3)) == 1, iterations=3)   # away from the outline
+    px = img[yarn]
+    dark = px[px[:, 0] < np.percentile(px[:, 0], 15)]
+    assert (dark[:, 0] > 2.2 * dark[:, 1]).all()
+
+
+def test_floor_takes_a_soft_contact_shadow():
+    """With no backdrop_y the floor sits under the scene: right under the yarn it is darker than the open set."""
+    X, D = _dome()
+    rn = Renderer(160, 160, ss=2, r=0.8, palette=[[0.969, 0.949, 0.918]])
+    rn.set_scene(X)
+    assert abs(rn.plane_p[1] - (X[:, 1].min() - 0.9 * rn.r * rn.soft)) < 1e-9
+    img = rn.render(X, D, Camera([0.0, 9.0, 34.0], [0.0, 3.5, 0.0], fov=40)).astype(float)
+    bg = (rn.idb[::2, ::2][:160, :160] == 0)
+    lum = img @ [0.3, 0.59, 0.11]
+    rows = np.where((rn.idb[::2, ::2][:160, :160] == 1).any(1))[0]
+    below = lum[rows.max() + 2:rows.max() + 6, 60:100][bg[rows.max() + 2:rows.max() + 6, 60:100]]
+    open_set = lum[150:158, 2:20]
+    assert below.mean() < open_set.mean() - 8
+    off = Renderer(160, 160, ss=2, r=0.8, palette=[[0.969, 0.949, 0.918]], shadow_floor=0.0)
+    off.set_scene(X)
+    im2 = off.render(X, D, Camera([0.0, 9.0, 34.0], [0.0, 3.5, 0.0], fov=40)).astype(float)
+    assert np.abs(im2 @ [0.3, 0.59, 0.11] - lum)[bg].max() > 8      # the shadow is the floor's doing
+
+def test_sc_is_a_short_wide_v():
+    """The front of a sc reads as a plump V wider than tall (about 1.3 on a real toy), not a long knit-like leaf."""
+    from vengine.yarn.toy import SC
+    front = [(dv, du) for k, dv, du, nn in SC if nn > 0.2]
+    rnd, st = 3.6, 4.0                                      # round height and stitch width, mm (amikit default)
+    width = (max(du for _, du in front) - min(du for _, du in front)) / 2 * st
+    height = (max(dv for dv, _ in front) - min(dv for dv, _ in front)) * rnd
+    assert 1.2 <= width / height <= 1.6
+
+
+def test_yarn_width_follows_the_stitch():
+    from vengine.yarn.toy import yarn_width
+    assert yarn_width({'stitch_mm': 4.0, 'thickness_mm': 1.9}) == pytest.approx(2.32)
+    assert yarn_width({'stitch_mm': 2.0, 'thickness_mm': 1.9}) == 1.9
+
+
+def test_magic_ring_is_a_closed_circle():
+    """Rounds 1-2 of a flat circle: the tops of the stitches lie on one even circle (no star or flower points)."""
+    from vengine.yarn.toy import _FlatDisc, piece_yarn
+    disc = _FlatDisc(np.zeros(3), np.array([0.0, 0.0, 1.0]), np.array([1.0, 0.0, 0.0]), np.array([0.0, 1.0, 0.0]),
+                     12.0, 12.0, 4)
+    X, sid = piece_yarn(disc, 0.0, 2.3, with_stitch=True)
+    top = []
+    for q in np.unique(sid[sid // 100000 == 2]):
+        P = X[sid == q]
+        top.append(np.linalg.norm(P[:, :2], axis=1).max())
+    top = np.array(top[:-1])                               # the last one runs on into round 3
+    assert top.std() / top.mean() < 0.06
+
+
+# ------------------------------------------------------------------------------------------- the crochet hook
+def test_capsule_draws_metal_in_front_of_the_yarn(rn):
+    X, D = _coil()
+    plain = rn.render(X, D, _cam())
+    cap = np.array([[-30.0, 0.0, 6.0, 30.0, 0.0, 6.0, 1.2, 0, 5]])        # a rod across the coil, above it
+    img = rn.render(X, D, _cam(), capsules=cap)
+    front = int((rn.idb == 5).sum())
+    assert front > 0 and np.abs(img.astype(int) - plain).max() > 40
+    behind = cap.copy()
+    behind[0, [2, 5]] = -6.0                                                 # the same rod under the coil: partly hidden
+    rn.render(X, D, _cam(), capsules=behind)
+    assert 0 < int((rn.idb == 5).sum()) < front
+
+
+@pytest.mark.skipif(_amikit() is None, reason="amikit not found (set AMIKIT)")
+def test_hook_follows_the_work_smoothly_and_leaves_before_the_face():
+    from vengine.yarn.grow import Grow
+    g = Grow(TOY, (108, 192), dur=4.0, reveal=2.0, ss=1, hook=True)
+    h = g.hook
+    assert h.sc == pytest.approx(float(TOY.get('yarn', {}).get('hook_mm', 4.0)) / 4.0)
+    on = [k for k in range(g.NF) if len(h.capsules(k / 30))]
+    assert on and on[0] < 30 and on[-1] < g.NB + 6              # slides in at the start, gone as the reveal starts
+    k = (on[0] + on[-1]) // 2
+    rows = h.capsules(k / 30)
+    assert set(rows[:, 8].astype(int)) == {5, 6}                 # metal head and shaft, matte grip and strand
+    tip = h.P[on[len(on) // 4]]
+    n = g.plan[on[len(on) // 4]]['n']
+    assert np.linalg.norm(tip - g.X[min(n, g.NY - 1)]) < 25.0    # at the work, not somewhere in the air
+    step = np.linalg.norm(np.diff(h.P[on[0]:on[-1]], axis=0), axis=1)
+    assert np.percentile(step, 95) < 6.0                         # no jumps from frame to frame

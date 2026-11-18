@@ -52,15 +52,17 @@ def _gauss_smooth(a, sigma):
 def brighten(c, amount):
     import colorsys
     h, l, s = colorsys.rgb_to_hls(*c)
+    if amount == 1.0:                    # the renderer works in linear light now: the yarn colours go in as they are
+        return list(c)
     l2 = l + (1 - l) * (amount - 1) * 0.9 if 0.22 < l < 0.92 else l
-    return list(colorsys.hls_to_rgb(h, min(0.95, l2), min(1, s * 1.12)))
+    return list(colorsys.hls_to_rgb(h, min(0.95, l2), min(1, s * amount)))
 
 
 class Grow:
     def __init__(self, spec, size=(1080, 1920), dur=16.0, reveal=3.5, ss=3, soft=1.35, core=0.3, core_shade=0.85,
-                 bright=1.12, mblur=4, turn=250.0, max_px=6.0, ao=0.6, fov=FOV, view=None, floor=FLOOR, bg=None,
-                 rest=None, box=None):
-        """view: the final view {az, el[, fov]} (from `vengine yarn match`), default the photo's usual angle.
+                 bright=1.0, mblur=4, turn=250.0, max_px=6.0, ao=0.6, fov=FOV, view=None, floor=FLOOR, bg=None,
+                 rest=None, box=None, hook=False):
+        """hook: draw a crochet hook working the newest stitch (hook.py).  view: the final view {az, el[, fov]} (from `vengine yarn match`), default the photo's usual angle.
         floor: strength of the toy's shadow on the floor under it (0: no floor).  bg: (top, bottom) backdrop colours,
         sRGB 0..1.  rest: film seconds when the final turn comes to rest (default the last frame).  box: where the
         finished toy sits in the last frame, (cx, cy, w, h) as fractions of the frame (default BOX)."""
@@ -81,6 +83,10 @@ class Grow:
         pal2 = [brighten(c, bright) for c in pal]
         self.NP = len(pal2)
         pal2 = pal2 + [[v * core_shade for v in p] for p in pal2]
+        self.hook_pal = len(pal2)
+        if hook:
+            from .hook import METAL, GRIP
+            pal2 = pal2 + [list(METAL), list(GRIP)]
         # a hidden core: the same yarn pushed inwards, only a little darker, so what shows between the stitches is yarn of
         # the same colour in soft shade (as in a real dense amigurumi), never the backdrop or a black hole; bright specks
         # of backdrop were also the worst flicker (the highest-contrast edges)
@@ -110,6 +116,10 @@ class Grow:
         self.NF = int(round((self.dur + self.reveal) * FPS))
         self._plan()
         self._camera()
+        self.hook = None
+        if hook:
+            from .hook import HookRig
+            self.hook = HookRig(self, self.hook_pal, hook_mm=float((spec.get('yarn') or {}).get('hook_mm', 4.0)))
 
     # --------------------------------------------------------------------------------------------- the clock
     def prog(self, t):
@@ -309,7 +319,9 @@ class Grow:
             sp[:, 3] *= _smoothstep((face - 0.35) / 0.4)
         k = t * FPS
         return self.rn.render(np.concatenate(Xs), np.concatenate(Ds), self.cam_at(k), colnode=np.concatenate(Cs),
-                              radius=np.concatenate(rs), spheres=sp, gap=2.0, shape_idx=np.concatenate(sh))
+                              radius=np.concatenate(rs), spheres=sp, gap=2.0, shape_idx=np.concatenate(sh),
+                              details=getattr(self.toy, 'details', None), details_t=face,
+                              capsules=self.hook.capsules(t) if self.hook is not None else None)
 
     def motion_px(self, k):
         """How far the yarn slides on screen over one frame (90th percentile, pixels)."""
@@ -349,12 +361,13 @@ def main(argv=None):
     ap.add_argument('--frames', help='a:b, frame range'); ap.add_argument('--part', default='0/1', help='i/n of all frames')
     ap.add_argument('--still', help='comma separated times in seconds: write OUT/still.jpg')
     ap.add_argument('--core', type=float, default=0.3); ap.add_argument('--soft', type=float, default=1.35)
-    ap.add_argument('--bright', type=float, default=1.12); ap.add_argument('--mblur', type=int, default=4)
+    ap.add_argument('--bright', type=float, default=1.0); ap.add_argument('--mblur', type=int, default=4)
     ap.add_argument('--view', help='match.json of `vengine yarn match` (or az,el): the final view, the photo\'s angle')
     ap.add_argument('--fov', type=float, default=FOV, help='lens, degrees across the frame width')
     ap.add_argument('--floor', type=float, default=FLOOR, help='shadow on the floor, 0 = no floor')
     ap.add_argument('--bg', help='backdrop colours top,bottom as hex (#fbf3e7,#f3e6cf); default: match.json, else the renderer\'s')
     ap.add_argument('--rest', type=float, help='film seconds when the final turn comes to rest (default: the last frame)')
+    ap.add_argument('--hook', action='store_true', help='draw a crochet hook working the newest stitch')
     a = ap.parse_args(argv)
     from PIL import Image
     W, H = [int(v) for v in a.size.split('x')]
@@ -371,7 +384,7 @@ def main(argv=None):
     if a.bg:
         bg = tuple([int(h.strip().lstrip('#')[i:i + 2], 16) / 255 for i in (0, 2, 4)] for h in a.bg.split(','))
     g = Grow(json.loads(Path(a.spec).read_text()), (W, H), a.dur, a.reveal, ss=a.ss, soft=a.soft, core=a.core,
-             bright=a.bright, mblur=a.mblur, fov=a.fov, view=view, floor=a.floor, bg=bg, rest=a.rest)
+             bright=a.bright, mblur=a.mblur, fov=a.fov, view=view, floor=a.floor, bg=bg, rest=a.rest, hook=a.hook)
     os.makedirs(a.out, exist_ok=True)
     final = dict(g.view, frame=g.NF - 1, rest_frame=int(g.k_rest), mask='final-mask.png',
                  box=[round(v, 1) for v in g.final_box()], matched=bool(view and 'iou' in view))

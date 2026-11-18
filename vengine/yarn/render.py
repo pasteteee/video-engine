@@ -224,6 +224,163 @@ def _trace_spheres(S, cam_pos, B, fpx, W, H, zb, nb, idb, cb):
                     cb[py, px] = int(S[k, 4])
 
 
+
+@njit(cache=True, parallel=True)
+def _trace_capsules(Cp, cam_pos, B, fpx, W, H, zb, nb, idb, cb):
+    """Capsules (a crochet hook and the working strand): rows ax, ay, az, bx, by, bz, radius, colour index, ident,
+    x0, y0, x1, y1 (the screen box to test, pixels).  ident 5: polished metal, 6: matte (rubber grip, loose yarn)."""
+    cx = 0.5 * W
+    cy = 0.5 * H
+    for k in range(Cp.shape[0]):
+        rr = Cp[k, 6]
+        if rr <= 0.0:
+            continue
+        x0 = int(max(0.0, Cp[k, 9]))
+        y0 = int(max(0.0, Cp[k, 10]))
+        x1 = int(min(W - 1.0, Cp[k, 11]))
+        y1 = int(min(H - 1.0, Cp[k, 12]))
+        if x1 < x0 or y1 < y0:
+            continue
+        bax = Cp[k, 3] - Cp[k, 0]
+        bay = Cp[k, 4] - Cp[k, 1]
+        baz = Cp[k, 5] - Cp[k, 2]
+        baba = bax * bax + bay * bay + baz * baz + 1e-12
+        oax = cam_pos[0] - Cp[k, 0]
+        oay = cam_pos[1] - Cp[k, 1]
+        oaz = cam_pos[2] - Cp[k, 2]
+        obx = cam_pos[0] - Cp[k, 3]
+        oby = cam_pos[1] - Cp[k, 4]
+        obz = cam_pos[2] - Cp[k, 5]
+        baoa = bax * oax + bay * oay + baz * oaz
+        oaoa = oax * oax + oay * oay + oaz * oaz
+        for py in prange(y0, y1 + 1):
+            for px in range(x0, x1 + 1):
+                dxv = (px + 0.5 - cx) / fpx
+                dyv = -(py + 0.5 - cy) / fpx
+                il = 1.0 / math.sqrt(dxv * dxv + dyv * dyv + 1.0)
+                rx = (B[0, 0] * dxv + B[1, 0] * dyv + B[2, 0]) * il
+                ry = (B[0, 1] * dxv + B[1, 1] * dyv + B[2, 1]) * il
+                rz = (B[0, 2] * dxv + B[1, 2] * dyv + B[2, 2]) * il
+                bard = bax * rx + bay * ry + baz * rz
+                rdoa = rx * oax + ry * oay + rz * oaz
+                a = baba - bard * bard
+                b = baba * rdoa - baoa * bard
+                c = baba * oaoa - baoa * baoa - rr * rr * baba
+                h = b * b - a * c
+                t = -1.0
+                if h >= 0.0 and a > 1e-12:
+                    t = (-b - math.sqrt(h)) / a
+                    y = baoa + t * bard
+                    if y <= 0.0 or y >= baba:
+                        t = -1.0
+                        if y <= 0.0:
+                            ox, oy, oz = oax, oay, oaz
+                        else:
+                            ox, oy, oz = obx, oby, obz
+                        bq = rx * ox + ry * oy + rz * oz
+                        cq = ox * ox + oy * oy + oz * oz - rr * rr
+                        hq = bq * bq - cq
+                        if hq > 0.0:
+                            t = -bq - math.sqrt(hq)
+                if t > 0.0 and t < zb[py, px]:
+                    wx = cam_pos[0] + rx * t - Cp[k, 0]
+                    wy = cam_pos[1] + ry * t - Cp[k, 1]
+                    wz = cam_pos[2] + rz * t - Cp[k, 2]
+                    q = min(1.0, max(0.0, (wx * bax + wy * bay + wz * baz) / baba))
+                    zb[py, px] = t
+                    nb[py, px, 0] = (wx - q * bax) / rr
+                    nb[py, px, 1] = (wy - q * bay) / rr
+                    nb[py, px, 2] = (wz - q * baz) / rr
+                    idb[py, px] = int(Cp[k, 8])
+                    cb[py, px] = int(Cp[k, 7])
+
+@njit(cache=True, parallel=True)
+def _raster_details(V, N, U, F, FE, cam_pos, B, fpx, W, H, zb, nb, idb, cb, ub, nband):
+    """Detail meshes (felt, satin, threads, appliques: details.py) by exact ray-triangle hits, depth-tested against
+    the yarn.  Writes idb 4, the element in cb and the detail's own coordinates (u, v, rho) in ub."""
+    cx = 0.5 * W
+    cy = 0.5 * H
+    nv = V.shape[0]
+    S = np.empty((nv, 3))
+    for i in range(nv):
+        vx = V[i, 0] - cam_pos[0]
+        vy = V[i, 1] - cam_pos[1]
+        vz = V[i, 2] - cam_pos[2]
+        xr = B[0, 0] * vx + B[0, 1] * vy + B[0, 2] * vz
+        yu = B[1, 0] * vx + B[1, 1] * vy + B[1, 2] * vz
+        zf = B[2, 0] * vx + B[2, 1] * vy + B[2, 2] * vz
+        S[i, 2] = zf
+        if zf > 1e-6:
+            S[i, 0] = cx + fpx * xr / zf
+            S[i, 1] = cy - fpx * yu / zf
+    for band in prange(nband):
+        y0b = band * H // nband
+        y1b = (band + 1) * H // nband
+        for f in range(F.shape[0]):
+            a = F[f, 0]
+            b = F[f, 1]
+            c = F[f, 2]
+            if S[a, 2] < 1.0 or S[b, 2] < 1.0 or S[c, 2] < 1.0:
+                continue
+            ya = int(max(y0b, math.floor(min(S[a, 1], min(S[b, 1], S[c, 1])))))
+            yb = int(min(y1b - 1, math.ceil(max(S[a, 1], max(S[b, 1], S[c, 1])))))
+            if ya > yb:
+                continue
+            xa = int(max(0, math.floor(min(S[a, 0], min(S[b, 0], S[c, 0])))))
+            xb = int(min(W - 1, math.ceil(max(S[a, 0], max(S[b, 0], S[c, 0])))))
+            if xa > xb:
+                continue
+            e1x = V[b, 0] - V[a, 0]
+            e1y = V[b, 1] - V[a, 1]
+            e1z = V[b, 2] - V[a, 2]
+            e2x = V[c, 0] - V[a, 0]
+            e2y = V[c, 1] - V[a, 1]
+            e2z = V[c, 2] - V[a, 2]
+            tx = cam_pos[0] - V[a, 0]
+            ty = cam_pos[1] - V[a, 1]
+            tz = cam_pos[2] - V[a, 2]
+            qx = ty * e1z - tz * e1y
+            qy = tz * e1x - tx * e1z
+            qz = tx * e1y - ty * e1x
+            for py in range(ya, yb + 1):
+                for px in range(xa, xb + 1):
+                    dxv = (px + 0.5 - cx) / fpx
+                    dyv = -(py + 0.5 - cy) / fpx
+                    il = 1.0 / math.sqrt(dxv * dxv + dyv * dyv + 1.0)
+                    rx = (B[0, 0] * dxv + B[1, 0] * dyv + B[2, 0]) * il
+                    ry = (B[0, 1] * dxv + B[1, 1] * dyv + B[2, 1]) * il
+                    rz = (B[0, 2] * dxv + B[1, 2] * dyv + B[2, 2]) * il
+                    pxv = ry * e2z - rz * e2y
+                    pyv = rz * e2x - rx * e2z
+                    pzv = rx * e2y - ry * e2x
+                    det = e1x * pxv + e1y * pyv + e1z * pzv
+                    if abs(det) < 1e-12:
+                        continue
+                    inv = 1.0 / det
+                    u = (tx * pxv + ty * pyv + tz * pzv) * inv
+                    if u < -1e-5 or u > 1.00001:
+                        continue
+                    v = (rx * qx + ry * qy + rz * qz) * inv
+                    if v < -1e-5 or u + v > 1.00001:
+                        continue
+                    t = (e2x * qx + e2y * qy + e2z * qz) * inv
+                    if t <= 0.0 or t >= zb[py, px]:
+                        continue
+                    w = 1.0 - u - v
+                    zb[py, px] = t
+                    nx = w * N[a, 0] + u * N[b, 0] + v * N[c, 0]
+                    ny = w * N[a, 1] + u * N[b, 1] + v * N[c, 1]
+                    nz = w * N[a, 2] + u * N[b, 2] + v * N[c, 2]
+                    nl = math.sqrt(nx * nx + ny * ny + nz * nz) + 1e-12
+                    nb[py, px, 0] = nx / nl
+                    nb[py, px, 1] = ny / nl
+                    nb[py, px, 2] = nz / nl
+                    for q in range(3):
+                        ub[py, px, q] = w * U[a, q] + u * U[b, q] + v * U[c, q]
+                    idb[py, px] = 4
+                    cb[py, px] = FE[f]
+
+
 @njit(cache=True)
 def _shadow_splat(P, RR, m, r, LB, lo, scale, SM, sm):
     """Orthographic depth map from the light.  LB rows: right, up, towards the light."""
@@ -272,40 +429,98 @@ def _lod(period_world, foot):
     return min(1.0, max(0.0, (q - 2.0) / 3.0))
 
 
+# Studio light: a big soft key from the upper left (its angular radius sets how wide the penumbra grows with the
+# distance to what casts the shadow), a warm fill from the right, a weak warm rim from behind, and the bounce of the
+# cream set.  Light is added in linear light and the result goes back to sRGB through a soft shoulder.
+LIGHT_ANG = 0.22                        # angular radius of the key (radians): a large softbox
+FILL_DIR = (0.62, 0.22, 0.75)           # from the right, a little above, towards the viewer
+RIM_DIR = (0.25, 0.55, -0.80)           # from behind and above
+
+
+@njit(cache=True)
+def _lin(c):
+    """sRGB (0..1) to linear light."""
+    if c <= 0.04045:
+        return c / 12.92
+    return ((c + 0.055) / 1.055) ** 2.4
+
+
+@njit(cache=True)
+def _srgb(c):
+    """Linear light to sRGB (0..1)."""
+    c = min(1.0, max(0.0, c))
+    if c <= 0.0031308:
+        return 12.92 * c
+    return 1.055 * c ** (1.0 / 2.4) - 0.055
+
+
 @njit(cache=True)
 def _shoulder(x):
-    """Linear up to 0.86, then a soft roll-off to 1: highlights keep their colour instead of clipping."""
-    if x < 0.86:
+    """Tone curve in linear light: straight up to 0.80, then a soft roll-off to 1, so a lit white stays white (not
+    clipped flat) and colours keep their hue in the highlights."""
+    if x < 0.80:
         return x
-    return 0.86 + 0.14 * (1.0 - math.exp(-(x - 0.86) / 0.14))
+    return 0.80 + 0.20 * (1.0 - math.exp(-(x - 0.80) / 0.20))
 
 
 @njit(cache=True)
-def _shadow_at(SM, sm, LB, lo, scale, wx, wy, wz, bias, step, rad):
+def _occ_tap(SM, sm, x, y, lz, bias):
+    """Occluded fraction at a fractional shadow-map position, bilinear over the 4 texels round it (no texel steps), and
+    the weighted depth of what occludes it."""
+    fx = x - 0.5
+    fy = y - 0.5
+    ix = int(math.floor(fx))
+    iy = int(math.floor(fy))
+    ax = fx - ix
+    ay = fy - iy
+    occ = 0.0
+    dep = 0.0
+    for oy in range(2):
+        wy_ = ay if oy == 1 else 1.0 - ay
+        for ox in range(2):
+            w = (ax if ox == 1 else 1.0 - ax) * wy_
+            jx = ix + ox
+            jy = iy + oy
+            if 0 <= jx < sm and 0 <= jy < sm:
+                z = SM[jy, jx]
+                if z > lz + bias:
+                    occ += w
+                    dep += w * (z - lz)
+    return occ, dep
+
+
+@njit(cache=True)
+def _shadow_at(SM, sm, LB, lo, scale, wx, wy, wz, bias, nt, rmin):
+    """Soft shadow of the big key light (percentage-closer soft shadows): the penumbra is narrow where the shadow
+    touches what casts it and widens with the distance between them, as under a softbox.  1: lit, 0: in shadow.
+    nt: taps of the filter.  rmin: smallest filter radius (world).  The tap pattern is fixed (a golden-angle spiral) and
+    every tap is bilinear, so the result moves continuously with the point and does not crawl between frames."""
     lx = (LB[0, 0] * wx + LB[0, 1] * wy + LB[0, 2] * wz - lo[0]) * scale
     ly = (LB[1, 0] * wx + LB[1, 1] * wy + LB[1, 2] * wz - lo[1]) * scale
     lz = LB[2, 0] * wx + LB[2, 1] * wy + LB[2, 2] * wz
+    ext = 0.5 * sm / scale
+    rsearch = LIGHT_ANG * 0.6 * ext * scale            # texels
+    # 1. how far away is what casts the shadow
+    bw = 0.0
+    bd = 0.0
+    for k in range(12):
+        ang = 2.399963 * k
+        rr = rsearch * math.sqrt((k + 0.5) / 12.0)
+        o, d = _occ_tap(SM, sm, lx + math.cos(ang) * rr, ly + math.sin(ang) * rr, lz, bias)
+        bw += o
+        bd += d
+    if bw <= 1e-6:
+        return 1.0
+    pen = max(rmin, LIGHT_ANG * bd / bw) * scale       # penumbra radius, texels
+    pen = min(pen, rsearch)
+    # 2. filter over the penumbra
     acc = 0.0
-    cnt = 0.0
-    # bilinear-weighted PCF: the result moves continuously with the point (no texel steps)
-    fx = lx - 0.5
-    fy = ly - 0.5
-    ix0 = int(math.floor(fx))
-    iy0 = int(math.floor(fy))
-    ax = fx - ix0
-    ay = fy - iy0
-    for oy in range(-rad, rad + 2):
-        wy_ = (1.0 - ay) if oy == -rad else (ay if oy == rad + 1 else 1.0)
-        for ox in range(-rad, rad + 2):
-            wx_ = (1.0 - ax) if ox == -rad else (ax if ox == rad + 1 else 1.0)
-            w = wx_ * wy_
-            ix = ix0 + ox * step
-            iy = iy0 + oy * step
-            if 0 <= ix < sm and 0 <= iy < sm:
-                if SM[iy, ix] > lz + bias:
-                    acc += w
-            cnt += w
-    return 1.0 - acc / max(cnt, 1e-9)
+    for k in range(nt):
+        ang = 2.399963 * k
+        rr = pen * math.sqrt((k + 0.5) / nt)
+        o, d = _occ_tap(SM, sm, lx + math.cos(ang) * rr, ly + math.sin(ang) * rr, lz, bias)
+        acc += o
+    return 1.0 - acc / nt
 
 
 @njit(cache=True, parallel=True)
@@ -314,6 +529,14 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
            shadow_floor, exposure, ao_amt):
     cx = 0.5 * W
     cy = 0.5 * H
+    fl = math.sqrt(FILL_DIR[0] ** 2 + FILL_DIR[1] ** 2 + FILL_DIR[2] ** 2)
+    fdx, fdy, fdz = FILL_DIR[0] / fl, FILL_DIR[1] / fl, FILL_DIR[2] / fl
+    rl = math.sqrt(RIM_DIR[0] ** 2 + RIM_DIR[1] ** 2 + RIM_DIR[2] ** 2)
+    rdx, rdy, rdz = RIM_DIR[0] / rl, RIM_DIR[1] / rl, RIM_DIR[2] / rl
+    # the set (floor and backdrop) in linear light: its bounce warms the yarn from below
+    setl = np.empty(3)
+    for ch in range(3):
+        setl[ch] = _lin(0.5 * (bg_top[ch] + bg_bot[ch]))
     for py in prange(H):
         for px in range(W):
             dxv = (px + 0.5 - cx) / fpx
@@ -334,12 +557,38 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
                     tp = ((plane_p[0] - cam_pos[0]) * plane_n[0] + (plane_p[1] - cam_pos[1]) * plane_n[1]
                           + (plane_p[2] - cam_pos[2]) * plane_n[2]) / den
                     if tp > 0:
+                        # the floor: a soft contact shadow, darkest and tightest where the toy touches it, the shade
+                        # deepening in the warm colour of the set (multiplied in linear light, never towards grey)
                         sh = _shadow_at(SM, sm, LB, lo, scale, cam_pos[0] + rx * tp, cam_pos[1] + ry * tp,
-                                        cam_pos[2] + rz * tp, 0.5, 4, 3)
-                        f = 1.0 - shadow_floor * (1.0 - sh)
-                        c0 *= f
-                        c1 *= f
-                        c2 *= f
+                                        cam_pos[2] + rz * tp, 0.5 * r, 32, 0.6 * r)
+                        # contact shade: the toy hides part of the bright set from the floor right under and round
+                        # it; read from the visible yarn near the floor point (a fixed spiral of screen samples)
+                        fx_ = cam_pos[0] + rx * tp
+                        fy_ = cam_pos[1] + ry * tp
+                        fz_ = cam_pos[2] + rz * tp
+                        rw = 12.0 * r
+                        rpx = fpx * rw / tp
+                        co = 0.0
+                        for k in range(16):
+                            ang = 2.399963 * k
+                            rad = rpx * math.sqrt((k + 0.5) / 16.0)
+                            ix = int(px + 0.5 + math.cos(ang) * rad)
+                            iy = int(py + 0.5 + math.sin(ang) * rad)
+                            if 0 <= ix < W and 0 <= iy < H and idb[iy, ix] != 0:
+                                dxs = (ix + 0.5 - cx) / fpx
+                                dys = -(iy + 0.5 - cy) / fpx
+                                ils = zb[iy, ix] / math.sqrt(dxs * dxs + dys * dys + 1.0)
+                                qx = cam_pos[0] + (B[0, 0] * dxs + B[1, 0] * dys + B[2, 0]) * ils - fx_
+                                qy = cam_pos[1] + (B[0, 1] * dxs + B[1, 1] * dys + B[2, 1]) * ils - fy_
+                                qz = cam_pos[2] + (B[0, 2] * dxs + B[1, 2] * dys + B[2, 2]) * ils - fz_
+                                dq = math.sqrt(qx * qx + qy * qy + qz * qz)
+                                if dq < rw:
+                                    co += (1.0 - dq / rw) ** 2
+                        cf = 1.0 - 0.9 * min(1.0, co / 2.5)
+                        f = (1.0 - 0.6 * shadow_floor * (1.0 - sh)) * (1.0 - shadow_floor * (1.0 - cf))
+                        c0 = _srgb(_lin(c0) * f)
+                        c1 = _srgb(_lin(c1) * f ** 1.06)
+                        c2 = _srgb(_lin(c2) * f ** 1.15)
                 # the fuzz round the yarn: a soft glow of its colour that fades with the distance to the outline,
                 # read from fixed directions (no per-pixel randomness to crawl from frame to frame)
                 if halo_amt > 0.0:
@@ -376,7 +625,7 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
             nx = nb[py, px, 0]
             ny = nb[py, px, 1]
             nz = nb[py, px, 2]
-            lit = _shadow_at(SM, sm, LB, lo, scale, wx, wy, wz, 0.35 * r, 1, 1)
+            lit = _shadow_at(SM, sm, LB, lo, scale, wx, wy, wz, 0.35 * r, 12, 0.5 * r)
             # ambient occlusion from the depth buffer, a fixed golden-angle spiral
             occ = 0.0
             ns = 0
@@ -390,8 +639,39 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
                     if dz > 0.15 * r and dz < 6.0 * r:
                         occ += min(1.0, dz / (1.2 * r)) * (1.0 - dz / (6.0 * r))
                     ns += 1
-            ao = max(0.0, 1.0 - 1.05 * ao_amt * occ / max(ns, 1))
-            ndv = min(1.0, max(0.0, -(nx * rx + ny * ry + nz * rz)))   # <= 1: (1 - ndv) ** 2.5 must not go NaN
+            occ = min(1.0, 1.05 * ao_amt * occ / max(ns, 1))
+            # a crevice between stitches is lit by light bounced off the yarn round it: it stays light and takes on the
+            # yarn's colour instead of going grey or black
+            ao = 1.0 - 0.55 * occ
+            ndv = min(1.0, max(0.0, -(nx * rx + ny * ry + nz * rz)))   # <= 1: (1 - ndv) ** p must not go NaN
+            if ident == 5 or ident == 6:
+                # the hook: polished metal (5) mirrors the warm set, with a long bright streak of the softbox along
+                # the shaft; the rubber grip and the loose working strand (6) are matte
+                ci = cb[py, px]
+                ndl = nx * ldir[0] + ny * ldir[1] + nz * ldir[2]
+                key = max(0.0, (ndl + 0.35) / 1.35)
+                ndf = max(0.0, (nx * fdx + ny * fdy + nz * fdz + 0.5) / 1.5)
+                hx = ldir[0] - rx
+                hy = ldir[1] - ry
+                hz = ldir[2] - rz
+                hl = math.sqrt(hx * hx + hy * hy + hz * hz) + 1e-9
+                ndh = max(0.0, (nx * hx + ny * hy + nz * hz) / hl)
+                if ident == 5:
+                    spec = (ndh ** 40 * 1.1 + ndh ** 8 * 0.18) * (0.35 + 0.65 * lit)
+                    fres = (1.0 - ndv) ** 3 * 0.25
+                    env = 0.10 + 0.10 * max(0.0, ny)
+                    for ch in range(3):
+                        pc = _lin(palette[ci, ch])
+                        out[py, px, ch] = _srgb(_shoulder(pc * ((0.25 + 0.75 * key * (0.5 + 0.5 * lit)) * exposure
+                                                                 * 0.8 + env + 0.25 * ndf) * ao + spec * pc ** 0.3
+                                                          + fres * setl[ch]))
+                else:
+                    spec = ndh ** 10 * 0.05 * lit
+                    for ch in range(3):
+                        pc = _lin(palette[ci, ch])
+                        e = (0.72 * key * (0.45 + 0.55 * lit) + 0.27 + 0.20 * ndf) * ao * exposure
+                        out[py, px, ch] = _srgb(_shoulder(pc * e + spec))
+                continue
             if ident == 3:
                 ci = cb[py, px]
                 ndl = max(0.0, nx * ldir[0] + ny * ldir[1] + nz * ldir[2])
@@ -400,11 +680,13 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
                 hz = ldir[2] - rz
                 hl = math.sqrt(hx * hx + hy * hy + hz * hz) + 1e-9
                 ndh = max(0.0, (nx * hx + ny * hy + nz * hz) / hl)
-                spec = (ndh ** 300 * 2.2 + ndh ** 30 * 0.18) * (0.3 + 0.7 * lit)
-                env = 0.04 + 0.07 * max(0.0, ny)
-                fres = (1.0 - ndv) ** 4 * 0.28
+                # a broad soft reflection of the softbox, not a pin-point
+                spec = (ndh ** 60 * 0.9 + ndh ** 12 * 0.10) * (0.3 + 0.7 * lit)
+                env = 0.03 + 0.05 * max(0.0, ny)
+                fres = (1.0 - ndv) ** 4 * 0.20
                 for ch in range(3):
-                    out[py, px, ch] = _shoulder(palette[ci, ch] * (0.25 + 0.35 * ndl) * (0.5 + 0.5 * ao) + env + fres + spec)
+                    pc = _lin(palette[ci, ch])
+                    out[py, px, ch] = _srgb(_shoulder(pc * (0.35 + 0.55 * ndl) * ao + env + fres + spec))
                 continue
             kk = int(sb[py, px] / h)
             ci = colnode[min(max(kk, 0), ncol - 1)]
@@ -422,23 +704,20 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
             tanth = TAU * rvis / pitch                       # helix angle of the plies on the drawn surface
             cth = 1.0 / math.sqrt(1.0 + tanth * tanth)
             sth = tanth * cth
-            hx = cth * tx + sth * kx                         # along the ply
-            hy = cth * ty + sth * ky
-            hz = cth * tz + sth * kz
             qx = -sth * tx + cth * kx                        # across the ply
             qy = -sth * ty + cth * ky
             qz = -sth * tz + cth * kz
-            # texture levels of detail: a ply is TAU*rvis/nply wide, a fibre lane a ninth of that, streaks 0.4 mm long
+            # matte cotton: several soft plies with a long twist, read only faintly; fine fibres run along the yarn
             l_ply = _lod(TAU * rvis / nply * cth, foot)
-            l_fib = _lod(TAU * rvis / nply / 9.0, foot)
-            l_str = _lod(0.42, foot)
+            l_fib = _lod(TAU * rvis / 40.0, foot)
+            l_str = _lod(0.5, foot)
             psi = nply * (pb[py, px] - TAU * sb[py, px] / pitch)
             f = psi / TAU
             f = f - math.floor(f)
             u = 2.0 * f - 1.0
             bump = math.sqrt(max(0.0, 1.0 - u * u))
-            slope = -u / max(bump, 0.25)
-            slope = max(-1.6, min(1.6, slope)) * 0.22 * l_ply
+            slope = -u / max(bump, 0.35)
+            slope = max(-1.2, min(1.2, slope)) * 0.07 * l_ply
             mx = nx + slope * qx
             my = ny + slope * qy
             mz = nz + slope * qz
@@ -446,34 +725,175 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
             mx /= ml
             my /= ml
             mz /= ml
-            plyi = math.floor(psi / TAU)
-            along = sb[py, px] * cth + pb[py, px] * rvis * sth
-            lane = math.floor(f * 9.0) + 17.0 * plyi
-            fib = _vnoise(along * 2.4 + _hash(lane, 3.0) * 7.0, lane) * l_fib * l_str
-            fib2 = _vnoise(along * 0.45 + _hash(plyi, 5.0) * 3.0, plyi + 101.0) * l_ply
+            # parallel fibre lanes round the yarn (40 of them), each a streak of slightly different lightness along it
+            g = pb[py, px] / TAU * 40.0
+            lane = math.floor(g)
+            fib = _vnoise(sb[py, px] * 0.7 + _hash(lane, 3.0) * 9.0, lane) * l_fib * l_str
             slub = _vnoise(sb[py, px] * 0.11, 7.0)          # the spun yarn is a little uneven along its length
-            crev = 1.0 - (0.24 * (1.0 - bump ** 1.3)) * l_ply - 0.24 * 0.55 * (1.0 - l_ply)
-            alb = (1.0 + 0.11 * fib + 0.07 * fib2 + 0.05 * slub) * crev
+            crev = 1.0 - 0.07 * (1.0 - bump ** 1.5) * l_ply - 0.07 * 0.5 * (1.0 - l_ply)
+            alb = (1.0 + 0.30 * fib + 0.04 * slub) * crev
+            # light, in linear units: ~1 on a surface facing the key, ~0.6 on the side turned away
             ndl = mx * ldir[0] + my * ldir[1] + mz * ldir[2]
+            key = max(0.0, (ndl + 0.45) / 1.45)              # wrapped: a large source reaches past the terminator
+            ndf = mx * fdx + my * fdy + mz * fdz
+            fill = max(0.0, (ndf + 0.6) / 1.6)
+            ndr = mx * rdx + my * rdy + mz * rdz
+            rim = max(0.0, ndr) * (1.0 - ndv) ** 1.5
+            sky = 0.5 + 0.5 * my                             # light from above the set, its warm bounce from below
+            lk = 0.72 * key * (0.45 + 0.55 * lit) * (0.55 + 0.45 * ao)
+            la = (0.25 + 0.06 * sky) * ao
+            lf = 0.20 * fill * ao
+            lr = 0.12 * rim
+            # matte cotton fuzz: the short pile at grazing angles catches a little light (a soft velvet edge, no gloss)
+            fz = (1.0 - ndv) ** 3.0 * 0.10 * fuzz_amt
+            for ch in range(3):
+                pc = _lin(palette[ci, ch])
+                # inter-reflection between the stitches deepens the dye, more so in the crevices
+                ae = pc * pc ** (0.24 + 0.30 * occ) * alb
+                bounce = setl[ch] * (1.0 - sky) * 0.16 * ao
+                e = (lk * (1.0, 0.98, 0.94)[ch] + la * (0.99, 0.985, 0.98)[ch] + lf * (1.0, 0.97, 0.93)[ch]
+                     + lr * (1.0, 0.96, 0.90)[ch] + bounce) * exposure
+                val = ae * e + fz * pc + sheen * lit * key * 0.2
+                out[py, px, ch] = _srgb(_shoulder(val))
+
+
+@njit(cache=True)
+def _noise2(x, y):
+    j = math.floor(y)
+    f = y - j
+    f = f * f * (3.0 - 2.0 * f)
+    return _vnoise(x, j) * (1.0 - f) + _vnoise(x + 0.37, j + 1.0) * f
+
+
+@njit(cache=True, parallel=True)
+def _shade_details(zb, nb, idb, cb, ub, cam_pos, B, fpx, W, H, LB, lo, scale, SM, sm, ldir, palette, EL, r, exposure,
+                   out):
+    """Shades the detail pixels (idb 4) from their own coordinates: felt fibres and a cut edge; satin strands with a
+    soft thread sheen; crocheted appliques with stitches radiating from the centre and faint round lines; plied
+    threads; glossy plastic.  Detail finer than about two pixels fades to its mean (_lod), as on the yarn."""
+    cx = 0.5 * W
+    cy = 0.5 * H
+    for py in prange(H):
+        for px in range(W):
+            if idb[py, px] != 4:
+                continue
+            dxv = (px + 0.5 - cx) / fpx
+            dyv = -(py + 0.5 - cy) / fpx
+            il = 1.0 / math.sqrt(dxv * dxv + dyv * dyv + 1.0)
+            rx = (B[0, 0] * dxv + B[1, 0] * dyv + B[2, 0]) * il
+            ry = (B[0, 1] * dxv + B[1, 1] * dyv + B[2, 1]) * il
+            rz = (B[0, 2] * dxv + B[1, 2] * dyv + B[2, 2]) * il
+            t = zb[py, px]
+            wx = cam_pos[0] + rx * t
+            wy = cam_pos[1] + ry * t
+            wz = cam_pos[2] + rz * t
+            nx = nb[py, px, 0]
+            ny = nb[py, px, 1]
+            nz = nb[py, px, 2]
+            if nx * rx + ny * ry + nz * rz > 0.0:           # seen from behind (a thin rim): face the viewer
+                nx, ny, nz = -nx, -ny, -nz
+            e = cb[py, px]
+            ci = int(EL[e, 0])
+            mat = int(EL[e, 1])
+            gloss = EL[e, 4]
+            e1x, e1y, e1z = EL[e, 6], EL[e, 7], EL[e, 8]
+            e2x, e2y, e2z = EL[e, 9], EL[e, 10], EL[e, 11]
+            u = ub[py, px, 0]
+            v = ub[py, px, 1]
+            rho = ub[py, px, 2]
+            foot = t / fpx
+            alb = 1.0
+            # the direction of the fibres (for the thread sheen); none: an isotropic soft highlight
+            fx, fy, fz = 0.0, 0.0, 0.0
+            if mat == 0:                                     # felt: fine matted fibres, a slightly darker cut edge
+                lf = _lod(0.35, foot)
+                alb = 1.0 + 0.07 * _noise2(u * 2.8, v * 2.8) * lf + 0.04 * _noise2(u * 0.7 + 3.1, v * 0.7)
+                alb *= 1.0 - 0.10 * min(1.0, max(0.0, (rho - 0.86) / 0.14))
+            elif mat == 1:                                   # satin: parallel strands along e1
+                sp = max(EL[e, 2], 1e-3)
+                a = v / sp
+                f = a - math.floor(a)
+                q = 2.0 * f - 1.0
+                bump = math.sqrt(max(0.0, 1.0 - q * q))
+                l1 = _lod(sp, foot)
+                slope = max(-1.4, min(1.4, -q / max(bump, 0.3))) * 0.35 * l1
+                nx += slope * e2x
+                ny += slope * e2y
+                nz += slope * e2z
+                lane = math.floor(f * 6.0) + 13.0 * math.floor(a)
+                alb = (0.60 - 0.22 * (1.0 - bump ** 1.2) * l1 - 0.06 * (1.0 - l1)) * \
+                      (1.0 + 0.08 * _vnoise(u * 1.3 + _hash(lane, 2.0) * 9.0, lane) * _lod(sp / 6.0, foot))
+                fx, fy, fz = e1x, e1y, e1z
+            elif mat == 2:                                   # a crocheted applique: stitches radiate from its centre
+                nsp = EL[e, 2]
+                nrd = EL[e, 3]
+                rr = math.sqrt(u * u + v * v) + 1e-9
+                th = math.atan2(v, u)
+                s = th / TAU * nsp
+                f = s - math.floor(s)
+                q = 2.0 * f - 1.0
+                bump = math.sqrt(max(0.0, 1.0 - q * q))
+                l1 = _lod(TAU * rr / nsp, foot)
+                ctx = -math.sin(th) * e1x + math.cos(th) * e2x  # across the spokes
+                cty = -math.sin(th) * e1y + math.cos(th) * e2y
+                ctz = -math.sin(th) * e1z + math.cos(th) * e2z
+                slope = max(-1.4, min(1.4, -q / max(bump, 0.3))) * 0.30 * l1
+                nx += slope * ctx
+                ny += slope * cty
+                nz += slope * ctz
+                alb = 1.0 - 0.22 * (1.0 - bump ** 1.2) * l1 - 0.05 * (1.0 - l1)
+                for k in range(1, int(nrd)):                 # the line where one round is worked into the last
+                    dk = (rho - k / nrd) / 0.035
+                    alb *= 1.0 - 0.16 * math.exp(-dk * dk)
+                alb *= 1.0 - 0.22 * math.exp(-(rr / 0.7) ** 2)  # the closed magic ring
+                alb *= 1.0 + 0.05 * _vnoise(rr * 1.7, math.floor(s) + 31.0)
+                fx = math.cos(th) * e1x + math.sin(th) * e2x
+                fy = math.cos(th) * e1y + math.sin(th) * e2y
+                fz = math.cos(th) * e1z + math.sin(th) * e2z
+            elif mat == 3:                                   # a plied thread: twist along its length
+                pitch = max(EL[e, 2], 1e-3)
+                nply = EL[e, 3]
+                psi = nply * (v - TAU * u / pitch)
+                f = psi / TAU
+                f = f - math.floor(f)
+                bump = math.sqrt(max(0.0, 1.0 - (2.0 * f - 1.0) ** 2))
+                l1 = _lod(TAU * EL[e, 5] * 0.5 / nply, foot)
+                alb = 1.0 - 0.25 * (1.0 - bump ** 1.3) * l1 - 0.07 * (1.0 - l1)
+            nl = math.sqrt(nx * nx + ny * ny + nz * nz) + 1e-12
+            nx /= nl
+            ny /= nl
+            nz /= nl
+            lit = _shadow_at(SM, sm, LB, lo, scale, wx, wy, wz, 0.35 * r, 1, 1)
+            ndl = nx * ldir[0] + ny * ldir[1] + nz * ldir[2]
+            ndv = min(1.0, max(0.0, -(nx * rx + ny * ry + nz * rz)))
+            hx = ldir[0] - rx
+            hy = ldir[1] - ry
+            hz = ldir[2] - rz
+            hl = math.sqrt(hx * hx + hy * hy + hz * hz) + 1e-9
+            if mat == 4:                                     # glossy plastic, like the safety eyes
+                ndh = max(0.0, (nx * hx + ny * hy + nz * hz) / hl)
+                spec = (ndh ** 300 * 2.2 + ndh ** 30 * 0.18) * (0.3 + 0.7 * lit)
+                env = 0.04 + 0.07 * max(0.0, ny)
+                fres = (1.0 - ndv) ** 4 * 0.28
+                for ch in range(3):
+                    out[py, px, ch] = _shoulder(palette[ci, ch] * (0.25 + 0.35 * max(0.0, ndl)) + env + fres + spec)
+                continue
             wrap = max(0.0, (ndl + 0.35) / 1.35)
-            sky = 0.5 + 0.5 * my                             # light from above the set, darker from below
+            sky = 0.5 + 0.5 * ny
             amb = 0.30 + 0.16 * sky + 0.14 * ndv
-            li = (amb * ao * ao + 0.72 * wrap * lit * (0.5 + 0.5 * ao)) * exposure
-            # Kajiya-Kay sheen along the fibres of each ply
-            vx_ = ldir[0] - rx
-            vy_ = ldir[1] - ry
-            vz_ = ldir[2] - rz
-            vl = math.sqrt(vx_ * vx_ + vy_ * vy_ + vz_ * vz_) + 1e-9
-            th_ = (hx * vx_ + hy * vy_ + hz * vz_) / vl
-            kk2 = math.sqrt(max(0.0, 1.0 - th_ * th_)) ** 20 * sheen * lit * (0.4 + 0.6 * bump)
-            fz = (1.0 - ndv) ** 2.5 * 0.16 * fuzz_amt * (0.75 + 0.25 * sky)
+            li = (1.0 * amb + 0.42 * wrap * lit) * exposure    # soft studio light: a lit face at about 1, a strong fill
+            if fx != 0.0 or fy != 0.0 or fz != 0.0:          # Kajiya-Kay along the fibres
+                th_ = (fx * hx + fy * hy + fz * hz) / hl
+                spec = math.sqrt(max(0.0, 1.0 - th_ * th_)) ** 24 * gloss * lit
+            else:
+                ndh = max(0.0, (nx * hx + ny * hy + nz * hz) / hl)
+                spec = (ndh ** 40 * 0.8 + ndh ** 8 * 0.2) * gloss * lit
             lum = 0.30 * palette[ci, 0] + 0.55 * palette[ci, 1] + 0.15 * palette[ci, 2] + 1e-3
             dk = max(0.0, 1.0 - li)
             for ch in range(3):
                 pc = palette[ci, ch]
-                tint = (pc / lum) ** (0.5 * dk)              # shadows deepen in the dye colour, not towards grey
-                val = pc * alb * li * tint + kk2 * (0.55 + 0.45 * pc) + fz * (0.55 + 0.45 * pc)
-                out[py, px, ch] = _shoulder(val)
+                tint = (pc / lum) ** (0.6 * dk)              # shade deepens in the dye colour, as on the yarn
+                out[py, px, ch] = _shoulder(pc * alb * li * tint + spec * (0.35 + 0.65 * pc))
 
 
 def soft_shape(X, r_vis, h, cmin=0.62):
@@ -523,6 +943,40 @@ def soft_shape(X, r_vis, h, cmin=0.62):
     return Q, c
 
 
+
+def _capsule_boxes(C, cam_pos, B, fpx, W, H):
+    """Rows ax..bz, r, colour, ident -> the same with the screen box (x0, y0, x1, y1) of each capsule appended."""
+    out = np.zeros((len(C), 13))
+    out[:, :9] = C[:, :9]
+    for k, row in enumerate(C):
+        ends = np.array([row[0:3], row[3:6]])
+        v = (ends - cam_pos) @ B.T
+        if (v[:, 2] <= row[6]).any():
+            out[k, 6] = 0.0
+            continue
+        sx = 0.5 * W + fpx * v[:, 0] / v[:, 2]
+        sy = 0.5 * H - fpx * v[:, 1] / v[:, 2]
+        m = fpx * row[6] / (v[:, 2].min() - row[6]) + 2.0
+        out[k, 9:13] = (sx.min() - m, sy.min() - m, sx.max() + m, sy.max() + m)
+    return out
+
+
+def _capsule_samples(Cp):
+    """Points along the capsules (for the shadow map): centres and radii."""
+    P, R = [], []
+    for row in Cp:
+        if row[6] <= 0:
+            continue
+        a, b = row[0:3], row[3:6]
+        n = max(2, int(np.linalg.norm(b - a) / max(0.5 * row[6], 0.3)) + 1)
+        u = np.linspace(0, 1, n)[:, None]
+        P.append(a * (1 - u) + b * u)
+        R.append(np.full(n, row[6]))
+    if not P:
+        return np.zeros((0, 3)), np.zeros(0)
+    return np.ascontiguousarray(np.concatenate(P)), np.ascontiguousarray(np.concatenate(R))
+
+
 class Renderer:
     """Renders a yarn chain (plus optional glossy eyes) to an RGB uint8 image.
 
@@ -530,10 +984,10 @@ class Renderer:
     taken from the finished toy, so the part already made never changes shape or shadow while new yarn is added.
     """
 
-    def __init__(self, W=1080, H=1920, ss=3, r=0.8, h=0.5, palette=None, light=(-0.45, 0.70, 0.55),
-                 bg_top=(0.975, 0.955, 0.93), bg_bot=(0.935, 0.905, 0.87), soft=1.2, nply=2, pitch=None,
-                 fuzz=0.6, sheen=0.04, halo=0.10, shadow_floor=0.0, sm=2048, aa=0.5, exposure=1.32,
-                 backdrop_y=1e5, ao=1.0, dense=1):
+    def __init__(self, W=1080, H=1920, ss=3, r=0.8, h=0.5, palette=None, light=(-0.50, 1.00, 0.50),
+                 bg_top=(0.957, 0.898, 0.839), bg_bot=(0.988, 0.941, 0.898), soft=1.2, nply=4, pitch=None,
+                 fuzz=0.6, sheen=0.0, halo=0.10, shadow_floor=0.65, sm=2048, aa=0.5, exposure=1.40,
+                 backdrop_y=None, ao=1.0, dense=1):
         self.W, self.H, self.ss = int(W), int(H), int(ss)
         self.r, self.h, self.soft = float(r), float(h), float(soft)
         self.palette = np.array(palette if palette is not None else [[0.93, 0.52, 0.42]], float)
@@ -542,13 +996,16 @@ class Renderer:
         self.bg_top = np.asarray(bg_top, float)
         self.bg_bot = np.asarray(bg_bot, float)
         self.nply = float(nply)
-        self.pitch = float(pitch) if pitch else 7.0 * self.r * self.soft / 1.2
+        # cotton: 4 soft plies with a long, lazy twist (a ply goes round the yarn once every ~18 radii)
+        self.pitch = float(pitch) if pitch else 18.0 * self.r * self.soft / 1.2
         self.fuzz, self.sheen, self.halo = float(fuzz), float(sheen), float(halo)
         self.shadow_floor = float(shadow_floor)
         self.exposure = float(exposure)
         self.ao_amt = float(ao)
         self.aa = float(aa)
-        self.plane_p = np.array([0.0, backdrop_y, 0.0])
+        # the floor the toy sits on (y up); None: just under the lowest yarn of the scene given to set_scene
+        self._auto_floor = backdrop_y is None
+        self.plane_p = np.array([0.0, -1e5 if backdrop_y is None else float(backdrop_y), 0.0])
         self.plane_n = np.array([0.0, -1.0, 0.0])
         self.sm = int(sm)
         self.cmin = min(0.62, 0.95 / max(self.soft, 1e-6))
@@ -575,11 +1032,15 @@ class Renderer:
         lo, hi = X.min(0), X.max(0)
         self.center = 0.5 * (lo + hi)
         self.extent = 0.55 * float(np.linalg.norm(hi - lo)) + 4 * self.r
+        if self._auto_floor:
+            self.plane_p[1] = lo[1] - 0.9 * self.r * self.soft
 
-    def render(self, X, D, cam, colnode=None, radius=None, spheres=None, gap=2.0, shape_idx=None):
+    def render(self, X, D, cam, colnode=None, radius=None, spheres=None, gap=2.0, shape_idx=None, details=None,
+               details_t=1.0, capsules=None):
         """X, D: the nodes drawn and their directors.  colnode: palette index per node.  radius: per-node radius
         scale (the growing tip tapers in).  spheres: rows cx, cy, cz, radius, colour index.  shape_idx: for each node
-        drawn, its index in the scene given to set_scene (default: the first len(X) nodes)."""
+        drawn, its index in the scene given to set_scene (default: the first len(X) nodes).  details: a
+        details.Details (face, felt, appliques), shown as it is at reveal time details_t (0..1)."""
         import time
         tm = [time.perf_counter()]
         n = len(X)
@@ -628,6 +1089,16 @@ class Renderer:
         if spheres is not None and len(spheres):
             _trace_spheres(np.ascontiguousarray(np.asarray(spheres, np.float64)), cam.pos, B, fpx, w, hh,
                            self.zb, self.nb, self.idb, self.cb)
+        Cp = None
+        if capsules is not None and len(capsules):
+            Cp = _capsule_boxes(np.asarray(capsules, np.float64), cam.pos, B, fpx, w, hh)
+            _trace_capsules(Cp, cam.pos, B, fpx, w, hh, self.zb, self.nb, self.idb, self.cb)
+        dmesh = details.frame(details_t) if details is not None else None
+        if dmesh is not None:
+            if getattr(self, 'ub', None) is None:
+                self.ub = np.zeros((hh, w, 3), np.float32)
+            dV, dN, dU, dF, dE, dEL = dmesh
+            _raster_details(dV, dN, dU, dF, dE, cam.pos, B, fpx, w, hh, self.zb, self.nb, self.idb, self.cb, self.ub, 16)
         tm.append(time.perf_counter())
         # shadow map: the frame is fixed on the whole scene and snapped to whole texels
         l = self.ldir
@@ -649,12 +1120,19 @@ class Renderer:
             if len(S):
                 _shadow_splat(np.ascontiguousarray(S[:, :3]), np.ascontiguousarray(S[:, 3]), len(S), 1.0, LB, lo,
                               scale, self.SM, self.sm)
+        if Cp is not None:
+            pts, rad = _capsule_samples(Cp)
+            if len(pts):
+                _shadow_splat(pts, rad, len(pts), 1.0, LB, lo, scale, self.SM, self.sm)
         tm.append(time.perf_counter())
         ao_r = fpx * 2.8 * self.r / max(1.0, float(np.linalg.norm(cam.target - cam.pos)))
         _shade(self.zb, self.nb, self.sb, self.pb, self.idb, self.cb, self.tb, colnode, n, self.h, cam.pos, B, fpx, w,
                hh, LB, lo, scale, self.SM, self.sm, self.ldir, self.palette, self.bg_top, self.bg_bot, self.plane_p,
                self.plane_n, self.r, rv, self.pitch, self.nply, self.out, ao_r, self.fuzz, self.sheen, self.halo,
                self.shadow_floor, self.exposure, self.ao_amt)
+        if dmesh is not None:
+            _shade_details(self.zb, self.nb, self.idb, self.cb, self.ub, cam.pos, B, fpx, w, hh, LB, lo, scale, self.SM,
+                           self.sm, self.ldir, self.palette, dEL, self.r, self.exposure, self.out)
         tm.append(time.perf_counter())
         img = self.out
         if self.ss > 1 or self.aa > 0:

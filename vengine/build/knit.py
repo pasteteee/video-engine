@@ -91,7 +91,10 @@ def commands(knit_cfg: dict, spec: Path, out: Path, dur: float, reveal: float, s
             cmd = [sys.executable, "-m", "vengine", "yarn", "grow", str(spec), str(out), "--size", size,
                    "--dur", str(dur), "--reveal", str(reveal)]
             for k, v in params.items():
-                cmd += [f"--{k.replace('_', '-')}", str(v)]
+                if v is True:                      # a switch (hook: true -> --hook)
+                    cmd += [f"--{k.replace('_', '-')}"]
+                elif v is not False and v is not None:
+                    cmd += [f"--{k.replace('_', '-')}", str(v)]
             if view:
                 cmd += ["--view", str(view)]
                 m = json.loads(Path(view).read_text(encoding="utf-8"))
