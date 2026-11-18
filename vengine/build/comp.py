@@ -354,8 +354,9 @@ class Compositor:
             toy = toy.crop((x0, 0, x0 + int(w * 0.56), h))
         mask = Image.new("L", toy.size, 255)
         md = ImageDraw.Draw(mask)
-        for x in range(60):
-            md.line((x, 0, x, h), fill=int(255 * x / 60))
+        fade = min(220, toy.width // 3)
+        for x in range(fade):
+            md.line((x, 0, x, h), fill=int(255 * ease(x / fade)))
         cv.paste(toy, (w - toy.width, 0), mask)
         cv = cv.convert("RGBA")
         lines = [l.upper() for l in self.sb["thumbnail"]["lines"]][:3]
