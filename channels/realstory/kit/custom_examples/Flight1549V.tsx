@@ -23,7 +23,7 @@ const Wave: React.FC<{ env: number[]; f: number; y: number; h: number }> = ({ en
 export const VAtcTape: React.FC<{ s: any; d: number }> = ({ s, d }) => {
   const f = useCurrentFrame(); const P = s.params ?? {}; const env: number[] = ((ENV as any)[P.line] ?? []).slice(Math.round((P.offset_s ?? 0) * 30));
   const txs: [string, string, number, number][] = P.txs ?? []; const t = f / 30;
-  const cur = Math.max(0, txs.findIndex(([, , a, b]) => t >= a && t < b)); const [st, words, a, b] = txs[cur] ?? ['', '', 0, 1];
+  const hit = txs.findIndex(([, , a, b]) => t >= a && t < b); const cur = hit >= 0 ? hit : Math.max(0, txs.reduce((k, x, i) => (t >= x[2] ? i : k), 0)); const [st, words, a, b] = txs[cur] ?? ['', '', 0, 1];
   const ws = words.split(' '); const k = interpolate(t, [a, Math.max(a + 0.2, b - 0.15)], [0, ws.length], C);
   const pilot = st.includes('1549'); const key = (P.key ?? 'HUDSON') as string;
   const size = words.length > 70 ? 92 : words.length > 40 ? 112 : 140;

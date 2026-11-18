@@ -26,7 +26,7 @@ const Wave: React.FC<{ env: number[]; f: number; x: number; y: number; w: number
 // mode 'quote' = the transmission on air in big type; 'strip' = transcript rows like the FAA pages; 'scope' = radar sweep + the line.
 export const AtcTape: React.FC<{ s: any; d: number }> = ({ s, d }) => {
   const f = useCurrentFrame(); const P = s.params ?? {}; const txs: Tx[] = P.txs ?? []; const env: number[] = (ENV as any)[s.line_ids[0]] ?? [];
-  const win = txWindows(env, txs, d); const cur = Math.max(0, win.findIndex(([a, b]) => f >= a && f < b)); const mode = P.mode ?? 'quote';
+  const win = txWindows(env, txs, d); const hit = win.findIndex(([a, b]) => f >= a && f < b); const cur = hit >= 0 ? hit : win.length && f >= win[win.length - 1][1] ? win.length - 1 : 0; const mode = P.mode ?? 'quote'; // after the last window, hold the last transmission
   const cam = interpolate(f, [0, d], [1, 1.05], C);
   const key = (P.key ?? 'HUDSON') as string;
   const wordsOf = (t: string) => t.split(' ');
