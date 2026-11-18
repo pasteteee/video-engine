@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "knit_plan",
+  "title": "Knit plan: what a knit renderer hands to the build-short compositor (06_render/knit/plan.json)",
+  "description": "Any renderer may produce the knit (crochetsim today, a nicer yarn renderer tomorrow) as long as it writes frames 0000.png… (one per plan entry, same size as the short) and this file next to them.",
+  "type": "object",
+  "required": ["plan", "pieces"],
+  "properties": {
+    "renderer": {"type": "string"},
+    "fps": {"type": "integer", "default": 30},
+    "size": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2},
+    "dur": {"type": "number", "description": "Seconds of the build (the yarn is complete at about 0.94 * dur)"},
+    "reveal": {"type": "number", "description": "Seconds of the finished-toy turn after the build"},
+    "frames": {"type": "string", "default": "%04d.png"},
+    "final": {
+      "type": "object",
+      "description": "The view the knit ends in (yarn renderer): when matched to the studio photo, the compositor dissolves the last knit frame into the photo laid over it",
+      "properties": {
+        "az": {"type": "number"}, "el": {"type": "number"}, "fov": {"type": "number"},
+        "matched": {"type": "boolean", "description": "az/el come from `vengine yarn match` on the photo"},
+        "iou": {"type": "number"}, "photo": {"type": ["string", "null"]},
+        "frame": {"type": "integer"}, "rest_frame": {"type": "integer", "description": "first frame of the still final view"},
+        "box": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4, "description": "x0 y0 x1 y1 of the toy in the last frame, pixels"}
+      }
+    },
+    "plan": {
+      "type": "array", "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["t", "piece", "name", "pi", "round", "count", "s"],
+        "properties": {
+          "t": {"type": "number", "description": "seconds from the first knit frame"},
+          "n": {"type": "integer", "description": "yarn nodes made"},
+          "piece": {"type": "string", "description": "part id (arm for arm_L)"},
+          "name": {"type": "string", "description": "instance name (arm_L)"},
+          "pi": {"type": "integer", "minimum": 0, "description": "index into pieces"},
+          "round": {"type": "integer", "minimum": 1},
+          "rounds": {"type": "integer"},
+          "st": {"type": "number"},
+          "count": {"type": "integer", "description": "stitches in the current round"},
+          "face": {"type": "number", "minimum": 0, "maximum": 1, "description": "how much of the face is placed"},
+          "s": {"type": "number", "minimum": 0, "maximum": 1.0001, "description": "share of all yarn made"}
+        }
+      }
+    },
+    "pieces": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "part", "counts"],
+        "properties": {
+          "name": {"type": "string"}, "part": {"type": "string"}, "name_ru": {"type": ["string", "null"]},
+          "start": {"type": "integer"}, "end": {"type": "integer"},
+          "counts": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 1}
+        }
+      }
+    }
+  }
+}
