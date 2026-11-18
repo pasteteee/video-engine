@@ -1,2 +1,4 @@
 jsonschema>=4.20
 pytest>=8
+numpy>=1.26
+Pillow>=10.1

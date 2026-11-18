@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "storyboard",
+  "title": "Build short storyboard (04_shots/storyboard.json): the words and pictures around the knit",
+  "type": "object",
+  "required": ["toy", "hook"],
+  "properties": {
+    "toy": {
+      "type": "object",
+      "required": ["spec", "title"],
+      "properties": {
+        "spec": {"type": "string", "description": "amikit toy spec JSON, relative to the episode folder or absolute"},
+        "title": {"type": "string"},
+        "url": {"type": "string", "description": "pattern page on amigurumi.ai"},
+        "stats": {
+          "type": "object",
+          "properties": {
+            "size_cm": {"type": "number"}, "hours": {"type": "number"},
+            "yarn_m": {"type": "number"}, "yarn_weight": {"type": "string"}
+          }
+        }
+      }
+    },
+    "photos": {
+      "type": "object",
+      "description": "Paths relative to the episode folder. Missing photos fall back to the finished knit.",
+      "properties": {
+        "hook": {"type": "string"}, "real": {"type": "string"}, "cta": {"type": "string"},
+        "hook_focus": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+        "real_focus": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2}
+      }
+    },
+    "hook": {
+      "type": "object",
+      "required": ["lines"],
+      "properties": {
+        "lines": {
+          "type": "array", "minItems": 1, "maxItems": 4,
+          "items": {
+            "type": "object", "required": ["text"],
+            "properties": {
+              "text": {"type": "string", "maxLength": 28},
+              "size": {"type": "integer", "minimum": 30, "maximum": 180},
+              "accent": {"type": "boolean"}
+            }
+          }
+        }
+      }
+    },
+    "timing": {"type": "object", "additionalProperties": {"type": "number"}, "description": "Overrides channel build.timing: hook, grow, done, real, cta, beat"},
+    "captions": {
+      "type": "object",
+      "properties": {
+        "part_labels": {"type": "object", "additionalProperties": {"type": "string"}, "description": "part id -> caption ('ear': '+ ears')"},
+        "extra": {"type": "array", "items": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "string"}]}, "description": "[grow second, text] added to the automatic ones"},
+        "skip": {"type": "array", "items": {"type": "string"}, "description": "automatic captions to drop"}
+      }
+    },
+    "done": {
+      "type": "object",
+      "properties": {"title": {"type": "string"}, "sub": {"type": "string", "description": "{pieces} and {stitches} are filled in"}}
+    },
+    "real": {
+      "type": "object",
+      "properties": {"lines": {"type": "array", "items": {"type": "string"}, "maxItems": 2}, "chip": {"type": "string"}}
+    },
+    "cta": {
+      "type": "object",
+      "properties": {"lines": {"type": "array", "items": {"type": "string"}, "maxItems": 2}, "button": {"type": "string"}, "chip": {"type": "string"}}
+    },
+    "thumbnail": {
+      "type": "object",
+      "properties": {"lines": {"type": "array", "items": {"type": "string"}, "maxItems": 3}, "pill": {"type": "string"}}
+    },
+    "effects": {"type": "object", "properties": {"snow": {"type": "boolean"}}},
+    "music": {"type": "object", "properties": {"bpm": {"type": "number"}, "key": {"type": "string"}, "seed": {"type": "integer"}}}
+  }
+}

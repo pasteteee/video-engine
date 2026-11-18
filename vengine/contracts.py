@@ -12,7 +12,7 @@ from pathlib import Path
 from jsonschema import Draft202012Validator
 
 from . import scenes
-from .episode import EXTRA, STAGES, Episode
+from .episode import EXTRA, Episode
 
 SCHEMA_DIR = Path(__file__).resolve().parent / "schemas"
 
@@ -41,7 +41,7 @@ def _load(p: Path):
 def validate_episode(ep: Episode, channel: dict | None = None) -> list[dict]:
     probs: list[dict] = []
     docs: dict[str, dict] = {}
-    files = [(s.output, s.schema) for s in STAGES if s.schema] + list(EXTRA.items())
+    files = [(s.output, s.schema) for s in ep.stages if s.schema] + list(EXTRA.items())
     for rel, schema in files:
         p = ep.path(rel)
         if not p.exists():
@@ -53,6 +53,9 @@ def validate_episode(ep: Episode, channel: dict | None = None) -> list[dict]:
         docs[schema] = obj
         probs += validate_obj(schema, obj, rel)
     probs += cross_check(docs, ep, channel)
+    if "storyboard" in docs:
+        from .build.storyboard import check as check_storyboard
+        probs += check_storyboard(docs["storyboard"], ep, docs.get("knit_plan"))
     return probs
 
 
