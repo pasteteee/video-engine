@@ -1,7 +1,7 @@
 // Brand primitives: corner brackets, typed mono tags, blueprint grid, vignette, grain, underline, hand note, frame.
 import React from 'react';
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
-import { AMBER, C, DISP, FONT, GROUND, INK, MUTED, NAVY, NAVY2, RED, io, rgba } from './tokens';
+import { AMBER, C, LIGHT, DISP, FONT, GROUND, INK, MUTED, NAVY, NAVY2, RED, io, rgba } from './tokens';
 
 // Amber corner brackets. p: 0→1 (use a spring). Brackets fly in from outside the box.
 export const Corners: React.FC<{ x: number; y: number; w: number; h: number; p: number; len?: number; color?: string; width?: number }> = ({ x, y, w, h, p, len = 46, color = AMBER, width = 6 }) => {
@@ -36,13 +36,14 @@ export const Grid: React.FC<{ opacity?: number; shift?: number }> = ({ opacity =
     </svg>
   );
 };
-export const Vignette = () => <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 55%, ${rgba(GROUND, 0.7)} 100%)`, pointerEvents: 'none' }} />;
+// Light episodes: the pale vignette lives in SceneBg only, so it never washes real photos and film.
+export const Vignette: React.FC<{ force?: boolean }> = ({ force }) => LIGHT && !force ? null : <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 55%, ${rgba(GROUND, 0.7)} 100%)`, pointerEvents: 'none' }} />;
 export const Grain: React.FC<{ opacity?: number }> = ({ opacity = 0.06 }) => { const f = useCurrentFrame(); return <AbsoluteFill style={{ pointerEvents: 'none', opacity, mixBlendMode: 'overlay', backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='${f % 12}'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")` }} />; };
 
 // Scene background: radial navy + drifting grid. Put scene content as children.
 export const SceneBg: React.FC<{ children?: React.ReactNode; at?: string; core?: string; gridOpacity?: number; drift?: number; style?: React.CSSProperties }> = ({ children, at = '50% 45%', core = NAVY, gridOpacity = 0, drift = 0.3, style }) => {
   const f = useCurrentFrame();
-  return <AbsoluteFill style={{ background: `radial-gradient(ellipse at ${at}, ${core} 0%, ${NAVY2} 78%)`, ...style }}><Grid opacity={gridOpacity} shift={f * drift} />{children}</AbsoluteFill>;
+  return <AbsoluteFill style={{ background: `radial-gradient(ellipse at ${at}, ${core} 0%, ${NAVY2} 78%)`, ...style }}><Grid opacity={gridOpacity} shift={f * drift} />{LIGHT ? <Vignette force /> : null}{children}</AbsoluteFill>;
 };
 // Wrap the whole composition: vignette + grain on top of everything.
 export const Finish: React.FC<{ children: React.ReactNode }> = ({ children }) => <AbsoluteFill style={{ backgroundColor: NAVY2 }}>{children}<Vignette /><Grain /></AbsoluteFill>;
