@@ -55,11 +55,15 @@ state.json                    одобрения владельца
 | Точка подключения рендера вязания | `vengine/build/knit.py` (`auto` / `crochetsim` / `yarn` / `command`) |
 | Композитор кадра | `vengine/build/comp.py` |
 | Музыка и звуки петель (numpy) | `vengine/build/audio.py` |
+| Каталог моделей: поиск, инфо, 3D-просмотр, загрузка в серию | `vengine/catalog.py`, `catalog` в channel.json |
 | Агент | `.claude/agents/rs-build.md` |
 
 ```bash
-python -m vengine init amigurumi bear-honey          # папка серии
-# 02_research/toy.json (спека amikit), 04_shots/storyboard.json, фото в 02_research/media/
+python -m vengine catalog search amigurumi goat       # модели каталога amigurumi.ai
+python -m vengine catalog info amigurumi goat-sweater-2027      # размер, часы, крючок, пряжа и метры по цветам, ссылки
+python -m vengine catalog view amigurumi goat-sweater-2027      # HTML: крутящаяся 3D-модель + инфо
+python -m vengine init amigurumi goat-sweater-2027    # папка серии
+python -m vengine catalog pull <episode> goat-sweater-2027      # спека, GLB, фото, toy_info.json, черновик раскадровки
 python -m vengine validate <episode>
 python -m vengine build knit <episode> --jobs 8       # кадры вязания, можно продолжить после обрыва
 python -m vengine build still <episode> --at 0.8,3,8,12,16,18,21,26

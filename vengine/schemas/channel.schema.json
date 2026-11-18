@@ -303,6 +303,29 @@
           "description": "Built-in synth: bpm, key, style"
         }
       }
+    },
+    "catalog": {
+      "type": "object",
+      "required": [
+        "api",
+        "storage"
+      ],
+      "description": "Where the channel's models live (amigurumi.ai): card list API, package storage, page URL pattern",
+      "properties": {
+        "api": {
+          "type": "string"
+        },
+        "storage": {
+          "type": "string"
+        },
+        "page": {
+          "type": "string",
+          "description": "{id} is replaced"
+        },
+        "locale": {
+          "type": "string"
+        }
+      }
     }
   },
   "allOf": [

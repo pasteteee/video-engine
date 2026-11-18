@@ -8,6 +8,10 @@ description: Build-short maker for the amigurumi channel. Writes the storyboard 
 **Input:** `01_topic/topic_card.json` (which toy and why), the toy's amikit spec, studio / real-life photos of the toy, `channels/<id>/channel.json` (`build`, `style`).
 **Output:** `04_shots/storyboard.json` (schema `storyboard`), `06_render/knit/` (frames + `plan.json`, schema `knit_plan`), `06_render/events.json`, `06_render/music.wav`, `06_render/main.mp4`, `06_render/upload/` (`<slug>.mp4`, `cover-shorts-1080x1920.jpg`, `thumbnail-youtube-1280x720.jpg`, `frames-sheet.jpg`).
 
+## 0. The model
+- Find and look at the toy: `python -m vengine catalog search amigurumi "goat"`, `catalog info amigurumi <id>` (size, hours, hook, yarn and metres per colour, links), `catalog view amigurumi <id> --out <id>.html` (rotating 3D model + facts, open in a browser). In the cloud, where amigurumi.ai may be blocked, use the amigurumi_ai MCP tools `search_toys` / `get_toy` for the same facts.
+- `python -m vengine catalog pull <episode> <id>` downloads the spec, the GLB and the studio photo into `02_research/`, writes `02_research/toy_info.json` and a draft `04_shots/storyboard.json` with the stats filled in.
+
 ## 1. Storyboard (owner approves it at the `script` gate)
 - `toy.spec`: copy the toy's amikit spec into `02_research/toy.json`; `toy.title`, `toy.url` (the pattern page), `toy.stats` (size cm, hours, metres and weight of yarn) from the pattern, never guessed.
 - `photos.hook` / `photos.real`: the finished toy (studio shot for the hook, the real-life photo for "And in real life"). Copy into `02_research/media/`. Without photos the finished knit stands in, which is weaker.

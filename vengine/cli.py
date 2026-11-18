@@ -8,6 +8,8 @@
   approve   EPISODE_DIR GATE [--note ..] record the owner's approval (topic|script|final)
   revoke    EPISODE_DIR GATE
   channels                              list channel profiles
+  catalog   search|info|view CHANNEL ..   the channel's models (amigurumi.ai): find, facts, 3D viewer
+  catalog   pull EPISODE_DIR TOY_ID      spec, GLB, photo and a draft storyboard into the episode
   build     STEP EPISODE_DIR [...]       build shorts (amigurumi): knit | still | events | video | audio | finish | all
 """
 from __future__ import annotations
@@ -53,6 +55,12 @@ def main(argv: list[str] | None = None) -> int:
         if name == "approve":
             p.add_argument("--note", default="")
     sub.add_parser("channels")
+    p = sub.add_parser("catalog", help="the channel's models: search, info, 3D view, pull into an episode")
+    p.add_argument("action", choices=["search", "info", "view", "pull"])
+    p.add_argument("target", help="channel id (search/info/view) or episode folder (pull)")
+    p.add_argument("arg", nargs="?", default="", help="query (search) or toy id")
+    p.add_argument("--n", type=int, default=12); p.add_argument("--json", action="store_true")
+    p.add_argument("--out")
     p = sub.add_parser("build", help="build shorts: a toy crocheted on screen")
     p.add_argument("step", choices=["knit", "still", "events", "video", "audio", "finish", "all", "check"])
     p.add_argument("episode"); p.add_argument("--jobs", type=int); p.add_argument("--part")
@@ -148,6 +156,34 @@ def main(argv: list[str] | None = None) -> int:
         rep = ailint.lint_lines(lines)
         print(json.dumps(rep, ensure_ascii=False, indent=2) if a.json else ailint.format_report(rep))
         return 0 if rep["ok"] else 1
+
+    if a.cmd == "catalog":
+        from . import catalog as cat
+        if a.action == "pull":
+            ep = Episode(Path(a.target))
+            info = cat.Catalog((ep.channel or {}).get("catalog", {})).pull(a.arg, ep.folder)
+            print(cat.format_info(info))
+            print("\nwritten: " + ", ".join(info["local"].values()))
+            return 0
+        c = cat.Catalog(load_channel(a.target).get("catalog", {}))
+        if a.action == "search":
+            hits = c.search(a.arg, a.n)
+            if a.json:
+                print(json.dumps(hits, ensure_ascii=False, indent=2)); return 0
+            for h in hits:
+                print(f"{h['id']:<34} {h.get('name', ''):<32} {h.get('heightCm') or '':>5} cm  {h.get('hours') or '':>3} h  "
+                      f"{h.get('yarnWeight') or ''}")
+            return 0
+        if not a.arg:
+            ap.error("catalog info/view needs a toy id")
+        info = c.info(a.arg)
+        if a.action == "info":
+            print(json.dumps(info, ensure_ascii=False, indent=2) if a.json else cat.format_info(info))
+            return 0
+        out = Path(a.out or f"{a.arg}.html")
+        out.write_text(cat.viewer_html(info), encoding="utf-8")
+        print(f"viewer: {out.resolve()}")
+        return 0
 
     if a.cmd == "build":
         from .build import knit as knit_mod, render

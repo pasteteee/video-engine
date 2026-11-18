@@ -19,6 +19,12 @@
     "default_privacy": "private",
     "category_id": "26"
   },
+  "catalog": {
+    "api": "https://amigurumi.ai/api/toys",
+    "storage": "https://deieljrtehefzhtsphzj.supabase.co/storage/v1/object/public/toys",
+    "page": "https://amigurumi.ai/models/{id}",
+    "locale": "en"
+  },
   "style": {
     "guide": "channels/amigurumi/brand/BRANDBOOK.md",
     "palette": "fixed",
