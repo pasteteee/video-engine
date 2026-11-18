@@ -68,10 +68,10 @@ def cross_check(docs: dict[str, dict], ep: Episode | None = None, channel: dict 
     f, media, script, shots = (docs.get(k) for k in ("findings", "media", "script", "shotlist"))
     facts = {x["id"]: x for x in (f or {}).get("facts", [])}
     media_ids = {m["id"] for m in (media or {}).get("items", [])}
+    calcs = {c["id"] for c in (f or {}).get("calculations", [])}
 
     if f:
         src = {s["id"] for s in f.get("sources", [])}
-        calcs = {c["id"] for c in f.get("calculations", [])}
         for x in f.get("facts", []):
             for sid in x.get("source_ids", []):
                 if sid not in src:
@@ -100,7 +100,7 @@ def cross_check(docs: dict[str, dict], ep: Episode | None = None, channel: dict 
             warn("script", f"open loop {lid} is never paid off")
         for l in script["lines"]:
             for fid in l.get("fact_ids", []):
-                if f is not None and fid not in facts:
+                if f is not None and fid not in facts and fid not in calcs:
                     err("script", f"line {l['id']} uses unknown fact {fid}")
                 elif fid in facts and facts[fid]["status"] in ("disputed", "rejected"):
                     err("script", f"line {l['id']} states fact {fid} which is {facts[fid]['status']}")

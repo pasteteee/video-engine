@@ -203,6 +203,8 @@ def for_episode(folder: Path, max_photos: int = 12) -> dict:
     paths, ids = [], []
     for m in items[:max_photos]:
         p = folder / "02_research" / m["path"]
+        if not p.exists():
+            p = folder / m["path"]  # path relative to the episode folder, as contracts.py also accepts
         if p.exists():
             paths.append(p)
             ids.append(m["id"])

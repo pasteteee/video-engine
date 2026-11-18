@@ -97,6 +97,13 @@ def test_cross_check_catches_bad_refs():
     assert "rejected" in msgs and "unknown fact nope" in msgs
 
 
+def test_script_may_cite_own_calculation():
+    f = json.loads(json.dumps(FINDINGS)); f.setdefault("calculations", []).append({"id": "c9", "question": "q", "method": "m", "result": "r"})
+    sc = json.loads(json.dumps(SCRIPT)); sc["lines"][0]["fact_ids"] = ["c9"]
+    probs = contracts.cross_check({"findings": f, "script": sc, "media": MEDIA})
+    assert not any("c9" in p["msg"] for p in probs)
+
+
 def test_shotlist_needs_source_line_and_coverage():
     sl = {"fps": 30, "width": 1920, "height": 1080, "shots": [
         {"id": "s1", "line_ids": ["l1"], "scene_type": "photo_parallax", "duration_s": 3, "media_ids": ["m1"]}]}

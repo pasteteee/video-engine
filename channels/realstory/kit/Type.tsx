@@ -60,8 +60,8 @@ export const Kinetic: React.FC<{ lines: string[][]; top: number; size: number; f
   };
 
 // Odometer: each digit column rolls through 0–9 and lands; higher columns roll more.
-export const Odometer: React.FC<{ value: number; size: number; f0: number; dur?: number; color?: string }> = ({ value, size, f0, dur = 26, color = BONE }) => {
-  const f = useCurrentFrame(); const s = value.toLocaleString('en-US'); const lh = size * 0.86;
+export const Odometer: React.FC<{ value: number; size: number; f0: number; dur?: number; color?: string; plain?: boolean }> = ({ value, size, f0, dur = 26, color = BONE, plain }) => {
+  const f = useCurrentFrame(); const s = plain ? String(value) : value.toLocaleString('en-US'); const lh = size * 0.86;
   const digits = s.split(''); let col = 0; const nd = digits.filter((c) => /\d/.test(c)).length;
   return <span style={{ display: 'inline-flex', ...DISP(size, 62, 880), lineHeight: `${lh}px`, height: lh, overflow: 'hidden', color, fontVariantNumeric: 'tabular-nums', textShadow: SHADOW }}>
     {digits.map((c, i) => {
