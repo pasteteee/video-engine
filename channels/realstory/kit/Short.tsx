@@ -9,6 +9,7 @@ import { ACCENT_EP, BONE, C, DISP, FONT, GROUND, GROUND2, MUTED, PAPER, SHADOW, 
 import { Kinetic, Mono, Odometer, StopBlock, Unredact } from './kit/Type';
 import { Grain } from './kit/Brand';
 import { FlatMap, Pin, useLand } from './kit/Geo';
+import { VCUSTOM } from './custom';
 
 const FPS = 30, W = 1080, H = 1920, X0 = 80;
 // size that fits the longest line into the 9:16 text column (Archivo at wdth 62 ≈ 0.5 em per capital)
@@ -79,7 +80,7 @@ const VQuote: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   return <Bg>
     <Mono text={P.name} f0={0} size={26} style={{ position: 'absolute', left: X0, top: 470 }} />
     <div style={{ position: 'absolute', left: X0, right: 120, top: 530, fontFamily: FONT.quote, fontStyle: 'italic', fontWeight: 420, fontSize: 124, lineHeight: 1.04, color: BONE, textShadow: SHADOW }}>
-      {words.map((w: string, i: number) => { const p = interpolate(f, [4 + i * per, 12 + i * per], [0, 1], C); return <span key={i} style={{ opacity: p, filter: `blur(${(1 - p) * 6}px)`, color: P.hl && w.toLowerCase().includes(P.hl) ? ACCENT_EP : BONE }}>{w} </span>; })}
+      {words.map((w: string, i: number) => { const p = interpolate(f, [4 + i * per, 12 + i * per], [0, 1], C); return <span key={i} style={{ opacity: p, filter: `blur(${(1 - p) * 6}px)`, color: (P.hl && w.toLowerCase().includes(P.hl)) || (P.accent && w.replace(/[^\w]/g, '').toLowerCase() === String(P.accent).toLowerCase()) ? ACCENT_EP : BONE }}>{w} </span>; })}
     </div>
   </Bg>;
 };
@@ -213,7 +214,7 @@ const Layout: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
     case 'v_number': return <VNumber s={s} d={d} />;
     case 'v_quote': return <VQuote s={s} d={d} />;
     case 'v_doc': return <VDoc s={s} d={d} />;
-    case 'v_custom': { const c = s.params.component; return c === 'VDelay' ? <VDelay s={s} d={d} /> : c === 'VClock' ? <VClock d={d} /> : c === 'VDockingHud' ? <VDockingHud s={s} d={d} /> : <VSpectro s={s} d={d} />; }
+    case 'v_custom': { const c = s.params.component; const V = (VCUSTOM as any)[c]; if (V) return <V s={s} d={d} />; return c === 'VDelay' ? <VDelay s={s} d={d} /> : c === 'VClock' ? <VClock d={d} /> : c === 'VDockingHud' ? <VDockingHud s={s} d={d} /> : <VSpectro s={s} d={d} />; }
     case 'v_photo_stack': return <VStack s={s} d={d} />;
     case 'v_map': return <VMap s={s} d={d} />;
     default: return <Bg><div style={{ color: SIGNAL, fontSize: 60 }}>NO LAYOUT {s.layout}</div></Bg>;
@@ -269,7 +270,7 @@ export const ShortVideo: React.FC<{ id: string }> = ({ id }) => {
   const sh = SHORTS.find((x) => x.id === id)!; const total = shortFrames(sh);
   return <AbsoluteFill style={{ background: GROUND }}>
     {sh.shots.map((s) => { const from = Math.round(s.start_s * FPS), d = Math.round(s.duration_s * FPS);
-      return <Sequence key={s.id} from={from} durationInFrames={d}><PunchIn><Layout s={s} d={d} /></PunchIn></Sequence>; })}
+      return <Sequence key={s.id} from={from} durationInFrames={d}><PunchIn d={d}><Layout s={s} d={d} /></PunchIn></Sequence>; })}
     <Captions sh={sh} />
     <Hook sh={sh} />
     <Grain opacity={0.07} />
@@ -280,7 +281,7 @@ export const ShortVideo: React.FC<{ id: string }> = ({ id }) => {
       return <Sequence key={'snd' + i} from={fr} durationInFrames={n}><Audio src={med(x.media_id)} startFrom={Math.round(x.from_s * FPS)} volume={(q) => (x.gain ?? 1) * interpolate(q, [0, 6, n - 12, n], [0, 1, 1, 0], C)} /></Sequence>; })}
   </AbsoluteFill>;
 };
-const PunchIn: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const f = useCurrentFrame(); const z = interpolate(f, [0, 6], [1.06, 1], { ...C, easing: out });
+const PunchIn: React.FC<{ children: React.ReactNode; d: number }> = ({ children, d }) => {
+  const f = useCurrentFrame(); const z = interpolate(f, [0, 6], [1.06, 1], { ...C, easing: out }) * interpolate(f, [6, d], [1, 1.045], C);
   return <AbsoluteFill style={{ transform: `scale(${z})` }}>{children}</AbsoluteFill>;
 };
