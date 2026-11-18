@@ -181,8 +181,8 @@ def test_cli_status_and_validate(tmp_path, capsys):
 
 
 def test_every_agent_has_a_definition():
-    from vengine.episode import STAGES
-    agents = {s.agent for s in STAGES} | {"rs-analyst"}
+    from vengine.episode import FORMATS
+    agents = {s.agent for st in FORMATS.values() for s in st} | {"rs-analyst"}
     for a in agents:
         assert (ROOT / ".claude" / "agents" / f"{a}.md").exists(), a
 

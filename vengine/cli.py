@@ -8,6 +8,7 @@
   approve   EPISODE_DIR GATE [--note ..] record the owner's approval (topic|script|final)
   revoke    EPISODE_DIR GATE
   channels                              list channel profiles
+  build     STEP EPISODE_DIR [...]       build shorts (amigurumi): knit | still | events | video | audio | finish | all
 """
 from __future__ import annotations
 
@@ -21,11 +22,7 @@ from .episode import GATES, ROOT, Episode, load_channel
 
 
 def _channel_of(ep: Episode) -> dict | None:
-    cid = ep.state.get("channel")
-    try:
-        return load_channel(cid) if cid else None
-    except FileNotFoundError:
-        return None
+    return ep.channel
 
 
 def _print_problems(probs: list[dict]) -> int:
@@ -56,6 +53,11 @@ def main(argv: list[str] | None = None) -> int:
         if name == "approve":
             p.add_argument("--note", default="")
     sub.add_parser("channels")
+    p = sub.add_parser("build", help="build shorts: a toy crocheted on screen")
+    p.add_argument("step", choices=["knit", "still", "events", "video", "audio", "finish", "all", "check"])
+    p.add_argument("episode"); p.add_argument("--jobs", type=int); p.add_argument("--part")
+    p.add_argument("--at", default="0.8,3,8,12,16,18,21,26", help="still: seconds")
+    p.add_argument("--out")
 
     a = ap.parse_args(argv)
 
@@ -68,7 +70,7 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "init":
         ch = load_channel(a.channel)
         root = Path(a.root or ch.get("episodes_root", "episodes/{slug}").replace("{slug}", a.slug))
-        ep = Episode.init(root if a.root is None else root / a.slug, ch["id"], a.slug)
+        ep = Episode.init(root if a.root is None else root / a.slug, ch["id"], a.slug, ch.get("format", "documentary"))
         print(f"episode folder: {ep.folder}")
         return 0
 
@@ -146,6 +148,27 @@ def main(argv: list[str] | None = None) -> int:
         rep = ailint.lint_lines(lines)
         print(json.dumps(rep, ensure_ascii=False, indent=2) if a.json else ailint.format_report(rep))
         return 0 if rep["ok"] else 1
+
+    if a.cmd == "build":
+        from .build import knit as knit_mod, render
+        ep = Episode(Path(a.episode))
+        if a.step == "knit":
+            print(f"knit frames: {render.run_knit(ep, a.jobs)}")
+            return _print_problems(knit_mod.check(ep.path(render.KNIT_DIR)))
+        if a.step == "check":
+            return _print_problems(knit_mod.check(ep.path(render.KNIT_DIR)) + contracts.validate_episode(ep, ep.channel))
+        if a.step == "still":
+            print(render.still(ep, [float(v) for v in a.at.split(",")], Path(a.out) if a.out else None))
+            return 0
+        if a.step == "events":
+            print(render.write_events(ep)); return 0
+        if a.step == "video":
+            print(render.video(ep, a.part)); return 0
+        if a.step == "audio":
+            print(render.music(ep)); return 0
+        res = render.finish(ep) if a.step == "finish" else render.run_all(ep, a.jobs)
+        print(json.dumps(res, ensure_ascii=False, indent=2))
+        return 0
 
     if a.cmd in ("approve", "revoke"):
         ep = Episode(Path(a.episode))
