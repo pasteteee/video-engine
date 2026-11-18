@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+/* Real Story · Season 1 thumbnail system. Same grid for all 12 episodes; only photo, ground, accent and words change.
+   ?v=<json> {img, pos, zoom, flip, ground, accent, light, l1, l2, l3, size1, size2, size3, top, ep, tag,
+              stamp, focus, at, w, dim, topScrim, circle:[cx,cy,rx,ry,rot], arrow:[x1,y1,x2,y2], evidence:{img,x,y,w,rot,caption}, guides} */
+@font-face{font-family:Archivo;src:url(fonts/Archivo-wdth-wght.woff2) format('woff2');font-weight:100 900;font-stretch:62% 125%}
+@font-face{font-family:Plex;src:url(fonts/IBMPlexMono-500.woff2) format('woff2');font-weight:500}
+@font-face{font-family:Plex;src:url(fonts/IBMPlexMono-600.woff2) format('woff2');font-weight:600}
+:root{--ink:#0e0f11;--bone:#f2efe8;--signal:#e2231a;--ground:#0e0f11;--accent:#9fd3e0}
+*{margin:0;box-sizing:border-box}
+body{width:1280px;height:720px;overflow:hidden;background:var(--ground);position:relative}
+.base{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;filter:contrast(1.1) saturate(1.06)}
+.layer{position:absolute;inset:0}
+.words{position:absolute;left:58px;font-family:Archivo;font-stretch:62%;font-weight:880;text-transform:uppercase;line-height:.86;letter-spacing:-.004em}
+.words div{white-space:nowrap}
+.tag{position:absolute;right:42px;top:36px;font-family:Plex;font-weight:600;font-size:25px;letter-spacing:.12em;text-transform:uppercase}
+.tag b{display:inline-block;width:13px;height:19px;background:var(--signal);margin-right:12px;vertical-align:-2px}
+.tag i{font-style:normal;font-weight:600;color:var(--accent)}
+.stamp{position:absolute;left:62px;font-family:Plex;font-weight:600;font-size:31px;letter-spacing:.12em;text-transform:uppercase;color:var(--signal)}
+.stamp:before{content:'';display:inline-block;width:34px;height:3px;background:var(--signal);vertical-align:7px;margin-right:12px}
+.ev{position:absolute;border:5px solid var(--signal);box-shadow:0 10px 36px rgba(0,0,0,.55);background:#000}
+.ev img{display:block;width:100%}
+.ev span{position:absolute;left:-5px;top:100%;margin-top:8px;font-family:Plex;font-weight:500;font-size:17px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+svg{position:absolute;inset:0}
+.grain{position:absolute;inset:0;opacity:.12;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.guide{position:absolute;right:0;bottom:0;width:250px;height:100px;outline:2px dashed #0f0;display:none}
+</style></head><body>
+<div class="base" id="base"></div><div class="layer" id="shade"></div>
+<div id="evi"></div>
+<svg width="1280" height="720"><g style="filter:drop-shadow(0 2px 6px rgba(0,0,0,.55))" fill="none" stroke="#e2231a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path id="circle"/><path id="arrow"/></g></svg>
+<div class="words" id="words"></div><div class="stamp" id="stamp"></div><div class="tag" id="tag"></div><div class="grain"></div><div class="guide" id="guide"></div>
+<script>
+const v = JSON.parse(decodeURIComponent(location.search.slice(3)));
+const R = document.documentElement.style; if (v.ground) R.setProperty('--ground', v.ground); if (v.accent) R.setProperty('--accent', v.accent);
+const rgb = h => [1,3,5].map(i => parseInt(h.slice(i, i + 2), 16)).join(',');
+const g = rgb(v.ground || '#0e0f11'), light = !!v.light;
+base.style.backgroundImage = `url(${v.img})`; base.style.backgroundPosition = v.pos || 'center'; base.style.backgroundSize = v.zoom || 'cover';
+// focus:[fx,fy] (fraction of the photo) lands at at:[x,y] on the 1280x720 canvas, photo scaled to width w
+if (v.focus) { const im = new Image(); im.onload = () => { const W = v.w || 1600, H = W * im.naturalHeight / im.naturalWidth, [fx, fy] = v.focus, [sx, sy] = v.at || [960, 380];
+  const tx = v.flip ? 1280 - sx : sx; base.style.backgroundSize = `${W}px ${H}px`; const cl = (a, lo) => Math.min(0, Math.max(lo, a)); base.style.backgroundPosition = `${cl(tx - fx * W, 1280 - W)}px ${cl(sy - fy * H, 720 - H)}px`; }; im.src = v.img; }
+if (v.flip) base.style.transform = 'scaleX(-1)';
+if (v.dim) base.style.filter = `contrast(1.1) saturate(1.06) brightness(${v.dim})`;
+// scrim of the episode ground from the text side + a soft floor; never a box
+shade.style.background = v.shade || `linear-gradient(90deg, rgba(${g},${light ? .9 : .86}) 0%, rgba(${g},${light ? .62 : .55}) 36%, rgba(${g},0) 64%), linear-gradient(0deg, rgba(${g},.45) 0%, rgba(${g},0) 30%), linear-gradient(200deg, rgba(${g},${v.topScrim || .55}) 0%, rgba(${g},0) 26%)`;
+const fg = light ? '#0e0f11' : '#f2efe8', halo = light ? `0 4px 26px rgba(${g},.9)` : `0 6px 30px rgba(${g},.85), 0 2px 4px rgba(0,0,0,.55)`;
+// season signature: a 4 px "ghost" of the episode accent on the left edge of every word
+const ghost = `-4px 0 0 ${v.accent || '#9fd3e0'}`;
+const T0 = v.top || 200, lines = [[v.l1, v.size1 || 168, fg], [v.l2, v.size2 || 200, '#e2231a'], [v.l3, v.size3 || 150, fg]].filter(l => l[0]);
+words.style.top = T0 + 'px';
+words.innerHTML = lines.map(([t, s, c]) => `<div style="font-size:${s}px;color:${c};text-shadow:${ghost},${halo}">${t}</div>`).join('');
+tag.style.color = fg; tag.style.textShadow = `0 0 10px rgba(${g},.95), ${halo}`;
+tag.innerHTML = `<b></b>${v.ep ? `<i>${v.ep}</i> &nbsp;·&nbsp; ` : ''}${v.tag || ''}`;
+if (v.stamp) { stamp.textContent = v.stamp; stamp.style.top = (v.stampTop || T0 - 58) + 'px'; stamp.style.textShadow = `0 0 10px rgba(${g},.95), 0 0 22px rgba(${g},.85), ${halo}`; } else stamp.remove();
+if (v.evidence) { const e = v.evidence; evi.innerHTML = `<div class="ev" style="left:${e.x}px;top:${e.y}px;width:${e.w}px;transform:rotate(${e.rot || 3}deg)"><img src="${e.img}"><span style="color:${fg};text-shadow:${halo}">${e.caption || ''}</span></div>`; }
+if (v.circle) { const [cx, cy, rx, ry, rot] = v.circle; let d = ''; const n = 64;
+  for (let i = 0; i <= n * 1.12; i++) { const t = (i / n) * Math.PI * 2 - 0.6; const w = 1 + 0.035 * Math.sin(t * 2 + 1.3) + 0.02 * Math.sin(t * 3.1);
+    const x = rx * w * Math.cos(t), y = ry * w * Math.sin(t) * (1 + i / n * 0.06), r = (rot || -8) * Math.PI / 180;
+    d += (i ? 'L' : 'M') + (cx + x * Math.cos(r) - y * Math.sin(r)).toFixed(1) + ' ' + (cy + x * Math.sin(r) + y * Math.cos(r)).toFixed(1) + ' '; }
+  circle.setAttribute('d', d); }
+if (v.arrow) { const [x1, y1, x2, y2] = v.arrow, a = Math.atan2(y2 - y1, x2 - x1), mx = (x1 + x2) / 2 - (y2 - y1) * .12, my = (y1 + y2) / 2 + (x2 - x1) * .12, L = 30;
+  arrow.setAttribute('d', `M${x1} ${y1} Q${mx} ${my} ${x2} ${y2} M${x2 - L * Math.cos(a - .45)} ${y2 - L * Math.sin(a - .45)} L${x2} ${y2} L${x2 - L * Math.cos(a + .45)} ${y2 - L * Math.sin(a + .45)}`); }
+if (v.guides) guide.style.display = 'block';
+</script></body></html>

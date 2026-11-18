@@ -1,0 +1,450 @@
+{
+ "s1e01": {
+  "n": 1,
+  "title": "Apollo 12: The 5 Words That Saved the Mission",
+  "titles": [
+   "Apollo 12: The 5 Words That Saved the Mission",
+   "Lightning Hit Apollo 12 Twice. Five Words Saved It",
+   "SCE to AUX: The 52 Seconds That Almost Ended Apollo 12"
+  ],
+  "description": "November 14, 1969. Thirty-six seconds after liftoff, lightning hits Apollo 12. Sixteen seconds later it hits again. Almost every warning light comes on, the fuel cells drop offline, the guidance platform tumbles, and the screens in Houston fill with garbage numbers. Nobody can tell if the spacecraft is still alive.\n\nA young engineer named John Aaron recognises the pattern from a test a year earlier. He says five words: \"Try SCE to AUX.\" Almost nobody in Mission Control knows what that means. This is the 52 seconds that saved the mission, told with the real launch film, the real cockpit audio and the original NASA transcripts.\n\nWhat's new here: we follow the chain of trust link by link, from Aaron to flight director Gerry Griffin to CapCom Gerald Carr to Alan Bean's hand on the switch, and stop the clock on three ways the story could have ended differently.\n\nSources\n- NASA, Apollo 12 Mission Report (MSC-01855, March 1970)\n- NASA, Analysis of Apollo 12 Lightning Incident (MSC-01540, February 1970)\n- NASA, Apollo 12 Technical Air-to-Ground Voice Transcription and onboard voice recording\n- NASA Johnson Space Center Oral History Project: John W. Aaron, Gerald D. Griffin\n- NASA launch film and photographs of Apollo 12 (public domain)\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 1 of 12\nWhole season: [playlist link]\nNext: The Bloop · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#Apollo12 #NASA #SpaceHistory",
+  "tags": [
+   "Apollo 12",
+   "SCE to AUX",
+   "John Aaron",
+   "lightning strike",
+   "Saturn V",
+   "NASA",
+   "Mission Control",
+   "Pete Conrad",
+   "Alan Bean",
+   "space history",
+   "Apollo program",
+   "Mission Records",
+   "Apollo 12 lightning",
+   "Gerry Griffin",
+   "moon landing",
+   "1969",
+   "NASA history",
+   "Real Story"
+  ],
+  "pinned": "John Aaron was 24. If you have worked a job where one odd memory saved the day, tell us about it below.",
+  "publish": "2026-11-25",
+  "title_len": [
+   45,
+   50,
+   54
+  ],
+  "desc_len": 1694
+ },
+ "s1e02": {
+  "n": 2,
+  "title": "The Loudest Mystery Sound in the Ocean",
+  "titles": [
+   "The Loudest Mystery Sound in the Ocean",
+   "The Bloop Was Not a Monster. NOAA's Recordings Show What It Was",
+   "We Slowed the Bloop Back to Real Speed. Here's What It Is"
+  ],
+  "description": "In 1997, NOAA's underwater microphones picked up a sound so loud it crossed thousands of kilometers of ocean. The internet called it a monster. We went back to NOAA's own recordings, slowed the famous file back to real speed, measured it, and followed the clues to an iceberg seven times the size of Manhattan that broke apart right inside NOAA's microphone array.\n\nWhat's new here: the public Bloop file is sped up 16 times, and we measured that half of its energy sits below 15 Hz, under the edge of human hearing. We also ran the numbers on the SOFAR channel, the \"pipe with no walls\" that let the sound cross an ocean.\n\nSources\n- NOAA PMEL, \"Bloop\": https://www.pmel.noaa.gov/acoustics/sounds/bloop.html\n- NOAA Ocean Service, \"What is the bloop?\": https://oceanservice.noaa.gov/facts/bloop.html\n- NOAA PMEL sounds: Train, Julia, Upsweep: https://www.pmel.noaa.gov/acoustics/sounds/train.html · https://www.pmel.noaa.gov/acoustics/sounds/julia.html · https://www.pmel.noaa.gov/acoustics/sounds/upsweep.html\n- NOAA PMEL cryogenic sounds (Slow Down): https://www.pmel.noaa.gov/acoustics/specs_cryogenic.html\n- Dziak et al. (2013), \"Life and death sounds of iceberg A53a\", Oceanography 26(2): https://tos.org/oceanography/assets/docs/26-2_dziak.pdf\n- NASA, ISS016-E-023196 (iceberg A53a, Jan 15, 2008): https://images.nasa.gov/details/iss016e023196\n- NASA/JPL, PIA21785 (Larsen C calving, 2017): https://images.nasa.gov/details/PIA21785\n- Our calculations: real duration, energy below 15 Hz, SOFAR spreading loss.\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 2 of 12\nWhole season: [playlist link]\nPrevious: Apollo 12 · [link]\nNext: Godwit B6 · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#TheBloop #OceanMystery #NOAA",
+  "tags": [
+   "bloop",
+   "the bloop",
+   "bloop sound",
+   "NOAA",
+   "ocean mystery",
+   "underwater sound",
+   "icequake",
+   "iceberg",
+   "SOSUS",
+   "SOFAR channel",
+   "Antarctica",
+   "unexplained sounds",
+   "Case Closed",
+   "A53a",
+   "PMEL",
+   "hydrophone",
+   "ocean sounds",
+   "case closed",
+   "mystery solved",
+   "Real Story"
+  ],
+  "pinned": "The famous Bloop file is sped up 16 times. Listen to the real-speed version in the video with headphones and tell us what you hear.",
+  "publish": "2026-11-28",
+  "title_len": [
+   38,
+   63,
+   57
+  ],
+  "desc_len": 1989
+ },
+ "s1e03": {
+  "n": 3,
+  "title": "11 Days Without Landing",
+  "titles": [
+   "11 Days Without Landing",
+   "A 4-Month-Old Bird Flew 13,560 km Nonstop. Nobody Showed It the Way",
+   "Godwit B6: 11 Days Nonstop From Alaska to Tasmania"
+  ],
+  "description": "In October 2022 a bar-tailed godwit called B6, about four months old, took off from Alaska and did not land for 11 days and 1 hour. It flew at least 13,560 km over open ocean and set the world record for the longest nonstop bird flight. Nobody showed it the way: the adults had left weeks earlier.\n\nWhat's new here: we rebuilt B6's approximate route from the published waypoints and pulled NOAA's GFS weather model for every six hours of the flight. At about 1,500 m the wind blew the bird's way roughly 9 hours out of 10. It explains the overshoot past New Zealand. It doesn't clearly explain the sharp turn toward Tasmania.\n\nSources\n- USGS Alaska Science Center, \"Juvenile bar-tailed godwit B6 sets world record\": https://www.usgs.gov/centers/alaska-science-center/news/juvenile-bar-tailed-godwit-b6-sets-world-record\n- Guinness World Records, longest non-stop migration by a bird: https://www.guinnessworldrecords.com/world-records/86385-longest-non-stop-migration-by-a-bird\n- Gill et al. (2009), \"Extreme endurance flights by landbirds crossing the Pacific Ocean\", Proc. R. Soc. B\n- USGS, \"Ultra-marathon champion bird may plan flights based on weather across the Pacific\": https://www.usgs.gov/news/national-news-release/ultra-marathon-champion-bird-may-plan-flights-based-weather-across\n- USGS tracking data, bar-tailed godwits: https://www.usgs.gov/data/tracking-data-bar-tailed-godwits-limosa-lapponica\n- NOAA NCEI, GFS 1° analyses, Oct 12–25, 2022\n- Map: Natural Earth (public domain)\n\nFootage and photo credits\n- Bar-tailed godwits, Wadden Sea (takeoff, swarm, feeding, flock): Beeld en Geluid / Open Images, via Wikimedia Commons, CC BY-SA 3.0 NL\n- Bar-tailed godwit in surf, Dingle Peninsula, Ireland: Wikimedia Commons, CC BY-SA 4.0\n- Bar-tailed godwits flying and landing: Terra X / ZDF, \"Langstreckenrekord im Vogelflug\", Wikimedia Commons, CC BY 4.0 (cropped)\n- Photos: USGS Alaska Science Center (public domain)\n- Godwit call: xeno-canto XC1107762, CC0\nNone of the footage shows B6 itself. The route map is our own approximate reconstruction, not B6's raw track.\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 3 of 12\nWhole season: [playlist link]\nPrevious: The Bloop · [link]\nNext: Every Tornado · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#Godwit #BirdMigration #WorldRecord",
+  "tags": [
+   "bar-tailed godwit",
+   "godwit B6",
+   "longest bird flight",
+   "nonstop flight",
+   "bird migration",
+   "world record",
+   "Alaska to Tasmania",
+   "animal navigation",
+   "tailwind",
+   "USGS",
+   "satellite tracking",
+   "One Path",
+   "13560 km",
+   "longest flight",
+   "migration record",
+   "B6",
+   "Real Story"
+  ],
+  "pinned": "B6 had never made this trip and the adults had already left. How do you think it knew where to go?",
+  "publish": "2026-12-02",
+  "title_len": [
+   23,
+   67,
+   50
+  ],
+  "desc_len": 2565
+ },
+ "s1e04": {
+  "n": 4,
+  "title": "Every Tornado Since 1950 on One Map. They Didn't Increase, They Moved",
+  "titles": [
+   "Every Tornado Since 1950 on One Map. They Didn't Increase, They Moved",
+   "9x More Tornadoes? We Checked All 68,693 Records",
+   "Why Tornadoes Got Deadlier Without Getting More Common"
+  ],
+  "description": "We went through all 68,693 tornadoes in NOAA's Storm Prediction Center record, 1950 to 2022, and put every one of them on a single map. The count rose about nine times. Almost all of that growth is in the weakest tornadoes, the ones nobody used to see or report.\n\nWhat really changed is quieter and more dangerous: tornadoes now come in bigger bursts, and the activity has shifted east, out of the open plains and into places where each tornado kills more people.\n\nWhat's new here: our own counts from the full SPC database, split by rating, by decade and by region, and a plain answer to the question \"are there more tornadoes now?\".\n\nSources\n- NOAA Storm Prediction Center, Severe Weather Database (tornadoes 1950-2022): https://www.spc.noaa.gov/wcm/\n- Brooks, Carbin & Marsh (2014), Science, increased variability of tornado occurrence: https://doi.org/10.1126/science.1257460\n- Gensini & Brooks (2018), npj Climate and Atmospheric Science, spatial trends in US tornado frequency: https://doi.org/10.1038/s41612-018-0048-2\n- Simmons & Sutter (2005), tornado warnings and fatalities\n- NWS Central Region, Joplin tornado service assessment (2011)\n- NWS damage surveys: El Reno (May 31, 2013), Enderlin (June 20, 2025)\n- Our calculations: counts by EF rating, decade and longitude from the SPC file.\n\nPhoto and video credits: NOAA / NSSL Photo Library, FEMA, NWS (public domain); Ray Bohac (CC BY 3.0); Jennifer Brindley, Ks0stm, Silosarg, Runningonbrains, Immewnity (CC BY-SA); Bob Webster, macahanC6R Eje Gustafsson (CC BY 2.0); BusyWikipedian (CC BY 4.0); Wikideas1 (CC0). Full list with links in the pinned comment.\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 4 of 12\nWhole season: [playlist link]\nPrevious: Godwit B6 · [link]\nNext: Hunga Tonga · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#Tornado #NOAA #WeatherData",
+  "tags": [
+   "tornadoes",
+   "tornado map",
+   "every tornado since 1950",
+   "tornado alley",
+   "dixie alley",
+   "tornado statistics",
+   "NOAA",
+   "Storm Prediction Center",
+   "SPC tornado database",
+   "EF5 tornado",
+   "Joplin tornado",
+   "El Reno tornado",
+   "tornado history",
+   "severe weather",
+   "climate and tornadoes",
+   "weather data",
+   "data visualization",
+   "Real Story"
+  ],
+  "pinned": "All 68,693 tornadoes are in the map, including the tiny EF0s nobody counted in 1950. Where do you live, and did you expect it to be on this map? Full photo credits are below.",
+  "publish": "2026-12-05",
+  "title_len": [
+   69,
+   48,
+   54
+  ],
+  "desc_len": 2095
+ },
+ "s1e05": {
+  "n": 5,
+  "title": "A Volcano Made a Tsunami With Air. We Measured It From Space",
+  "titles": [
+   "A Volcano Made a Tsunami With Air. We Measured It From Space",
+   "The Tonga Eruption Shook Barometers in Britain. We Tracked the Wave",
+   "Hunga Tonga: The Pressure Wave That Moved the Sea Worldwide"
+  ],
+  "description": "On January 15, 2022, a volcano in the South Pacific exploded. Fifteen hours later, barometers in Britain jumped, with no storm anywhere near. That same day, the sea moved in the Caribbean and the Mediterranean, places the volcano's water could never reach in time.\n\nWe went back to NOAA's raw satellite data and tracked the pressure ring ourselves, frame by frame: 59 pictures, 41 measured positions, a straight line on the chart, 310 meters per second. Then we used that speed to predict when the wave hit Sydney, and found the extra report in Sydney Airport's own weather log, right on time.\n\nWhat's new here: our own speed measurement from GOES-17, the Sydney Airport special report at 07:30 UTC (+2 hPa, back down 24 minutes later), the one-line formula that explains why Japan's tsunami rules failed that night, and why the deepest trench in the Southern Hemisphere sits right next to the volcano.\n\nSources\n- NOAA GOES-17 ABI L2 imagery, bands 10 and 13, 15 Jan 2022 (NOAA Open Data on AWS): https://registry.opendata.aws/noaa-goes/\n- NOAA NCEI Integrated Surface Database, Sydney Airport (YSSY) reports, 15 Jan 2022: https://registry.opendata.aws/noaa-isd/\n- Copernicus Sentinel-2 L2A imagery, tile 1KFT, 2017–2022 (Element 84 / AWS): https://registry.opendata.aws/sentinel-2-l2a-cogs/\n- Matoza et al. 2022, Science, atmospheric waves from the Hunga eruption: https://doi.org/10.1126/science.abo7063\n- Proud et al. 2022, Science, plume height 57 km: https://doi.org/10.1126/science.abo4076\n- USGS / Van Eaton et al. 2023, record lightning: https://www.usgs.gov/news/science-snippet/tongas-hunga-eruption-produced-most-intense-lightning-ever-recorded\n- Clare et al. 2023, Science, seafloor flows and the cut cable: https://doi.org/10.1126/science.adi3038\n- Imamura et al. 2022, Pure and Applied Geophysics, the tsunami in Japan: https://link.springer.com/article/10.1007/s00024-022-03058-0\n- Japan Meteorological Agency, JpGU 2022 presentation U09-01: https://pub.confit.atlas.jp/en/event/jpgu2022/presentation/U09-01\n- Devlin et al. 2023, Ocean Science, global water-level response: https://os.copernicus.org/articles/19/517/2023/\n- NOAA NCEI, January 15, 2022 Tonga volcanic eruption and tsunami: https://ncei.noaa.gov/news/january-15-2022-tonga-volcanic-eruption-and-tsunami\n- Royal Meteorological Society, the shockwave over the UK: https://rmets.org/metmatters/tongan-eruption-sends-atmospheric-shockwaves-around-world\n- NASA SVS, Birth of a New Island: https://svs.gsfc.nasa.gov/12800/\n- Krakatoa 1883 barograph passages (Acoustics Today, 2010): https://acousticstoday.org/issues/2010AT/Apr2010/files/basic-html/page18.html\n- Map: Natural Earth (public domain)\n- Our calculations: pressure-wave speed from GOES-17 (linear fit, 41 points), predicted arrival times, √(g·h) and depth = speed²/g.\n\nFootage and image credits\n- Himawari-8 imagery: JMA, NICT Digital Typhoon, CSU/CIRA, JAXA, NOAA/NESDIS (Wikimedia Commons, CC BY 4.0 and public domain)\n- ISS photo ISS066-E-117997, GPS wave chart PIA24905 (NASA/JPL-Caltech), NASA SVS stills: NASA (public domain)\n- Tsunami model stills: NOAA PMEL (public domain)\n- Aerials of Tonga: NZ Defence Force (CC BY 4.0)\n- Barometer recording: Tinux, Wikimedia Commons (CC0)\n- Pressure change at Maunakea: CFHT / Gemini / NOIRLab / NSF / AURA (CC BY 4.0)\n- Oil spill, Ventanilla: Ministerio de Defensa del Perú (CC BY 2.0); Peru coast: Presidencia de la República del Perú (CC BY 3.0)\n- 2015 island footage: NASA \"Birth of a New Island\" (Kingdom of Tonga MLSNR; D. Grouille & C. Sabau)\nContains modified Copernicus Sentinel data 2017–2022.\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 5 of 12\nWhole season: [playlist link]\nPrevious: Every Tornado · [link]\nNext: Ghost Octopus · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#HungaTonga #Tsunami #Volcano",
+  "tags": [
+   "hunga tonga",
+   "tonga volcano",
+   "tonga eruption 2022",
+   "pressure wave",
+   "lamb wave",
+   "meteotsunami",
+   "tsunami",
+   "barometer",
+   "GOES-17",
+   "satellite data",
+   "krakatoa",
+   "volcano documentary",
+   "Hunga Tonga-Hunga Ha'apai",
+   "shockwave",
+   "volcanic eruption",
+   "NOAA",
+   "Real Story"
+  ],
+  "pinned": "Did your own barometer or weather station catch the wave on January 15, 2022? Post the time and place below.",
+  "publish": "2026-12-09",
+  "title_len": [
+   60,
+   67,
+   59
+  ],
+  "desc_len": 4069
+ },
+ "s1e06": {
+  "n": 6,
+  "title": "It Was Found 10 Years Ago. It Still Has No Name",
+  "titles": [
+   "It Was Found 10 Years Ago. It Still Has No Name",
+   "The Ghost Octopus Still Has No Name. Its Nursery May Not Last",
+   "Casper, the Ghost Octopus: Found in 2016, Still Unnamed"
+  ],
+  "description": "In February 2016, a NOAA robot 4,290 meters down off Hawaii filmed a pale octopus nobody had ever seen. The internet named it Casper. Ten years later it still has no scientific name.\n\nWe went back to NOAA's own footage, dive records and the research that followed. Its relatives lay their eggs on dead sponges, the sponges only grow on rocks called manganese nodules, and those rocks grow a few millimeters every million years. Then we looked at the only full-scale mining test ever run and the first US commercial deep-sea mining application that is under review right now.\n\nWhat's new here: our own calculation of the nursery's age (2.5 to 5 million years) and the pressure at Casper's depth.\n\nSources\n- NOAA OER, EX1603 Dive 1 footage, \"Very Deep, Ghostlike Incirrate Octopod\" (27 Feb 2016)\n- NOAA OER, EX1603 Dive 01 summary: https://oer.hpc.msstate.edu/okeanos/ex1603/EX1603_Dive01_Summary_20160227_FINAL.pdf\n- M. Vecchione, NOAA OER mission log (2 Mar 2016): https://oceanexplorer.noaa.gov/okeanos/explorations/ex1603/logs/mar2/mar2.html\n- Purser et al. (2016), Current Biology 26(24): https://doi.org/10.1016/j.cub.2016.10.052\n- Robison et al. (2014), PLoS ONE, 53-month brooding of Graneledone boreopacifica\n- Simon-Lledó et al. (2019), Scientific Reports, DISCOL 26 years later: https://doi.org/10.1038/s41598-019-44492-w\n- Executive Order 14285 (24 Apr 2025)\n- Our calculations: nodule age (radius ÷ growth rate), pressure at 4,290 m.\n\nFootage and images: NOAA Ocean Exploration (public domain); GEOMAR ROV KIEL 6000 (CC BY 4.0); Ifremer (CC BY 4.0); Hannes Grobe / AWI (CC BY-SA 4.0).\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 6 of 12\nWhole season: [playlist link]\nPrevious: Hunga Tonga · [link]\nNext: Iceberg A23a · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#GhostOctopus #DeepSea #NOAA",
+  "tags": [
+   "ghost octopus",
+   "casper octopus",
+   "deep sea octopus",
+   "NOAA",
+   "Okeanos Explorer",
+   "deep sea mining",
+   "manganese nodules",
+   "Clarion-Clipperton Zone",
+   "new species",
+   "deep sea creatures",
+   "ocean exploration",
+   "incirrate octopus",
+   "EX1603",
+   "Hawaii deep sea",
+   "Real Story"
+  ],
+  "pinned": "Casper still has no scientific name. If you could name it, what would it be?",
+  "publish": "2026-12-12",
+  "title_len": [
+   47,
+   61,
+   55
+  ],
+  "desc_len": 2075
+ },
+ "s1e07": {
+  "n": 7,
+  "title": "The Iceberg That Waited 30 Years to Move",
+  "titles": [
+   "The Iceberg That Waited 30 Years to Move",
+   "The World's Biggest Iceberg Sat Still for 30 Years. Then It Left",
+   "A23a: We Tracked the Biggest Iceberg on Earth From Space"
+  ],
+  "description": "In August 1986 a slab of ice more than twice the size of Greater London broke off Antarctica's Filchner Ice Shelf. Within months it ran aground on the floor of the Weddell Sea, and there it sat for more than 30 years. It was called A23a.\n\nIn 2020 it started to move. In 2024 it got caught in a spinning column of water and turned in place for months. Then it broke free, drifted north toward South Georgia, and began to fall apart.\n\nWhat's new here: we tracked A23a ourselves from satellite images, measured its position frame by frame and worked out how fast it drifted at each stage of the journey.\n\nSources\n- British Antarctic Survey, A23a news and expedition reports: https://www.bas.ac.uk/\n- European Space Agency / Copernicus Sentinel-1 and Sentinel-2 imagery of A23a (2023-2025): https://www.esa.int/\n- NASA Earth Observatory, A23a image stories: https://earthobservatory.nasa.gov/\n- U.S. National Ice Center, Antarctic iceberg positions: https://usicecenter.gov/\n- Our calculations: positions and drift speed from dated satellite images.\n\nImage credits: contains modified Copernicus Sentinel data (2023-2025); Pierre Markuse (CC BY 2.0); NASA (public domain). Full list with links in the pinned comment.\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 7 of 12\nWhole season: [playlist link]\nPrevious: Ghost Octopus · [link]\nNext: Mars Landing · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#A23a #Iceberg #Antarctica",
+  "tags": [
+   "A23a",
+   "iceberg A23a",
+   "largest iceberg",
+   "biggest iceberg in the world",
+   "Antarctica",
+   "Weddell Sea",
+   "South Georgia",
+   "Taylor column",
+   "Filchner Ice Shelf",
+   "iceberg drift",
+   "satellite images",
+   "Copernicus Sentinel",
+   "British Antarctic Survey",
+   "NASA Earth Observatory",
+   "ice",
+   "polar science",
+   "Real Story"
+  ],
+  "pinned": "We measured A23a's drift from dated satellite images. If you spot a position we got wrong, post the date and the image and we will check it.",
+  "publish": "2026-12-16",
+  "title_len": [
+   40,
+   64,
+   56
+  ],
+  "desc_len": 1691
+ },
+ "s1e08": {
+  "n": 8,
+  "title": "Mars Landing, Second by Second",
+  "titles": [
+   "Mars Landing, Second by Second",
+   "Nobody Was Flying It: Perseverance Lands Itself on Mars",
+   "Perseverance's Landing in Real Video, Second by Second"
+  ],
+  "description": "In February 2021 a one-ton rover landed itself on Mars. Radio signals took more than 11 minutes to reach Earth, so nobody could touch the controls. This is the Perseverance landing, second by second, with the real onboard video and the real voice of mission control.\n\nWe follow it from the parachute (with a secret message hidden in its pattern) to the moment it finds itself on a hazard map of Jezero crater, picks its own landing spot and is lowered on ropes by a rocket-powered sky crane.\n\nSources\nNASA/JPL-Caltech: Perseverance descent and touchdown onboard video (Feb 22, 2021), Mars 2020 landing commentary, NASA Photojournal images PIA23722, PIA23970, PIA24167, PIA24268, PIA24285, PIA24349, PIA24378, PIA24428, PIA24431, PIA24485, PIA25214, NASA HQ photos NHQ202102180010 and NHQ202102180050, Mars microphone recording (Feb 20, 2021).\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 8 of 12\nWhole season: [playlist link]\nPrevious: Iceberg A23a · [link]\nNext: Saturn's Rings · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#Mars #Perseverance #NASA",
+  "tags": [
+   "Perseverance",
+   "Mars landing",
+   "NASA",
+   "JPL",
+   "sky crane",
+   "Jezero crater",
+   "Mars 2020",
+   "dare mighty things",
+   "Swati Mohan",
+   "real video",
+   "space",
+   "Mission Records",
+   "Mars 2020 landing",
+   "terrain relative navigation",
+   "Mars rover",
+   "Real Story"
+  ],
+  "pinned": "Did you find the message hidden in the parachute before we decoded it? It is in the video at the parachute section.",
+  "publish": "2026-12-19",
+  "title_len": [
+   30,
+   55,
+   54
+  ],
+  "desc_len": 1322
+ },
+ "s1e09": {
+  "n": 9,
+  "title": "Why Saturn's Rings Vanished in 1612",
+  "titles": [
+   "Why Saturn's Rings Vanished in 1612",
+   "Galileo Lost Saturn's Rings in 1612. Here's Where They Went",
+   "Saturn's Rings Disappear Every 15 Years. Galileo Saw It First"
+  ],
+  "description": "In 1610 Galileo pointed his telescope at Saturn and saw something no one could explain: a planet with two companions, one on each side. He hid the discovery in a coded anagram. Two years later he looked again, and the companions were gone.\n\nThe rings had not vanished. Earth had moved into their plane, and rings hundreds of thousands of kilometers wide but in most places only tens of meters thick turned edge-on and almost disappeared. It took Christiaan Huygens until 1659 to work it out. The same thing happens roughly every 15 years, and we watched it happen with Hubble and Cassini.\n\nWhat's new here: Galileo's own drawings and letters next to the Hubble and Cassini images of the modern ring-plane crossings, and the geometry that makes the rings disappear.\n\nSources\n- Galileo Galilei, letters on Saturn (1610-1612), including the anagram and the letter to Mark Welser (1 Dec 1612)\n- Christiaan Huygens, Systema Saturnium (1659), scans on Wikimedia Commons\n- NASA / ESA Hubble images of the 1995 ring-plane crossing (PIA01273 and related)\n- NASA / JPL-Caltech / Space Science Institute, Cassini images of the 2009 equinox\n- NASA, Saturn ring-plane crossing 2025 explainers: https://science.nasa.gov/saturn/\n- Our calculations: the ring opening angle seen from Earth, 1610-2025.\n\nImage credits: NASA, ESA, JPL-Caltech, Space Science Institute (public domain); historical scans via Wikimedia Commons (public domain). Full list with links in the pinned comment.\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 9 of 12\nWhole season: [playlist link]\nPrevious: Mars Landing · [link]\nNext: Gemini 8 · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#Saturn #Galileo #Astronomy",
+  "tags": [
+   "Saturn",
+   "Saturn's rings",
+   "Galileo",
+   "Galileo Saturn",
+   "1612",
+   "rings disappear",
+   "ring plane crossing",
+   "Huygens",
+   "Systema Saturnium",
+   "Cassini",
+   "Hubble",
+   "Saturn equinox",
+   "history of astronomy",
+   "telescope history",
+   "astronomy",
+   "space history",
+   "Real Story"
+  ],
+  "pinned": "Galileo thought Saturn had swallowed its children. What would you have guessed in 1612 with a 20x telescope?",
+  "publish": "2026-12-23",
+  "title_len": [
+   35,
+   59,
+   61
+  ],
+  "desc_len": 1941
+ },
+ "s1e10": {
+  "n": 10,
+  "title": "Armstrong's Worst Minutes in Orbit",
+  "titles": [
+   "Armstrong's Worst Minutes in Orbit",
+   "Gemini 8: The First Docking, Then a Spin Nobody Could Stop",
+   "3 Years Before the Moon, Armstrong Nearly Didn't Make It Home"
+  ],
+  "description": "March 16, 1966. Neil Armstrong and Dave Scott do something nobody has done before: they join two spacecraft in orbit. Minutes later the joined pair starts to roll, and it does not stop. The flight was planned for three days. They came home the same day, in the wrong ocean.\n\nWe tell it with NASA's own archive: the docking photos taken through the window at 1,000, 260, 210 and 2 feet, the photo captions, the flight director's words and the recovery photos from the Pacific.\n\nWhat's new here: we checked the landing spot against the map. Two NASA accounts disagree, and only one of them can be right.\n\nSources\n- NASA, Gemini VIII mission report and press materials (1966)\n- NASA Image and Video Library, Gemini 8 photographs S66-25781, S66-18613 and related: https://images.nasa.gov/\n- Gene Kranz, NASA oral history and \"Failure Is Not an Option\"\n- NASA JSC Oral History Project: David R. Scott\n- NASA podcast \"Houston We Have a Podcast\", Gemini 8 episode\n- Our check: the splashdown position on the map.\n\nPhotos and film: NASA (public domain).\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 10 of 12\nWhole season: [playlist link]\nPrevious: Saturn's Rings · [link]\nNext: 13 Saturn V Launches · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#Gemini8 #NeilArmstrong #NASA",
+  "tags": [
+   "Gemini 8",
+   "Neil Armstrong",
+   "Dave Scott",
+   "Agena",
+   "first docking in space",
+   "Gemini program",
+   "NASA history",
+   "space history",
+   "spacecraft spin",
+   "Gene Kranz",
+   "Mission Control",
+   "1966",
+   "Project Gemini",
+   "astronaut",
+   "Apollo 11",
+   "space race",
+   "Mission Records",
+   "Real Story"
+  ],
+  "pinned": "Armstrong was 35. Three years later he commanded Apollo 11. Which moment of Gemini 8 do you think got him that seat?",
+  "publish": "2026-12-26",
+  "title_len": [
+   34,
+   58,
+   61
+  ],
+  "desc_len": 1538
+ },
+ "s1e11": {
+  "n": 11,
+  "title": "13 Saturn V Launches at Once",
+  "titles": [
+   "13 Saturn V Launches at Once",
+   "All 13 Saturn V Launches, Side by Side, Started at T-0",
+   "We Synced Every Saturn V Launch. They Are Not the Same"
+  ],
+  "description": "Between 1967 and 1973 NASA launched 13 Saturn V rockets. Not one was lost, and no one was hurt on the way up. We lined up the launch film of all 13 and started them at the same instant.\n\nSide by side, they are not the same. Some clear the tower faster, some lean, some shake. We measured each one on the film and explain what changed from flight to flight and why.\n\nWhat's new here: our own frame-by-frame timing of all 13 launches from the original NASA film, synchronized at T-0.\n\nSources\n- NASA, Saturn V Flight Manual (SA-503) and Saturn V news reference\n- NASA / Marshall Space Flight Center, Saturn V launch vehicle flight evaluation reports, AS-501 to AS-513\n- NASA Kennedy Space Center launch film and photographs (public domain)\n- NASA Image and Video Library: https://images.nasa.gov/\n- Our measurements: time to clear the tower and early climb, from the launch film.\n\nPhotos and film: NASA (public domain).\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 11 of 12\nWhole season: [playlist link]\nPrevious: Gemini 8 · [link]\nNext: Flight 1549 · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#SaturnV #Apollo #NASA",
+  "tags": [
+   "Saturn V",
+   "Saturn V launch",
+   "all Saturn V launches",
+   "Apollo",
+   "Apollo 11 launch",
+   "Skylab",
+   "moon rocket",
+   "F-1 engine",
+   "NASA history",
+   "rocket launch",
+   "launch footage",
+   "Kennedy Space Center",
+   "space history",
+   "rocket comparison",
+   "Wernher von Braun",
+   "Mission Records",
+   "Real Story"
+  ],
+  "pinned": "Guess before the answer: which of the 13 cleared the tower fastest? Write your pick, no peeking.",
+  "publish": "2026-12-30",
+  "title_len": [
+   28,
+   54,
+   54
+  ],
+  "desc_len": 1388
+ },
+ "s1e12": {
+  "n": 12,
+  "title": "Flight 1549: 208 Seconds, Real Radio",
+  "titles": [
+   "Flight 1549: 208 Seconds, Real Radio",
+   "208 Seconds From Bird Strike to the Hudson, With the Real ATC Tape",
+   "Could Flight 1549 Have Made It Back? We Did the Math"
+  ],
+  "description": "January 15, 2009. US Airways Flight 1549 leaves LaGuardia, flies into a flock of Canada geese and loses power in both engines. 208 seconds later the Airbus is floating on the Hudson River, and all 155 people on board get out alive.\n\nWe tell it with the real air traffic control recording and the NTSB investigation, second by second: what the pilots knew, what the controller offered, and how much time there really was.\n\nWhat's new here: our own glide calculation from the recorded altitude and speed. Could they have reached LaGuardia or Teterboro? The numbers answer it.\n\nSources\n- NTSB, Aircraft Accident Report AAR-10/03, Loss of Thrust in Both Engines After Encountering a Flock of Birds and Subsequent Ditching on the Hudson River (2010): https://www.ntsb.gov/investigations/AccidentReports/Reports/AAR1003.pdf\n- FAA, air traffic control recording and transcript, US Airways 1549 (2009), via Wikimedia Commons\n- NTSB public docket, flight data and cockpit voice recorder transcript\n- Our calculations: altitude and distance versus time, glide reach to LaGuardia and Teterboro.\n\nPhoto and audio credits: Greg L (CC BY 2.0); FAA and NTSB (public domain). Full list with links in the pinned comment.\n\nChapters\n[CHAPTERS: paste from the final cut's youtube.md]\n\nReal Story · Season 1 · Episode 12 of 12\nWhole season: [playlist link]\nPrevious: 13 Saturn V Launches · [link]\n\nNarration: synthetic voice (Kokoro TTS). Music: generated. All photos, film, audio and recordings shown as real are original archive material; anything nobody filmed is labelled as an illustration.\nFound a mistake? Tell us in the comments and we will fix it.\n\n#Flight1549 #Aviation #NTSB",
+  "tags": [
+   "Flight 1549",
+   "US Airways 1549",
+   "Miracle on the Hudson",
+   "Sully",
+   "Chesley Sullenberger",
+   "Jeffrey Skiles",
+   "Hudson River landing",
+   "bird strike",
+   "ATC recording",
+   "air traffic control audio",
+   "NTSB",
+   "aviation history",
+   "ditching",
+   "Airbus A320",
+   "LaGuardia",
+   "Teterboro",
+   "plane crash investigation",
+   "Real Story"
+  ],
+  "pinned": "All 155 people survived. If you were in that cabin and want to add a correction or a memory, we will read every reply.",
+  "publish": "2027-01-02",
+  "title_len": [
+   36,
+   66,
+   52
+  ],
+  "desc_len": 1664
+ }
+}

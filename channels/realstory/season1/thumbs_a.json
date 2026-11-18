@@ -1,0 +1,277 @@
+[
+ {
+  "id": "s1e01",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/S69-58883.jpg",
+  "zoom": "1800px auto",
+  "pos": "0% 35%",
+  "ground": "#172331",
+  "accent": "#e08a3c",
+  "ep": "S1 E01",
+  "tag": "NOV 14 1969",
+  "stamp": "52 SECONDS",
+  "l1": "HIT",
+  "l2": "TWICE",
+  "size1": 190,
+  "size2": 230,
+  "top": 190,
+  "circle": [
+   905,
+   300,
+   95,
+   250,
+   -3
+  ],
+  "focus": [
+   0.42,
+   0.28
+  ],
+  "w": 2150,
+  "at": [
+   900,
+   360
+  ]
+ },
+ {
+  "id": "s1e02",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/iss016e023196.jpg",
+  "focus": [
+   0.55,
+   0.5
+  ],
+  "w": 1500,
+  "at": [
+   880,
+   380
+  ],
+  "ground": "#0f2a2b",
+  "accent": "#8fd8e0",
+  "ep": "S1 E02",
+  "tag": "PACIFIC \u00b7 1997",
+  "stamp": "REAL NOAA RECORDING",
+  "l1": "NOT A",
+  "l2": "MONSTER",
+  "size1": 170,
+  "size2": 210,
+  "top": 200,
+  "dim": 0.72
+ },
+ {
+  "id": "s1e03",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/usgs_juvenile-bar-tailed-godwit-b6.jpg",
+  "zoom": "1500px auto",
+  "pos": "60% 40%",
+  "ground": "#2a2118",
+  "accent": "#d9824a",
+  "ep": "S1 E03",
+  "tag": "ALASKA 2022",
+  "stamp": "11 DAYS \u00b7 13,560 KM",
+  "l1": "NEVER",
+  "l2": "LANDED",
+  "size1": 180,
+  "size2": 210,
+  "top": 200,
+  "circle": [
+   826,
+   560,
+   62,
+   85,
+   -10
+  ]
+ },
+ {
+  "id": "s1e04",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/tornado_south_of_dimmitt_texas_on_june_2_1995.jpg",
+  "zoom": "1700px auto",
+  "pos": "0% 45%",
+  "ground": "#23251c",
+  "accent": "#f2c230",
+  "ep": "S1 E04",
+  "tag": "NOAA SPC \u00b7 1950-2022",
+  "stamp": "ALL OF THEM, ONE MAP",
+  "l1": "EVERY",
+  "l2": "TORNADO",
+  "size1": 170,
+  "size2": 200,
+  "top": 200,
+  "circle": [
+   1010,
+   400,
+   150,
+   250,
+   -4
+  ],
+  "focus": [
+   0.15,
+   0.5
+  ],
+  "w": 1500,
+  "at": [
+   980,
+   420
+  ],
+  "flip": true,
+  "dim": 1.15
+ },
+ {
+  "id": "s1e07",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/a23_ship.jpg",
+  "focus": [
+   0.55,
+   0.5
+  ],
+  "w": 1500,
+  "at": [
+   930,
+   330
+  ],
+  "ground": "#dfe5ea",
+  "accent": "#1f4fa8",
+  "light": true,
+  "ep": "S1 E07",
+  "tag": "WEDDELL SEA \u00b7 1986",
+  "stamp": "TWICE THE SIZE OF LONDON",
+  "l1": "STUCK FOR",
+  "l2": "30 YEARS",
+  "size1": 150,
+  "size2": 200,
+  "top": 210
+ },
+ {
+  "id": "s1e08",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/PIA24428.jpg",
+  "zoom": "1500px auto",
+  "pos": "60% 55%",
+  "ground": "#2b1a12",
+  "accent": "#efe2c6",
+  "ep": "S1 E08",
+  "tag": "FEB 18 2021",
+  "stamp": "REAL PHOTO",
+  "l1": "NOBODY",
+  "l2": "FLYING",
+  "size1": 170,
+  "size2": 210,
+  "top": 200,
+  "circle": [
+   930,
+   330,
+   190,
+   170,
+   -6
+  ]
+ },
+ {
+  "id": "s1e09",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/PIA01273.jpg",
+  "zoom": "1500px auto",
+  "pos": "0% 50%",
+  "ground": "#2a2016",
+  "accent": "#d4a640",
+  "ep": "S1 E09",
+  "tag": "GALILEO 1612",
+  "stamp": "HUBBLE SAW IT TOO",
+  "l1": "THE RINGS",
+  "l2": "VANISHED",
+  "size1": 150,
+  "size2": 200,
+  "top": 210,
+  "circle": [
+   985,
+   392,
+   335,
+   58,
+   16
+  ],
+  "focus": [
+   0.62,
+   0.55
+  ],
+  "w": 1500,
+  "at": [
+   980,
+   390
+  ]
+ },
+ {
+  "id": "s1e10",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/S66-25781.jpg",
+  "zoom": "2400px auto",
+  "pos": "6% 85%",
+  "ground": "#0d1626",
+  "accent": "#e9c11b",
+  "ep": "S1 E10",
+  "tag": "MAR 16 1966",
+  "stamp": "REAL PHOTO FROM THE WINDOW",
+  "l1": "DOCKED.",
+  "l2": "THEN SPUN",
+  "size1": 170,
+  "size2": 175,
+  "top": 220,
+  "circle": [
+   1010,
+   450,
+   300,
+   120,
+   -8
+  ],
+  "focus": [
+   0.43,
+   0.62
+  ],
+  "w": 2600,
+  "at": [
+   1010,
+   450
+  ]
+ },
+ {
+  "id": "s1e11",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/S69-39961.jpg",
+  "zoom": "1350px auto",
+  "pos": "100% 45%",
+  "ground": "#211a15",
+  "accent": "#ff8a2a",
+  "ep": "S1 E11",
+  "tag": "1967-1973",
+  "stamp": "ALL 13, ONE FRAME",
+  "l1": "13 LAUNCHES",
+  "l2": "AT ONCE",
+  "size1": 140,
+  "size2": 210,
+  "top": 200
+ },
+ {
+  "id": "s1e12",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/hudson_1549.jpg",
+  "zoom": "1500px auto",
+  "pos": "75% 55%",
+  "ground": "#2b3540",
+  "accent": "#f2c12e",
+  "ep": "S1 E12",
+  "tag": "JAN 15 2009",
+  "stamp": "REAL ATC RADIO",
+  "l1": "208",
+  "l2": "SECONDS",
+  "size1": 220,
+  "size2": 190,
+  "top": 180,
+  "circle": [
+   960,
+   420,
+   230,
+   120,
+   -4
+  ],
+  "topScrim": 0.9,
+  "dim": 0.56
+ }
+]
