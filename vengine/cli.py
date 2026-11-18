@@ -8,6 +8,7 @@
   approve   EPISODE_DIR GATE [--note ..] record the owner's approval (topic|script|final)
   revoke    EPISODE_DIR GATE
   channels                              list channel profiles
+  yarn      grow|still ...              crochet-growth frames of a toy (vengine/yarn; `vengine yarn -h`)
 """
 from __future__ import annotations
 
@@ -39,6 +40,10 @@ def _print_problems(probs: list[dict]) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    args = sys.argv[1:] if argv is None else list(argv)
+    if args[:1] == ["yarn"]:                     # its own parser: numba and amikit are needed only there
+        from .yarn.cli import main as yarn_main
+        return yarn_main(args[1:])
     ap = argparse.ArgumentParser(prog="vengine", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
 
