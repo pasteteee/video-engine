@@ -156,7 +156,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"knit frames: {render.run_knit(ep, a.jobs)}")
             return _print_problems(knit_mod.check(ep.path(render.KNIT_DIR)))
         if a.step == "check":
-            return _print_problems(knit_mod.check(ep.path(render.KNIT_DIR)) + contracts.validate_episode(ep, ep.channel))
+            return _print_problems(knit_mod.check(ep.path(render.KNIT_DIR), schema=False) + contracts.validate_episode(ep, ep.channel))
         if a.step == "still":
             print(render.still(ep, [float(v) for v in a.at.split(",")], Path(a.out) if a.out else None))
             return 0

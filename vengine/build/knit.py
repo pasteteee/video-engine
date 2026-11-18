@@ -101,12 +101,12 @@ def run(knit_cfg: dict, spec: Path, out: Path, dur: float, reveal: float, size: 
     return out
 
 
-def check(out: Path) -> list[dict]:
+def check(out: Path, schema: bool = True) -> list[dict]:
     p = out / "plan.json"
     if not p.exists():
         return [{"level": "error", "file": "knit_plan", "msg": f"{p} missing"}]
     plan = json.loads(p.read_text(encoding="utf-8"))
-    probs = contracts.validate_obj("knit_plan", plan, "knit_plan")
+    probs = contracts.validate_obj("knit_plan", plan, "knit_plan") if schema else []
     pat = plan.get("frames", "%04d.png")
     missing = [k for k in range(len(plan.get("plan", []))) if not (out / (pat % k)).exists()]
     if missing:

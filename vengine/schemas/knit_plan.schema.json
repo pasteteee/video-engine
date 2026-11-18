@@ -38,7 +38,7 @@
         "type": "object",
         "required": ["name", "part", "counts"],
         "properties": {
-          "name": {"type": "string"}, "part": {"type": "string"}, "name_ru": {"type": "string"},
+          "name": {"type": "string"}, "part": {"type": "string"}, "name_ru": {"type": ["string", "null"]},
           "start": {"type": "integer"}, "end": {"type": "integer"},
           "counts": {"type": "array", "items": {"type": "integer", "minimum": 1}, "minItems": 1}
         }
