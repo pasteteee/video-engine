@@ -47,6 +47,10 @@ export const Kinetic: React.FC<{ lines: string[][]; top: number; size: number; f
         {ws.map((w, wi) => {
           const a = f0 + (k++) * step; const p = interpolate(f, [a, a + 16], [0, 1], { ...C, easing: ease4 });
           const col = accent && accent[0] === li && accent[1] === wi ? ACCENT_EP : BONE;
+          if (variant === 'type_on') {
+            const n = Math.floor(interpolate(f, [a, a + Math.max(4, w.length * 2)], [0, w.length], C)); if (f < a) return <span key={wi} />;
+            return <span key={wi} style={{ ...DISP(size, 70, 820), lineHeight: `${lh}px`, color: col, textShadow: SHADOW, whiteSpace: 'nowrap' }}>{w.slice(0, n)}{n < w.length ? <span style={{ opacity: Math.floor(f / 4) % 2 === 0 ? 1 : 0, color: ACCENT_EP }}>▌</span> : null}</span>;
+          }
           if (variant === 'stagger_weight') {
             const wg = 200 + 660 * p; const tr = 0.18 * (1 - p);
             return <span key={wi} style={{ ...DISP(size, 62 + 20 * (1 - p), wg), lineHeight: `${lh}px`, letterSpacing: `${tr}em`, color: col, opacity: Math.min(1, p * 3), textShadow: SHADOW }}>{w}</span>;
