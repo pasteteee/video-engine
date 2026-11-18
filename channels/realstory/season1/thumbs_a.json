@@ -117,6 +117,37 @@
   "dim": 1.15
  },
  {
+  "id": "s1e05",
+  "tpl": "thumb_s1.html",
+  "img": "MEDIA/iss066e117997.jpg",
+  "focus": [
+   0.55,
+   0.47
+  ],
+  "w": 1700,
+  "at": [
+   900,
+   330
+  ],
+  "ground": "#1e1a24",
+  "accent": "#e6d23c",
+  "ep": "S1 E05",
+  "tag": "ISS \u00b7 JAN 16 2022",
+  "stamp": "WE MEASURED IT FROM SPACE",
+  "l1": "A TSUNAMI",
+  "l2": "MADE OF AIR",
+  "size1": 150,
+  "size2": 175,
+  "top": 230,
+  "circle": [
+   930,
+   320,
+   320,
+   70,
+   -3
+  ]
+ },
+ {
   "id": "s1e07",
   "tpl": "thumb_s1.html",
   "img": "MEDIA/a23_ship.jpg",

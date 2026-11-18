@@ -14,3 +14,4 @@ Replace `MEDIA/` with a local folder holding these files, then `node channels/re
 | S66-25781.jpg | NASA, Gemini 8 / Agena rendezvous, images.nasa.gov/details/S66-25781 | Public domain |
 | S69-39961.jpg | NASA, Apollo 11 Saturn V liftoff, images.nasa.gov/details/S69-39961 | Public domain |
 | hudson_1549.jpg | Greg L, commons.wikimedia.org/wiki/File:Plane_crash_into_Hudson_River_(crop).jpg | CC BY 2.0 (check page) |
+| iss066e117997.jpg | NASA ISS crew photo of the Tonga plume, images.nasa.gov/details/iss066e117997 | Public domain |
