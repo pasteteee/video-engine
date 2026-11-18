@@ -224,6 +224,76 @@ def _trace_spheres(S, cam_pos, B, fpx, W, H, zb, nb, idb, cb):
                     cb[py, px] = int(S[k, 4])
 
 
+
+@njit(cache=True, parallel=True)
+def _trace_capsules(Cp, cam_pos, B, fpx, W, H, zb, nb, idb, cb):
+    """Capsules (a crochet hook and the working strand): rows ax, ay, az, bx, by, bz, radius, colour index, ident,
+    x0, y0, x1, y1 (the screen box to test, pixels).  ident 5: polished metal, 6: matte (rubber grip, loose yarn)."""
+    cx = 0.5 * W
+    cy = 0.5 * H
+    for k in range(Cp.shape[0]):
+        rr = Cp[k, 6]
+        if rr <= 0.0:
+            continue
+        x0 = int(max(0.0, Cp[k, 9]))
+        y0 = int(max(0.0, Cp[k, 10]))
+        x1 = int(min(W - 1.0, Cp[k, 11]))
+        y1 = int(min(H - 1.0, Cp[k, 12]))
+        if x1 < x0 or y1 < y0:
+            continue
+        bax = Cp[k, 3] - Cp[k, 0]
+        bay = Cp[k, 4] - Cp[k, 1]
+        baz = Cp[k, 5] - Cp[k, 2]
+        baba = bax * bax + bay * bay + baz * baz + 1e-12
+        oax = cam_pos[0] - Cp[k, 0]
+        oay = cam_pos[1] - Cp[k, 1]
+        oaz = cam_pos[2] - Cp[k, 2]
+        obx = cam_pos[0] - Cp[k, 3]
+        oby = cam_pos[1] - Cp[k, 4]
+        obz = cam_pos[2] - Cp[k, 5]
+        baoa = bax * oax + bay * oay + baz * oaz
+        oaoa = oax * oax + oay * oay + oaz * oaz
+        for py in prange(y0, y1 + 1):
+            for px in range(x0, x1 + 1):
+                dxv = (px + 0.5 - cx) / fpx
+                dyv = -(py + 0.5 - cy) / fpx
+                il = 1.0 / math.sqrt(dxv * dxv + dyv * dyv + 1.0)
+                rx = (B[0, 0] * dxv + B[1, 0] * dyv + B[2, 0]) * il
+                ry = (B[0, 1] * dxv + B[1, 1] * dyv + B[2, 1]) * il
+                rz = (B[0, 2] * dxv + B[1, 2] * dyv + B[2, 2]) * il
+                bard = bax * rx + bay * ry + baz * rz
+                rdoa = rx * oax + ry * oay + rz * oaz
+                a = baba - bard * bard
+                b = baba * rdoa - baoa * bard
+                c = baba * oaoa - baoa * baoa - rr * rr * baba
+                h = b * b - a * c
+                t = -1.0
+                if h >= 0.0 and a > 1e-12:
+                    t = (-b - math.sqrt(h)) / a
+                    y = baoa + t * bard
+                    if y <= 0.0 or y >= baba:
+                        t = -1.0
+                        if y <= 0.0:
+                            ox, oy, oz = oax, oay, oaz
+                        else:
+                            ox, oy, oz = obx, oby, obz
+                        bq = rx * ox + ry * oy + rz * oz
+                        cq = ox * ox + oy * oy + oz * oz - rr * rr
+                        hq = bq * bq - cq
+                        if hq > 0.0:
+                            t = -bq - math.sqrt(hq)
+                if t > 0.0 and t < zb[py, px]:
+                    wx = cam_pos[0] + rx * t - Cp[k, 0]
+                    wy = cam_pos[1] + ry * t - Cp[k, 1]
+                    wz = cam_pos[2] + rz * t - Cp[k, 2]
+                    q = min(1.0, max(0.0, (wx * bax + wy * bay + wz * baz) / baba))
+                    zb[py, px] = t
+                    nb[py, px, 0] = (wx - q * bax) / rr
+                    nb[py, px, 1] = (wy - q * bay) / rr
+                    nb[py, px, 2] = (wz - q * baz) / rr
+                    idb[py, px] = int(Cp[k, 8])
+                    cb[py, px] = int(Cp[k, 7])
+
 @njit(cache=True, parallel=True)
 def _raster_details(V, N, U, F, FE, cam_pos, B, fpx, W, H, zb, nb, idb, cb, ub, nband):
     """Detail meshes (felt, satin, threads, appliques: details.py) by exact ray-triangle hits, depth-tested against
@@ -574,6 +644,34 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
             # yarn's colour instead of going grey or black
             ao = 1.0 - 0.55 * occ
             ndv = min(1.0, max(0.0, -(nx * rx + ny * ry + nz * rz)))   # <= 1: (1 - ndv) ** p must not go NaN
+            if ident == 5 or ident == 6:
+                # the hook: polished metal (5) mirrors the warm set, with a long bright streak of the softbox along
+                # the shaft; the rubber grip and the loose working strand (6) are matte
+                ci = cb[py, px]
+                ndl = nx * ldir[0] + ny * ldir[1] + nz * ldir[2]
+                key = max(0.0, (ndl + 0.35) / 1.35)
+                ndf = max(0.0, (nx * fdx + ny * fdy + nz * fdz + 0.5) / 1.5)
+                hx = ldir[0] - rx
+                hy = ldir[1] - ry
+                hz = ldir[2] - rz
+                hl = math.sqrt(hx * hx + hy * hy + hz * hz) + 1e-9
+                ndh = max(0.0, (nx * hx + ny * hy + nz * hz) / hl)
+                if ident == 5:
+                    spec = (ndh ** 40 * 1.1 + ndh ** 8 * 0.18) * (0.35 + 0.65 * lit)
+                    fres = (1.0 - ndv) ** 3 * 0.25
+                    env = 0.10 + 0.10 * max(0.0, ny)
+                    for ch in range(3):
+                        pc = _lin(palette[ci, ch])
+                        out[py, px, ch] = _srgb(_shoulder(pc * ((0.25 + 0.75 * key * (0.5 + 0.5 * lit)) * exposure
+                                                                 * 0.8 + env + 0.25 * ndf) * ao + spec * pc ** 0.3
+                                                          + fres * setl[ch]))
+                else:
+                    spec = ndh ** 10 * 0.05 * lit
+                    for ch in range(3):
+                        pc = _lin(palette[ci, ch])
+                        e = (0.72 * key * (0.45 + 0.55 * lit) + 0.27 + 0.20 * ndf) * ao * exposure
+                        out[py, px, ch] = _srgb(_shoulder(pc * e + spec))
+                continue
             if ident == 3:
                 ci = cb[py, px]
                 ndl = max(0.0, nx * ldir[0] + ny * ldir[1] + nz * ldir[2])
@@ -845,6 +943,40 @@ def soft_shape(X, r_vis, h, cmin=0.62):
     return Q, c
 
 
+
+def _capsule_boxes(C, cam_pos, B, fpx, W, H):
+    """Rows ax..bz, r, colour, ident -> the same with the screen box (x0, y0, x1, y1) of each capsule appended."""
+    out = np.zeros((len(C), 13))
+    out[:, :9] = C[:, :9]
+    for k, row in enumerate(C):
+        ends = np.array([row[0:3], row[3:6]])
+        v = (ends - cam_pos) @ B.T
+        if (v[:, 2] <= row[6]).any():
+            out[k, 6] = 0.0
+            continue
+        sx = 0.5 * W + fpx * v[:, 0] / v[:, 2]
+        sy = 0.5 * H - fpx * v[:, 1] / v[:, 2]
+        m = fpx * row[6] / (v[:, 2].min() - row[6]) + 2.0
+        out[k, 9:13] = (sx.min() - m, sy.min() - m, sx.max() + m, sy.max() + m)
+    return out
+
+
+def _capsule_samples(Cp):
+    """Points along the capsules (for the shadow map): centres and radii."""
+    P, R = [], []
+    for row in Cp:
+        if row[6] <= 0:
+            continue
+        a, b = row[0:3], row[3:6]
+        n = max(2, int(np.linalg.norm(b - a) / max(0.5 * row[6], 0.3)) + 1)
+        u = np.linspace(0, 1, n)[:, None]
+        P.append(a * (1 - u) + b * u)
+        R.append(np.full(n, row[6]))
+    if not P:
+        return np.zeros((0, 3)), np.zeros(0)
+    return np.ascontiguousarray(np.concatenate(P)), np.ascontiguousarray(np.concatenate(R))
+
+
 class Renderer:
     """Renders a yarn chain (plus optional glossy eyes) to an RGB uint8 image.
 
@@ -904,7 +1036,7 @@ class Renderer:
             self.plane_p[1] = lo[1] - 0.9 * self.r * self.soft
 
     def render(self, X, D, cam, colnode=None, radius=None, spheres=None, gap=2.0, shape_idx=None, details=None,
-               details_t=1.0):
+               details_t=1.0, capsules=None):
         """X, D: the nodes drawn and their directors.  colnode: palette index per node.  radius: per-node radius
         scale (the growing tip tapers in).  spheres: rows cx, cy, cz, radius, colour index.  shape_idx: for each node
         drawn, its index in the scene given to set_scene (default: the first len(X) nodes).  details: a
@@ -957,6 +1089,10 @@ class Renderer:
         if spheres is not None and len(spheres):
             _trace_spheres(np.ascontiguousarray(np.asarray(spheres, np.float64)), cam.pos, B, fpx, w, hh,
                            self.zb, self.nb, self.idb, self.cb)
+        Cp = None
+        if capsules is not None and len(capsules):
+            Cp = _capsule_boxes(np.asarray(capsules, np.float64), cam.pos, B, fpx, w, hh)
+            _trace_capsules(Cp, cam.pos, B, fpx, w, hh, self.zb, self.nb, self.idb, self.cb)
         dmesh = details.frame(details_t) if details is not None else None
         if dmesh is not None:
             if getattr(self, 'ub', None) is None:
@@ -984,6 +1120,10 @@ class Renderer:
             if len(S):
                 _shadow_splat(np.ascontiguousarray(S[:, :3]), np.ascontiguousarray(S[:, 3]), len(S), 1.0, LB, lo,
                               scale, self.SM, self.sm)
+        if Cp is not None:
+            pts, rad = _capsule_samples(Cp)
+            if len(pts):
+                _shadow_splat(pts, rad, len(pts), 1.0, LB, lo, scale, self.SM, self.sm)
         tm.append(time.perf_counter())
         ao_r = fpx * 2.8 * self.r / max(1.0, float(np.linalg.norm(cam.target - cam.pos)))
         _shade(self.zb, self.nb, self.sb, self.pb, self.idb, self.cb, self.tb, colnode, n, self.h, cam.pos, B, fpx, w,

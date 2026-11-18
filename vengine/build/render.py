@@ -61,8 +61,21 @@ def run_knit(ep: Episode, jobs: int | None = None, still: str | None = None) -> 
         # end the knit on the studio photo's angle, at rest just before the photo comes in
         view = K.match(b["knit"], spec_path(ep, sb), photo, ep.path(MATCH), ep.path("07_qa/frames/match.jpg"))
         rest = tm.grow + tm.done - 0.2
-    return K.run(b["knit"], spec_path(ep, sb), out, ka["dur"], ka["reveal"], b.get("size", "1080x1920"),
-                 int(b.get("fps", 30)), jobs, still, view, rest)
+    # the episode may add renderer flags (storyboard `knit`: hook, ss, mblur ...) and render the knit smaller than
+    # the short (`size`; the compositor scales the frames up)
+    knit_cfg = dict(b["knit"])
+    extra = dict(sb.get("knit") or {})
+    size = extra.pop("size", None) or b.get("size", "1080x1920")
+    if extra:
+        r = K.renderer(knit_cfg)
+        params = dict(knit_cfg.get("params") or {})
+        if isinstance(params.get(r), dict) or any(isinstance(v, dict) for v in params.values()):
+            params[r] = {**(params.get(r) or {}), **extra}
+        else:
+            params.update(extra)
+        knit_cfg["params"] = params
+    return K.run(knit_cfg, spec_path(ep, sb), out, ka["dur"], ka["reveal"], size, int(b.get("fps", 30)), jobs, still,
+                 view, rest)
 
 
 def compositor(ep: Episode) -> Compositor:

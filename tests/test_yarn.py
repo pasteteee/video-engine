@@ -284,3 +284,35 @@ def test_magic_ring_is_a_closed_circle():
         top.append(np.linalg.norm(P[:, :2], axis=1).max())
     top = np.array(top[:-1])                               # the last one runs on into round 3
     assert top.std() / top.mean() < 0.06
+
+
+# ------------------------------------------------------------------------------------------- the crochet hook
+def test_capsule_draws_metal_in_front_of_the_yarn(rn):
+    X, D = _coil()
+    plain = rn.render(X, D, _cam())
+    cap = np.array([[-30.0, 0.0, 6.0, 30.0, 0.0, 6.0, 1.2, 0, 5]])        # a rod across the coil, above it
+    img = rn.render(X, D, _cam(), capsules=cap)
+    front = int((rn.idb == 5).sum())
+    assert front > 0 and np.abs(img.astype(int) - plain).max() > 40
+    behind = cap.copy()
+    behind[0, [2, 5]] = -6.0                                                 # the same rod under the coil: partly hidden
+    rn.render(X, D, _cam(), capsules=behind)
+    assert 0 < int((rn.idb == 5).sum()) < front
+
+
+@pytest.mark.skipif(_amikit() is None, reason="amikit not found (set AMIKIT)")
+def test_hook_follows_the_work_smoothly_and_leaves_before_the_face():
+    from vengine.yarn.grow import Grow
+    g = Grow(TOY, (108, 192), dur=4.0, reveal=2.0, ss=1, hook=True)
+    h = g.hook
+    assert h.sc == pytest.approx(float(TOY.get('yarn', {}).get('hook_mm', 4.0)) / 4.0)
+    on = [k for k in range(g.NF) if len(h.capsules(k / 30))]
+    assert on and on[0] < 30 and on[-1] < g.NB + 6              # slides in at the start, gone as the reveal starts
+    k = (on[0] + on[-1]) // 2
+    rows = h.capsules(k / 30)
+    assert set(rows[:, 8].astype(int)) == {5, 6}                 # metal head and shaft, matte grip and strand
+    tip = h.P[on[len(on) // 4]]
+    n = g.plan[on[len(on) // 4]]['n']
+    assert np.linalg.norm(tip - g.X[min(n, g.NY - 1)]) < 25.0    # at the work, not somewhere in the air
+    step = np.linalg.norm(np.diff(h.P[on[0]:on[-1]], axis=0), axis=1)
+    assert np.percentile(step, 95) < 6.0                         # no jumps from frame to frame
