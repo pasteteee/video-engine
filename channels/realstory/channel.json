@@ -53,7 +53,8 @@
       "Palette per episode from its own real photos (vengine look): ground = darkest large area of the hero photos, accent = the most saturated recurring object colour (e.g. a capsule collar, feathers, lava). Never default to navy for every episode.",
       "Check the accent against the ground: contrast ratio >= 4.5 for text, and the accent must not clash with the photos it sits next to (hue within the photos' own range).",
       "Signal red only for the stop block and thumbnail key words; never as a background or a second accent.",
-      "Neighbouring episodes in the season must not share the same ground hue (keep at least 25 degrees of hue or a clear lightness difference)."
+      "Neighbouring episodes in the season must not share the same ground hue (keep at least 25 degrees of hue or a clear lightness difference).",
+      "Light episodes: set look.mode = \"light\" in the shot list (ground pale, fg dark ink, scrim dark for photos, accent_on_photo light). The kit then draws graphics in dark ink on the pale ground and keeps bone type over a dark scrim on real photos and film (OnPhoto context in tokens.ts)."
     ]
   },
   "voice": {

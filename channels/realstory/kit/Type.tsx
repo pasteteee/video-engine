@@ -1,7 +1,7 @@
 // Real Story motion typography. No plates, no frames: the words are the animation.
 import React from 'react';
 import { interpolate, useCurrentFrame } from 'remotion';
-import { ACCENT_EP, BONE, C, DISP, FONT, MUTED, SHADOW, SIGNAL, TINT, exitE, io, out } from './tokens';
+import { C, DISP, FONT, SIGNAL, TINT, exitE, io, out, useInk } from './tokens';
 
 const ease4 = (t: number) => 1 - Math.pow(1 - t, 4);
 
@@ -13,7 +13,7 @@ export const StopBlock: React.FC<{ size: number; p?: number }> = ({ size, p = 1 
 // stays as the stop block. f0: start frame. Lines are left-aligned at x, or centred when x is undefined.
 export const Unredact: React.FC<{ lines: string[]; top: number; size: number; f0: number; x?: number; colors?: string[]; step?: number; stop?: boolean; exitAt?: number }> =
   ({ lines, top, size, f0, x, colors = [], step = 6, stop = true, exitAt }) => {
-    const f = useCurrentFrame(); const lh = size * 0.98;
+    const f = useCurrentFrame(); const lh = size * 0.98; const ink = useInk();
     const ex = exitAt ? interpolate(f, [exitAt, exitAt + 8], [0, 1], { ...C, easing: exitE }) : 0;
     return <div style={{ position: 'absolute', left: x ?? 0, right: x === undefined ? 0 : undefined, top, textAlign: x === undefined ? 'center' : 'left', opacity: 1 - ex, transform: `translateY(${-ex * 30}px)` }}>
       {lines.map((t, i) => {
@@ -25,7 +25,7 @@ export const Unredact: React.FC<{ lines: string[]; top: number; size: number; f0
         const left = `calc(${lift * 100}% + ${lift * gap}em)`;
         const width = last ? `calc(${(cover - lift) * 100}% + ${lift * sw}em)` : `calc(${Math.max(0, cover - lift) * 100}%)`;
         return <div key={i} style={{ height: lh, lineHeight: `${lh}px` }}>
-          <span style={{ position: 'relative', display: 'inline-block', ...DISP(size), lineHeight: `${lh}px`, color: colors[i] ?? BONE, textShadow: SHADOW }}>
+          <span style={{ position: 'relative', display: 'inline-block', ...DISP(size), lineHeight: `${lh}px`, color: colors[i] ?? ink.fg, textShadow: ink.shadow }}>
             <span style={{ opacity: shown ? 1 : 0 }}>{t}</span>
             <span style={{ position: 'absolute', top: '0.13em', height: '0.68em', left, width, background: SIGNAL }} />
           </span>
@@ -40,19 +40,19 @@ export const Unredact: React.FC<{ lines: string[]; top: number; size: number; f0
 //  stagger_weight — words land light (wght 200, wide tracking) and settle heavy
 export const Kinetic: React.FC<{ lines: string[][]; top: number; size: number; f0: number; variant: string; accent?: [number, number]; step?: number; x?: number; exitAt?: number }> =
   ({ lines, top, size, f0, variant, accent, step = 4, x, exitAt }) => {
-    const f = useCurrentFrame(); const lh = size * 0.98; let k = 0;
+    const f = useCurrentFrame(); const lh = size * 0.98; let k = 0; const ink = useInk();
     const ex = exitAt ? interpolate(f, [exitAt, exitAt + 8], [0, 1], { ...C, easing: exitE }) : 0;
     return <div style={{ position: 'absolute', left: x ?? 0, right: x === undefined ? 0 : undefined, top, opacity: 1 - ex, transform: `translateY(${-ex * 40}px)` }}>
       {lines.map((ws, li) => <div key={li} style={{ display: 'flex', justifyContent: x === undefined ? 'center' : 'flex-start', gap: size * 0.2, height: lh }}>
         {ws.map((w, wi) => {
           const a = f0 + (k++) * step; const p = interpolate(f, [a, a + 16], [0, 1], { ...C, easing: ease4 });
-          const col = accent && accent[0] === li && accent[1] === wi ? ACCENT_EP : BONE;
+          const col = accent && accent[0] === li && accent[1] === wi ? ink.accent : ink.fg;
           if (variant === 'stagger_weight') {
             const wg = 200 + 660 * p; const tr = 0.18 * (1 - p);
-            return <span key={wi} style={{ ...DISP(size, 62 + 20 * (1 - p), wg), lineHeight: `${lh}px`, letterSpacing: `${tr}em`, color: col, opacity: Math.min(1, p * 3), textShadow: SHADOW }}>{w}</span>;
+            return <span key={wi} style={{ ...DISP(size, 62 + 20 * (1 - p), wg), lineHeight: `${lh}px`, letterSpacing: `${tr}em`, color: col, opacity: Math.min(1, p * 3), textShadow: ink.shadow }}>{w}</span>;
           }
           return <span key={wi} style={{ display: 'inline-block', overflow: 'hidden', height: lh + size * 0.08 }}>
-            <span style={{ display: 'inline-block', ...DISP(size, 100 - 38 * p), lineHeight: `${lh}px`, color: col, transform: `translateY(${(1 - p) * 105}%)`, textShadow: SHADOW }}>{w}</span>
+            <span style={{ display: 'inline-block', ...DISP(size, 100 - 38 * p), lineHeight: `${lh}px`, color: col, transform: `translateY(${(1 - p) * 105}%)`, textShadow: ink.shadow }}>{w}</span>
           </span>;
         })}
       </div>)}
@@ -60,10 +60,10 @@ export const Kinetic: React.FC<{ lines: string[][]; top: number; size: number; f
   };
 
 // Odometer: each digit column rolls through 0–9 and lands; higher columns roll more.
-export const Odometer: React.FC<{ value: number; size: number; f0: number; dur?: number; color?: string }> = ({ value, size, f0, dur = 26, color = BONE }) => {
-  const f = useCurrentFrame(); const s = value.toLocaleString('en-US'); const lh = size * 0.86;
+export const Odometer: React.FC<{ value: number; size: number; f0: number; dur?: number; color?: string }> = ({ value, size, f0, dur = 26, color }) => {
+  const f = useCurrentFrame(); const ink = useInk(); const s = value.toLocaleString('en-US'); const lh = size * 0.86;
   const digits = s.split(''); let col = 0; const nd = digits.filter((c) => /\d/.test(c)).length;
-  return <span style={{ display: 'inline-flex', ...DISP(size, 62, 880), lineHeight: `${lh}px`, height: lh, overflow: 'hidden', color, fontVariantNumeric: 'tabular-nums', textShadow: SHADOW }}>
+  return <span style={{ display: 'inline-flex', ...DISP(size, 62, 880), lineHeight: `${lh}px`, height: lh, overflow: 'hidden', color: color ?? ink.fg, fontVariantNumeric: 'tabular-nums', textShadow: ink.shadow }}>
     {digits.map((c, i) => {
       if (!/\d/.test(c)) return <span key={i}>{c}</span>;
       const d = +c; const turns = nd - col; const a = f0 + col * 3; col++;
@@ -78,9 +78,9 @@ export const Odometer: React.FC<{ value: number; size: number; f0: number; dur?:
 };
 
 // Mono line typed on (2 chars/frame). Used for stamps and sources.
-export const Mono: React.FC<{ text: string; f0: number; size?: number; color?: string; style?: React.CSSProperties; weight?: number }> = ({ text, f0, size = 26, color = MUTED, style, weight = 500 }) => {
-  const f = useCurrentFrame(); const n = Math.floor(interpolate(f, [f0, f0 + text.length / 2], [0, text.length], C));
-  return <div style={{ fontFamily: FONT.mono, fontWeight: weight, fontSize: size, letterSpacing: '0.12em', textTransform: 'uppercase', color, whiteSpace: 'pre', textShadow: SHADOW, ...style }}>{text.slice(0, n)}<span style={{ opacity: 0 }}>{text.slice(n)}</span></div>;
+export const Mono: React.FC<{ text: string; f0: number; size?: number; color?: string; style?: React.CSSProperties; weight?: number }> = ({ text, f0, size = 26, color, style, weight = 500 }) => {
+  const f = useCurrentFrame(); const ink = useInk(); const n = Math.floor(interpolate(f, [f0, f0 + text.length / 2], [0, text.length], C));
+  return <div style={{ fontFamily: FONT.mono, fontWeight: weight, fontSize: size, letterSpacing: '0.12em', textTransform: 'uppercase', color: color ?? ink.muted, whiteSpace: 'pre', textShadow: ink.shadow, ...style }}>{text.slice(0, n)}<span style={{ opacity: 0 }}>{text.slice(n)}</span></div>;
 };
 
 // Hairline that draws left→right (chapter baselines, rules).
@@ -90,8 +90,8 @@ export const Hairline: React.FC<{ x: number; y: number; w: number; f0: number; c
 };
 
 // Callout on a photo: a leader line from the detail to the label. No plate.
-export const Callout: React.FC<{ text: string; sub?: string; at: [number, number]; label: [number, number]; f0: number; size?: number; color?: string }> = ({ text, sub, at, label, f0, size = 58, color = BONE }) => {
-  const f = useCurrentFrame();
+export const Callout: React.FC<{ text: string; sub?: string; at: [number, number]; label: [number, number]; f0: number; size?: number; color?: string }> = ({ text, sub, at, label, f0, size = 58, color: color0 }) => {
+  const f = useCurrentFrame(); const ink = useInk(); const color = color0 ?? ink.fg;
   const dot = interpolate(f, [f0, f0 + 8], [0, 1], { ...C, easing: out });
   const line = interpolate(f, [f0 + 4, f0 + 20], [0, 1], { ...C, easing: io });
   const tp = interpolate(f, [f0 + 14, f0 + 28], [0, 1], { ...C, easing: out });
@@ -104,8 +104,8 @@ export const Callout: React.FC<{ text: string; sub?: string; at: [number, number
       <polyline points={pts.map((p) => p.join(',')).join(' ')} fill="none" stroke={color} strokeWidth={2.5} strokeDasharray={len} strokeDashoffset={len * (1 - line)} />
     </svg>
     <div style={{ position: 'absolute', left: Math.min(label[0], elbow[0] < label[0] ? elbow[0] : label[0]), top: label[1], opacity: tp, transform: `translateY(${(1 - tp) * 14}px)` }}>
-      <div style={{ ...DISP(size, 75, 760), color, textShadow: SHADOW }}>{text}</div>
-      {sub ? <div style={{ fontFamily: FONT.mono, fontSize: 22, letterSpacing: '0.12em', color: MUTED, marginTop: 30, textShadow: SHADOW }}>{sub}</div> : null}
+      <div style={{ ...DISP(size, 75, 760), color, textShadow: ink.shadow }}>{text}</div>
+      {sub ? <div style={{ fontFamily: FONT.mono, fontSize: 22, letterSpacing: '0.12em', color: ink.muted, marginTop: 30, textShadow: ink.shadow }}>{sub}</div> : null}
     </div>
   </>;
 };

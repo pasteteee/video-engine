@@ -5,7 +5,7 @@ import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, interpolate, static
 import PLAN from './ep/shorts.json';
 import WORDS from './ep/words.json';
 import { MEDIA } from './Episode';
-import { ACCENT_EP, BONE, C, DISP, FONT, GROUND, GROUND2, MUTED, PAPER, SHADOW, SIGNAL, TINT, io, out, rgba } from './kit/tokens';
+import { ACCENT_EP, BONE, C, FG, FG_MUTED, SCRIM, INK_PHOTO, OnPhoto, DISP, FONT, GROUND, GROUND2, MUTED, PAPER, SHADOW, SIGNAL, TINT, io, out, rgba } from './kit/tokens';
 import { Kinetic, Mono, Odometer, StopBlock, Unredact } from './kit/Type';
 import { Grain } from './kit/Brand';
 import { FlatMap, Pin, useLand } from './kit/Geo';
@@ -22,7 +22,7 @@ export const shortFrames = (s: Short) => Math.round((s.shots[s.shots.length - 1]
 const med = (id: string) => staticFile('ep/' + MEDIA[id].src);
 const Bg: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
   <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 38%, ${GROUND2} 0%, ${GROUND} 75%)` }}>{children}</AbsoluteFill>;
-const Shade = () => <AbsoluteFill style={{ background: `linear-gradient(180deg, ${rgba(GROUND, 0.55)} 0%, ${rgba(GROUND, 0)} 22%, ${rgba(GROUND, 0)} 55%, ${rgba(GROUND, 0.75)} 100%)` }} />;
+const Shade = () => <AbsoluteFill style={{ background: `linear-gradient(180deg, ${rgba(SCRIM, 0.55)} 0%, ${rgba(SCRIM, 0)} 22%, ${rgba(SCRIM, 0)} 55%, ${rgba(SCRIM, 0.75)} 100%)` }} />;
 
 // A 9:16 camera into a photo: the crop follows from→to ([x, y, zoom], image fractions), clamped inside the image.
 const VPhoto: React.FC<{ id: string; from: number[]; to: number[]; d: number; filter?: string }> = ({ id, from, to, d, filter }) => {
@@ -38,23 +38,23 @@ const VPhotoPan: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   const P = s.params ?? {}; const f = useCurrentFrame();
   const b0 = s.start_s < 0.3 ? 68 : 2; // the hook owns the first two seconds
   const big = P.big ? interpolate(f, [b0, b0 + 10], [0, 1], { ...C, easing: out }) : 0;
-  return <AbsoluteFill>
+  return <OnPhoto.Provider value={true}><AbsoluteFill>
     <VPhoto id={s.media_ids![0]} from={P.from ?? [0.5, 0.5, 1]} to={P.to ?? [0.5, 0.5, 1.1]} d={d} filter={P.illustration ? 'sepia(0.15) contrast(1.05)' : 'contrast(1.06)'} />
     <Shade />
-    {P.big ? <div style={{ position: 'absolute', left: 0, right: 0, top: 640, textAlign: 'center', ...DISP(fit([P.big], 300), 62, 880), color: ACCENT_EP, textShadow: SHADOW, transform: `scale(${0.85 + 0.15 * big})`, opacity: big }}>{P.big}</div> : null}
+    {P.big ? <div style={{ position: 'absolute', left: 0, right: 0, top: 640, textAlign: 'center', ...DISP(fit([P.big], 300), 62, 880), color: INK_PHOTO.accent, textShadow: INK_PHOTO.shadow, transform: `scale(${0.85 + 0.15 * big})`, opacity: big }}>{P.big}</div> : null}
     {P.illustration ? <Mono text="ILLUSTRATION · AI-GENERATED" f0={4} size={20} style={{ position: 'absolute', left: X0, top: 250 }} /> : null}
-  </AbsoluteFill>;
+  </AbsoluteFill></OnPhoto.Provider>;
 };
 const VFilm: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   const f = useCurrentFrame(); const P = s.params ?? {}; const z = 1 + 0.06 * interpolate(f, [0, d], [0, 1], C);
   const m = MEDIA[s.media_ids![0]]; const k = P.unpillar ?? (P.pillar43 ? 1.335 : undefined) ?? (PLAN as any).unpillar ?? 1; // 1.335 for 4:3 film inside a 16:9 file
   const h = H * 1.0, w = (h * m.w) / m.h * k; // a 9:16 window travels across the clip
   const x = (P.x ?? 0.5) * (w - W);
-  return <AbsoluteFill style={{ background: '#000', overflow: 'hidden' }}>
+  return <OnPhoto.Provider value={true}><AbsoluteFill style={{ background: '#000', overflow: 'hidden' }}>
     <div style={{ position: 'absolute', left: -x, top: 0, width: w, height: h, transform: `scale(${z})`, transformOrigin: `${x + W / 2}px 50%` }}>
       <OffthreadVideo src={med(s.media_ids![0])} startFrom={Math.round((P.trim ?? 1) * FPS)} muted style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'contrast(1.06)' }} /></div>
     <Shade />
-  </AbsoluteFill>;
+  </AbsoluteFill></OnPhoto.Provider>;
 };
 const VType: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   const P = s.params; const n = P.lines.length; const size = fit(P.lines, 250);
@@ -71,16 +71,16 @@ const VNumber: React.FC<{ s: VShot; d: number }> = ({ s }) => {
   return <Bg>
     <Mono text={P.label} f0={0} size={34} color={ACCENT_EP} style={{ position: 'absolute', left: X0, top: 500 }} />
     <div style={{ position: 'absolute', left: X0 - 10, top: 570 }}><Odometer value={P.value} size={String(P.value).length > 4 ? 250 : String(P.value).length > 3 ? 330 : 400} f0={2} dur={22} /></div>
-    <div style={{ position: 'absolute', left: X0, top: 920, ...DISP(170), color: BONE, opacity: up }}>{P.unit}</div>
-    <Mono text={P.note} f0={24} size={28} color={rgba(BONE, 0.7)} style={{ position: 'absolute', left: X0, top: 1110 }} />
+    <div style={{ position: 'absolute', left: X0, top: 920, ...DISP(170), color: FG, opacity: up }}>{P.unit}</div>
+    <Mono text={P.note} f0={24} size={28} color={FG_MUTED} style={{ position: 'absolute', left: X0, top: 1110 }} />
   </Bg>;
 };
 const VQuote: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   const P = s.params; const f = useCurrentFrame(); const words = P.quote.split(' '); const per = Math.max(5, Math.floor((d - 30) / words.length));
   return <Bg>
     <Mono text={P.name} f0={0} size={26} style={{ position: 'absolute', left: X0, top: 470 }} />
-    <div style={{ position: 'absolute', left: X0, right: 120, top: 530, fontFamily: FONT.quote, fontStyle: 'italic', fontWeight: 420, fontSize: 124, lineHeight: 1.04, color: BONE, textShadow: SHADOW }}>
-      {words.map((w: string, i: number) => { const p = interpolate(f, [4 + i * per, 12 + i * per], [0, 1], C); return <span key={i} style={{ opacity: p, filter: `blur(${(1 - p) * 6}px)`, color: (P.hl && w.toLowerCase().includes(P.hl)) || (P.accent && w.replace(/[^\w]/g, '').toLowerCase() === String(P.accent).toLowerCase()) ? ACCENT_EP : BONE }}>{w} </span>; })}
+    <div style={{ position: 'absolute', left: X0, right: 120, top: 530, fontFamily: FONT.quote, fontStyle: 'italic', fontWeight: 420, fontSize: P.quote.length > 110 ? 90 : 124, lineHeight: 1.04, color: FG, textShadow: SHADOW }}>
+      {words.map((w: string, i: number) => { const p = interpolate(f, [4 + i * per, 12 + i * per], [0, 1], C); return <span key={i} style={{ opacity: p, filter: `blur(${(1 - p) * 6}px)`, color: (P.hl && w.toLowerCase().includes(P.hl)) || (P.accent && w.replace(/[^\w]/g, '').toLowerCase() === String(P.accent).toLowerCase()) ? ACCENT_EP : FG }}>{w} </span>; })}
     </div>
   </Bg>;
 };
@@ -105,11 +105,11 @@ const VDelay: React.FC<{ d: number; s: VShot }> = ({ d, s }) => {
       <line x1={X} y1={y0} x2={X} y2={y1} stroke={rgba(TINT, 0.35)} strokeWidth={3} strokeDasharray="4 14" />
       <line x1={X} y1={y0} x2={X} y2={yp} stroke={ACCENT_EP} strokeWidth={5} />
       <circle cx={X} cy={yp} r={14} fill={ACCENT_EP} opacity={1 - arrive} />
-      <circle cx={X} cy={y0} r={46} fill="#b4552c" /><circle cx={X} cy={y1} r={46} fill="#3d6f9e" stroke={rgba(BONE, arrive)} strokeWidth={6} />
+      <circle cx={X} cy={y0} r={46} fill="#b4552c" /><circle cx={X} cy={y1} r={46} fill="#3d6f9e" stroke={rgba(FG, arrive)} strokeWidth={6} />
     </svg>
-    <Mono text="MARS" f0={2} size={30} color={BONE} style={{ position: 'absolute', left: X + 80, top: y0 - 16 }} />
-    <Mono text="EARTH" f0={2} size={30} color={BONE} style={{ position: 'absolute', left: X + 80, top: y1 - 16 }} />
-    <div style={{ position: 'absolute', left: X0, top: 1110, opacity: up, ...DISP(230, 62, 880), color: BONE, textShadow: SHADOW }}>{P.big}</div>
+    <Mono text="MARS" f0={2} size={30} color={FG} style={{ position: 'absolute', left: X + 80, top: y0 - 16 }} />
+    <Mono text="EARTH" f0={2} size={30} color={FG} style={{ position: 'absolute', left: X + 80, top: y1 - 16 }} />
+    <div style={{ position: 'absolute', left: X0, top: 1110, opacity: up, ...DISP(230, 62, 880), color: FG, textShadow: SHADOW }}>{P.big}</div>
     <Mono text={P.note} f0={10} size={28} color={ACCENT_EP} style={{ position: 'absolute', left: X0, top: 1360 }} />
   </Bg>;
 };
@@ -121,11 +121,11 @@ const VClock: React.FC<{ d: number }> = ({ d }) => {
   return <Bg>
     <svg width={W} height={H} style={{ position: 'absolute' }}>
       <circle cx={CX} cy={CY} r={R} fill="none" stroke={rgba(TINT, 0.35)} strokeWidth={2} />
-      {Array.from({ length: 60 }, (_, i) => { const b = i % 5 === 0; const [a, c] = pt(i * 6, R - (b ? 34 : 16)), [e, g] = pt(i * 6, R - 4); return <line key={i} x1={a} y1={c} x2={e} y2={g} stroke={b ? BONE : rgba(TINT, 0.6)} strokeWidth={b ? 4 : 2} />; })}
+      {Array.from({ length: 60 }, (_, i) => { const b = i % 5 === 0; const [a, c] = pt(i * 6, R - (b ? 34 : 16)), [e, g] = pt(i * 6, R - 4); return <line key={i} x1={a} y1={c} x2={e} y2={g} stroke={b ? FG : rgba(TINT, 0.6)} strokeWidth={b ? 4 : 2} />; })}
       <path d={`M${CX} ${CY} L${x0} ${y0} A${R - 110} ${R - 110} 0 0 1 ${x1} ${y1} Z`} fill={rgba(ACCENT_EP, 0.28)} stroke={ACCENT_EP} strokeWidth={3} />
-      {(() => { const [x, y] = pt(md, R - 40); return <line x1={CX} y1={CY} x2={x} y2={y} stroke={BONE} strokeWidth={6} />; })()}
+      {(() => { const [x, y] = pt(md, R - 40); return <line x1={CX} y1={CY} x2={x} y2={y} stroke={FG} strokeWidth={6} />; })()}
       {(() => { const [x, y] = pt(hd, R - 130); return <line x1={CX} y1={CY} x2={x} y2={y} stroke={ACCENT_EP} strokeWidth={14} />; })()}
-      <circle cx={CX} cy={CY} r={12} fill={BONE} />
+      <circle cx={CX} cy={CY} r={12} fill={FG} />
     </svg>
     <div style={{ position: 'absolute', left: 0, right: 0, top: 1010, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: 24 }}>
       <Odometer value={101} size={230} f0={6} dur={Math.min(d - 20, 60)} /><div style={{ ...DISP(100), color: ACCENT_EP }}>MIN</div></div>
@@ -146,8 +146,8 @@ const VDockingHud: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
       <path d={[tick(ax - rs, ay - rs, 1, 1), tick(ax + rs, ay - rs, -1, 1), tick(ax - rs, ay + rs, 1, -1), tick(ax + rs, ay + rs, -1, -1)].join(' ')} fill="none" stroke={lock > 0.98 ? ACCENT_EP : BONE} strokeWidth={4} />
     </svg>
     <div style={{ position: 'absolute', left: 0, right: 0, top: 1180, textAlign: 'center' }}>
-      <div style={{ fontFamily: FONT.mono, fontSize: 26, letterSpacing: '0.14em', color: MUTED, textShadow: SHADOW }}>RANGE TO AGENA · FRAME {k + 1}/3</div>
-      <div style={{ ...DISP(200, 62, 860), color: BONE, textShadow: SHADOW }}>~{rv.toLocaleString('en-US')}<span style={{ ...DISP(100), color: ACCENT_EP, marginLeft: 14 }}>FT</span></div></div>
+      <div style={{ fontFamily: FONT.mono, fontSize: 26, letterSpacing: '0.14em', color: MUTED, textShadow: INK_PHOTO.shadow }}>RANGE TO AGENA · FRAME {k + 1}/3</div>
+      <div style={{ ...DISP(200, 62, 860), color: BONE, textShadow: INK_PHOTO.shadow }}>~{rv.toLocaleString('en-US')}<span style={{ ...DISP(100), color: INK_PHOTO.accent, marginLeft: 14 }}>FT</span></div></div>
     <AbsoluteFill style={{ background: '#fff', opacity: k ? interpolate(lf, [0, 4], [0.85, 0], C) : 0 }} />
   </AbsoluteFill>;
 };
@@ -173,8 +173,8 @@ const VSpectro: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
     <PlotStrip id={s.media_ids![0]} plot={P.plot} top={top} boxH={boxH} head={head} playing={on} />
     <div style={{ position: 'absolute', left: X0, top: top - 92, display: 'flex', alignItems: 'center', gap: 16 }}>
       <div style={{ width: 36, height: 4, background: ACCENT_EP }} />
-      <Mono text={P.label} f0={2} size={34} weight={600} color={BONE} /></div>
-    <Mono text={play && f >= a - 4 ? P.listen : (P.sub ?? '')} f0={play ? Math.round(a) : 8} size={26} color={rgba(BONE, 0.75)} style={{ position: 'absolute', left: X0, top: top + boxH + 40 }} />
+      <Mono text={P.label} f0={2} size={34} weight={600} color={FG} /></div>
+    <Mono text={play && f >= a - 4 ? P.listen : (P.sub ?? '')} f0={play ? Math.round(a) : 8} size={26} color={FG_MUTED} style={{ position: 'absolute', left: X0, top: top + boxH + 40 }} />
     {P.axes ? <><Mono text="TIME →" f0={10} size={22} style={{ position: 'absolute', right: 80, top: top + boxH + 40 }} /></> : null}
   </Bg>;
 };
@@ -184,7 +184,7 @@ const VStack: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
   return <Bg>{ids.map((id, i) => { const top = 330 + i * 760; const o = interpolate(f, [i * 10, i * 10 + 10], [0, 1], C);
     return <div key={id} style={{ opacity: o }}>
       <div style={{ position: 'absolute', left: X0, top: top - 80, display: 'flex', alignItems: 'center', gap: 16 }}>
-        <div style={{ width: 36, height: 4, background: i ? ACCENT_EP : BONE }} /><Mono text={P.labels[i]} f0={i * 10} size={34} weight={600} color={BONE} /></div>
+        <div style={{ width: 36, height: 4, background: i ? ACCENT_EP : FG }} /><Mono text={P.labels[i]} f0={i * 10} size={34} weight={600} color={FG} /></div>
       <PlotStrip id={id} plot={P.plots[i]} top={top} boxH={560} head={P.heads[i]} playing={0} />
       <Mono text={P.subs[i]} f0={i * 10 + 6} size={24} style={{ position: 'absolute', left: X0, top: top + 580 }} /></div>; })}
   </Bg>;
@@ -200,10 +200,10 @@ const VMap: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
       {A && B ? <line x1={A[0]} y1={A[1]} x2={A[0] + (B[0] - A[0]) * lk} y2={A[1] + (B[1] - A[1]) * lk} stroke={ACCENT_EP} strokeWidth={5} strokeDasharray="16 12" /> : null}
       {pins.map((p, i) => { const q = proj(p.at); const f0 = Math.round(p.t * FPS); if (f < f0) return null; return <g key={i}>
         {p.kind === 'ring' ? <circle cx={q[0]} cy={q[1]} r={70 + 6 * Math.sin(f / 6)} fill={rgba(SIGNAL, 0.12)} stroke={SIGNAL} strokeWidth={3} strokeDasharray="8 8" /> : <Pin x={q[0]} y={q[1]} f0={f0} />}
-        <text x={q[0] + (p.anchor === 'end' ? -28 : p.anchor === 'middle' ? 0 : 28)} y={q[1] + (p.dy ?? 60)} fontFamily={FONT.mono} fontSize={30} letterSpacing={3} fill={BONE} textAnchor={(p.anchor as any) ?? 'start'} style={{ textShadow: SHADOW } as any}>{p.label}</text></g>; })}
+        <text x={q[0] + (p.anchor === 'end' ? -28 : p.anchor === 'middle' ? 0 : 28)} y={q[1] + (p.dy ?? 60)} fontFamily={FONT.mono} fontSize={30} letterSpacing={3} fill={FG} textAnchor={(p.anchor as any) ?? 'start'} style={{ textShadow: SHADOW } as any}>{p.label}</text></g>; })}
     </svg>
       {P.link?.label && A && B ? <div style={{ position: 'absolute', left: 0, right: 0, top: Math.min(A[1], B[1]) - 330, textAlign: 'center', ...DISP(170, 62, 900), color: ACCENT_EP, textShadow: SHADOW, opacity: interpolate(f, [P.link.t * FPS + 30, P.link.t * FPS + 40], [0, 1], C) }}>{P.link.label}</div> : null}
-      {P.title ? <div style={{ position: 'absolute', left: X0, top: 300, display: 'flex', alignItems: 'center', gap: 16 }}><div style={{ width: 36, height: 4, background: ACCENT_EP }} /><Mono text={P.title} f0={4} size={34} weight={600} color={BONE} /></div> : null}
+      {P.title ? <div style={{ position: 'absolute', left: X0, top: 300, display: 'flex', alignItems: 'center', gap: 16 }}><div style={{ width: 36, height: 4, background: ACCENT_EP }} /><Mono text={P.title} f0={4} size={34} weight={600} color={FG} /></div> : null}
     </>; }}</FlatMap>;
 };
 const Layout: React.FC<{ s: VShot; d: number }> = ({ s, d }) => {
@@ -248,9 +248,9 @@ const Captions: React.FC<{ sh: Short }> = ({ sh }) => {
   const lp = interpolate(lf, [3, 13], [0, 1], { ...C, easing: out });
   return <div style={{ position: 'absolute', left: X0, right: 170, bottom: 470, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 22 }}>
     {label ? <div style={{ display: 'flex', alignItems: 'center', gap: 16, opacity: lp, transform: `translateX(${(1 - lp) * -16}px)` }}>
-      <div style={{ width: 36, height: 4, background: ACCENT_EP }} />
-      <div style={{ fontFamily: FONT.mono, fontWeight: 600, fontSize: 34, letterSpacing: '0.1em', textTransform: 'uppercase', color: BONE, textShadow: SHADOW }}>{label}</div></div> : null}
-    {ch ? <div style={{ ...DISP(104, 70, 820), lineHeight: '98px', color: BONE, textShadow: SHADOW }}>
+      <div style={{ width: 36, height: 4, background: INK_PHOTO.accent }} />
+      <div style={{ fontFamily: FONT.mono, fontWeight: 600, fontSize: 34, letterSpacing: '0.1em', textTransform: 'uppercase', color: BONE, textShadow: INK_PHOTO.shadow }}>{label}</div></div> : null}
+    {ch ? <div style={{ ...DISP(104, 70, 820), lineHeight: '98px', color: BONE, textShadow: INK_PHOTO.shadow }}>
       {ch.map((w, i) => { const on = interpolate(t, [w.start - 0.04, w.start + 0.06], [0, 1], C);
         return <span key={i} style={{ display: 'inline-block', marginRight: '0.22em', opacity: on, transform: `translateY(${(1 - on) * 14}px)` }}>{clean(w.w)}</span>; })}
     </div> : null}
@@ -262,7 +262,7 @@ const Hook: React.FC<{ sh: Short }> = ({ sh }) => {
   const f = useCurrentFrame(); const endF = hookEnd(sh);
   const o = interpolate(f, [endF - 8, endF], [1, 0], C); if (o <= 0) return null;
   const words = sh.hook_text.split(' '); const size = fit([sh.hook_text.length > 14 ? sh.hook_text.slice(0, Math.ceil(sh.hook_text.length / 2)) : sh.hook_text], 150);
-  return <div style={{ position: 'absolute', left: X0, right: 120, top: 210, opacity: o, textWrap: 'balance' as any, ...DISP(size, 62, 880), lineHeight: `${size * 0.94}px`, color: BONE, textShadow: SHADOW }}>
+  return <div style={{ position: 'absolute', left: X0, right: 120, top: 210, opacity: o, textWrap: 'balance' as any, ...DISP(size, 62, 880), lineHeight: `${size * 0.94}px`, color: BONE, textShadow: INK_PHOTO.shadow }}>
     {words.slice(0, -1).join(' ')} <span style={{ whiteSpace: 'nowrap' }}>{words[words.length - 1]}<StopBlock size={size} /></span></div>;
 };
 
