@@ -48,15 +48,24 @@
       "episode accent for one word per kinetic line, routes and diagram strokes"
     ],
     "image_style_refs": [],
-    "image_style_prompt": "Editorial documentary illustration in the palette of this episode: ground {ground}, light accents {accent}, soft film grain, cinematic side light, simple bold shapes, archival photo texture, no text, no logos, no watermarks."
+    "image_style_prompt": "Editorial documentary illustration in the palette of this episode: ground {ground}, light accents {accent}, soft film grain, cinematic side light, simple bold shapes, archival photo texture, no text, no logos, no watermarks.",
+    "color_rules": [
+      "Palette per episode from its own real photos (vengine look): ground = darkest large area of the hero photos, accent = the most saturated recurring object colour (e.g. a capsule collar, feathers, lava). Never default to navy for every episode.",
+      "Check the accent against the ground: contrast ratio >= 4.5 for text, and the accent must not clash with the photos it sits next to (hue within the photos' own range).",
+      "Signal red only for the stop block and thumbnail key words; never as a background or a second accent.",
+      "Neighbouring episodes in the season must not share the same ground hue (keep at least 25 degrees of hue or a clear lightness difference)."
+    ]
   },
   "voice": {
-    "provider": "gemini",
-    "voice": "Algenib",
+    "provider": "kokoro",
+    "voice": "am_michael",
     "base_direction": "Calm, even documentary narrator reading from the archive: plain American English, steady pace, matter-of-fact. No suspense voice, no whispering, no dramatic pauses, no acted emotion. The facts carry the tension, not the voice.",
     "one_direction_for_all_lines": true,
     "max_pause_ms": 300,
-    "emotion_range": "narrow: emotion tags only nudge the tone (a little warmer, a little lower); never whisper, never urgent"
+    "emotion_range": "narrow: emotion tags only nudge the tone (a little warmer, a little lower); never whisper, never urgent",
+    "kokoro_voice": "am_michael",
+    "kokoro_speed": 0.95,
+    "_note": "Owner (2026-11-18): free voice only. Kokoro-82M runs locally (channels/realstory/tools/tts_kokoro.py), no API key. Gemini TTS is no longer used."
   },
   "scene_types": "all",
   "variety": {
@@ -81,12 +90,10 @@
     ]
   },
   "providers": {
-    "_note": "Owner (2026-11-17): Gemini only for the voice (TTS). Video QA by Claude frame sheets, no image generation.",
+    "_note": "Owner (2026-11-18): no paid providers. Voice = Kokoro (local, free). Video QA by Claude frame sheets, no image generation.",
     "video_qa": "claude_frames",
     "image_gen": "none",
-    "tts": "gemini",
-    "paid_allowed": [
-      "gemini_tts"
-    ]
+    "tts": "kokoro",
+    "paid_allowed": []
   }
 }
