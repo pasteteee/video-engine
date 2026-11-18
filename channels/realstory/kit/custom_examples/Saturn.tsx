@@ -98,8 +98,8 @@ export const Anagram: React.FC<P> = ({ s, d }) => {
   const cw = p.cw ?? 64, size = p.size ?? 92; const per = p.perRow ?? 40, rows = Math.ceil(src.length / per), inRow = Math.min(per, src.length);
   const srcX = (k: number) => 960 - (inRow * 40) / 2 + (k % per) * 40; const srcY = (k: number) => 330 - (rows - 1) * 56 + Math.floor(k / per) * 56;
   const lineOf: [number, number][] = []; lines.forEach((ln, li) => [...ln].forEach((_, ci) => lineOf.push([li, ci])));
-  const solveAt = Math.round(d * (p.at ?? 0.35));
-  return <SceneBg drift={0.2}>
+  const solveAt = Math.round(d * (p.at ?? 0.35)); const push = 1 + 0.06 * interpolate(f, [0, d], [0, 1], C);
+  return <SceneBg drift={0.2}><div style={{ position: 'absolute', inset: 0, transform: `scale(${push})`, transformOrigin: '40% 45%' }}>
     {[...target].map((c, n) => {
       const [li, ci] = lineOf[n]; const k = map[n]; if (k < 0) return null;
       const pr = interpolate(f, [solveAt + n * 0.7, solveAt + n * 0.7 + 22], [0, 1], { ...C, easing: io });
@@ -110,7 +110,7 @@ export const Anagram: React.FC<P> = ({ s, d }) => {
     })}
     <Mono text={p.head ?? 'GALILEO · 1610 · 37 LETTERS'} f0={2} size={26} color={MUTED} style={{ position: 'absolute', left: 160, top: 240 - (rows - 1) * 56 }} />
     {p.note ? <Mono text={p.note} f0={solveAt + 50} size={28} color={BONE} style={{ position: 'absolute', left: 160, top: 470 + lines.length * size * 1.02 + 30 }} /> : null}
-  </SceneBg>;
+  </div></SceneBg>;
 };
 
 // ---- vertical (9:16) versions for the Shorts ----
