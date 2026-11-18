@@ -311,7 +311,8 @@ class Grow:
             sp[:, 3] *= _smoothstep((face - 0.35) / 0.4)
         k = t * FPS
         return self.rn.render(np.concatenate(Xs), np.concatenate(Ds), self.cam_at(k), colnode=np.concatenate(Cs),
-                              radius=np.concatenate(rs), spheres=sp, gap=2.0, shape_idx=np.concatenate(sh))
+                              radius=np.concatenate(rs), spheres=sp, gap=2.0, shape_idx=np.concatenate(sh),
+                              details=getattr(self.toy, 'details', None), details_t=face)
 
     def motion_px(self, k):
         """How far the yarn slides on screen over one frame (90th percentile, pixels)."""

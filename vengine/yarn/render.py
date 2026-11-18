@@ -224,6 +224,93 @@ def _trace_spheres(S, cam_pos, B, fpx, W, H, zb, nb, idb, cb):
                     cb[py, px] = int(S[k, 4])
 
 
+@njit(cache=True, parallel=True)
+def _raster_details(V, N, U, F, FE, cam_pos, B, fpx, W, H, zb, nb, idb, cb, ub, nband):
+    """Detail meshes (felt, satin, threads, appliques: details.py) by exact ray-triangle hits, depth-tested against
+    the yarn.  Writes idb 4, the element in cb and the detail's own coordinates (u, v, rho) in ub."""
+    cx = 0.5 * W
+    cy = 0.5 * H
+    nv = V.shape[0]
+    S = np.empty((nv, 3))
+    for i in range(nv):
+        vx = V[i, 0] - cam_pos[0]
+        vy = V[i, 1] - cam_pos[1]
+        vz = V[i, 2] - cam_pos[2]
+        xr = B[0, 0] * vx + B[0, 1] * vy + B[0, 2] * vz
+        yu = B[1, 0] * vx + B[1, 1] * vy + B[1, 2] * vz
+        zf = B[2, 0] * vx + B[2, 1] * vy + B[2, 2] * vz
+        S[i, 2] = zf
+        if zf > 1e-6:
+            S[i, 0] = cx + fpx * xr / zf
+            S[i, 1] = cy - fpx * yu / zf
+    for band in prange(nband):
+        y0b = band * H // nband
+        y1b = (band + 1) * H // nband
+        for f in range(F.shape[0]):
+            a = F[f, 0]
+            b = F[f, 1]
+            c = F[f, 2]
+            if S[a, 2] < 1.0 or S[b, 2] < 1.0 or S[c, 2] < 1.0:
+                continue
+            ya = int(max(y0b, math.floor(min(S[a, 1], min(S[b, 1], S[c, 1])))))
+            yb = int(min(y1b - 1, math.ceil(max(S[a, 1], max(S[b, 1], S[c, 1])))))
+            if ya > yb:
+                continue
+            xa = int(max(0, math.floor(min(S[a, 0], min(S[b, 0], S[c, 0])))))
+            xb = int(min(W - 1, math.ceil(max(S[a, 0], max(S[b, 0], S[c, 0])))))
+            if xa > xb:
+                continue
+            e1x = V[b, 0] - V[a, 0]
+            e1y = V[b, 1] - V[a, 1]
+            e1z = V[b, 2] - V[a, 2]
+            e2x = V[c, 0] - V[a, 0]
+            e2y = V[c, 1] - V[a, 1]
+            e2z = V[c, 2] - V[a, 2]
+            tx = cam_pos[0] - V[a, 0]
+            ty = cam_pos[1] - V[a, 1]
+            tz = cam_pos[2] - V[a, 2]
+            qx = ty * e1z - tz * e1y
+            qy = tz * e1x - tx * e1z
+            qz = tx * e1y - ty * e1x
+            for py in range(ya, yb + 1):
+                for px in range(xa, xb + 1):
+                    dxv = (px + 0.5 - cx) / fpx
+                    dyv = -(py + 0.5 - cy) / fpx
+                    il = 1.0 / math.sqrt(dxv * dxv + dyv * dyv + 1.0)
+                    rx = (B[0, 0] * dxv + B[1, 0] * dyv + B[2, 0]) * il
+                    ry = (B[0, 1] * dxv + B[1, 1] * dyv + B[2, 1]) * il
+                    rz = (B[0, 2] * dxv + B[1, 2] * dyv + B[2, 2]) * il
+                    pxv = ry * e2z - rz * e2y
+                    pyv = rz * e2x - rx * e2z
+                    pzv = rx * e2y - ry * e2x
+                    det = e1x * pxv + e1y * pyv + e1z * pzv
+                    if abs(det) < 1e-12:
+                        continue
+                    inv = 1.0 / det
+                    u = (tx * pxv + ty * pyv + tz * pzv) * inv
+                    if u < -1e-5 or u > 1.00001:
+                        continue
+                    v = (rx * qx + ry * qy + rz * qz) * inv
+                    if v < -1e-5 or u + v > 1.00001:
+                        continue
+                    t = (e2x * qx + e2y * qy + e2z * qz) * inv
+                    if t <= 0.0 or t >= zb[py, px]:
+                        continue
+                    w = 1.0 - u - v
+                    zb[py, px] = t
+                    nx = w * N[a, 0] + u * N[b, 0] + v * N[c, 0]
+                    ny = w * N[a, 1] + u * N[b, 1] + v * N[c, 1]
+                    nz = w * N[a, 2] + u * N[b, 2] + v * N[c, 2]
+                    nl = math.sqrt(nx * nx + ny * ny + nz * nz) + 1e-12
+                    nb[py, px, 0] = nx / nl
+                    nb[py, px, 1] = ny / nl
+                    nb[py, px, 2] = nz / nl
+                    for q in range(3):
+                        ub[py, px, q] = w * U[a, q] + u * U[b, q] + v * U[c, q]
+                    idb[py, px] = 4
+                    cb[py, px] = FE[f]
+
+
 @njit(cache=True)
 def _shadow_splat(P, RR, m, r, LB, lo, scale, SM, sm):
     """Orthographic depth map from the light.  LB rows: right, up, towards the light."""
@@ -572,6 +659,145 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
                 out[py, px, ch] = _srgb(_shoulder(val))
 
 
+@njit(cache=True)
+def _noise2(x, y):
+    j = math.floor(y)
+    f = y - j
+    f = f * f * (3.0 - 2.0 * f)
+    return _vnoise(x, j) * (1.0 - f) + _vnoise(x + 0.37, j + 1.0) * f
+
+
+@njit(cache=True, parallel=True)
+def _shade_details(zb, nb, idb, cb, ub, cam_pos, B, fpx, W, H, LB, lo, scale, SM, sm, ldir, palette, EL, r, exposure,
+                   out):
+    """Shades the detail pixels (idb 4) from their own coordinates: felt fibres and a cut edge; satin strands with a
+    soft thread sheen; crocheted appliques with stitches radiating from the centre and faint round lines; plied
+    threads; glossy plastic.  Detail finer than about two pixels fades to its mean (_lod), as on the yarn."""
+    cx = 0.5 * W
+    cy = 0.5 * H
+    for py in prange(H):
+        for px in range(W):
+            if idb[py, px] != 4:
+                continue
+            dxv = (px + 0.5 - cx) / fpx
+            dyv = -(py + 0.5 - cy) / fpx
+            il = 1.0 / math.sqrt(dxv * dxv + dyv * dyv + 1.0)
+            rx = (B[0, 0] * dxv + B[1, 0] * dyv + B[2, 0]) * il
+            ry = (B[0, 1] * dxv + B[1, 1] * dyv + B[2, 1]) * il
+            rz = (B[0, 2] * dxv + B[1, 2] * dyv + B[2, 2]) * il
+            t = zb[py, px]
+            wx = cam_pos[0] + rx * t
+            wy = cam_pos[1] + ry * t
+            wz = cam_pos[2] + rz * t
+            nx = nb[py, px, 0]
+            ny = nb[py, px, 1]
+            nz = nb[py, px, 2]
+            if nx * rx + ny * ry + nz * rz > 0.0:           # seen from behind (a thin rim): face the viewer
+                nx, ny, nz = -nx, -ny, -nz
+            e = cb[py, px]
+            ci = int(EL[e, 0])
+            mat = int(EL[e, 1])
+            gloss = EL[e, 4]
+            e1x, e1y, e1z = EL[e, 6], EL[e, 7], EL[e, 8]
+            e2x, e2y, e2z = EL[e, 9], EL[e, 10], EL[e, 11]
+            u = ub[py, px, 0]
+            v = ub[py, px, 1]
+            rho = ub[py, px, 2]
+            foot = t / fpx
+            alb = 1.0
+            # the direction of the fibres (for the thread sheen); none: an isotropic soft highlight
+            fx, fy, fz = 0.0, 0.0, 0.0
+            if mat == 0:                                     # felt: fine matted fibres, a slightly darker cut edge
+                lf = _lod(0.35, foot)
+                alb = 1.0 + 0.07 * _noise2(u * 2.8, v * 2.8) * lf + 0.04 * _noise2(u * 0.7 + 3.1, v * 0.7)
+                alb *= 1.0 - 0.10 * min(1.0, max(0.0, (rho - 0.86) / 0.14))
+            elif mat == 1:                                   # satin: parallel strands along e1
+                sp = max(EL[e, 2], 1e-3)
+                a = v / sp
+                f = a - math.floor(a)
+                q = 2.0 * f - 1.0
+                bump = math.sqrt(max(0.0, 1.0 - q * q))
+                l1 = _lod(sp, foot)
+                slope = max(-1.4, min(1.4, -q / max(bump, 0.3))) * 0.35 * l1
+                nx += slope * e2x
+                ny += slope * e2y
+                nz += slope * e2z
+                lane = math.floor(f * 6.0) + 13.0 * math.floor(a)
+                alb = (0.60 - 0.22 * (1.0 - bump ** 1.2) * l1 - 0.06 * (1.0 - l1)) * \
+                      (1.0 + 0.08 * _vnoise(u * 1.3 + _hash(lane, 2.0) * 9.0, lane) * _lod(sp / 6.0, foot))
+                fx, fy, fz = e1x, e1y, e1z
+            elif mat == 2:                                   # a crocheted applique: stitches radiate from its centre
+                nsp = EL[e, 2]
+                nrd = EL[e, 3]
+                rr = math.sqrt(u * u + v * v) + 1e-9
+                th = math.atan2(v, u)
+                s = th / TAU * nsp
+                f = s - math.floor(s)
+                q = 2.0 * f - 1.0
+                bump = math.sqrt(max(0.0, 1.0 - q * q))
+                l1 = _lod(TAU * rr / nsp, foot)
+                ctx = -math.sin(th) * e1x + math.cos(th) * e2x  # across the spokes
+                cty = -math.sin(th) * e1y + math.cos(th) * e2y
+                ctz = -math.sin(th) * e1z + math.cos(th) * e2z
+                slope = max(-1.4, min(1.4, -q / max(bump, 0.3))) * 0.30 * l1
+                nx += slope * ctx
+                ny += slope * cty
+                nz += slope * ctz
+                alb = 1.0 - 0.22 * (1.0 - bump ** 1.2) * l1 - 0.05 * (1.0 - l1)
+                for k in range(1, int(nrd)):                 # the line where one round is worked into the last
+                    dk = (rho - k / nrd) / 0.035
+                    alb *= 1.0 - 0.16 * math.exp(-dk * dk)
+                alb *= 1.0 - 0.22 * math.exp(-(rr / 0.7) ** 2)  # the closed magic ring
+                alb *= 1.0 + 0.05 * _vnoise(rr * 1.7, math.floor(s) + 31.0)
+                fx = math.cos(th) * e1x + math.sin(th) * e2x
+                fy = math.cos(th) * e1y + math.sin(th) * e2y
+                fz = math.cos(th) * e1z + math.sin(th) * e2z
+            elif mat == 3:                                   # a plied thread: twist along its length
+                pitch = max(EL[e, 2], 1e-3)
+                nply = EL[e, 3]
+                psi = nply * (v - TAU * u / pitch)
+                f = psi / TAU
+                f = f - math.floor(f)
+                bump = math.sqrt(max(0.0, 1.0 - (2.0 * f - 1.0) ** 2))
+                l1 = _lod(TAU * EL[e, 5] * 0.5 / nply, foot)
+                alb = 1.0 - 0.25 * (1.0 - bump ** 1.3) * l1 - 0.07 * (1.0 - l1)
+            nl = math.sqrt(nx * nx + ny * ny + nz * nz) + 1e-12
+            nx /= nl
+            ny /= nl
+            nz /= nl
+            lit = _shadow_at(SM, sm, LB, lo, scale, wx, wy, wz, 0.35 * r, 1, 1)
+            ndl = nx * ldir[0] + ny * ldir[1] + nz * ldir[2]
+            ndv = min(1.0, max(0.0, -(nx * rx + ny * ry + nz * rz)))
+            hx = ldir[0] - rx
+            hy = ldir[1] - ry
+            hz = ldir[2] - rz
+            hl = math.sqrt(hx * hx + hy * hy + hz * hz) + 1e-9
+            if mat == 4:                                     # glossy plastic, like the safety eyes
+                ndh = max(0.0, (nx * hx + ny * hy + nz * hz) / hl)
+                spec = (ndh ** 300 * 2.2 + ndh ** 30 * 0.18) * (0.3 + 0.7 * lit)
+                env = 0.04 + 0.07 * max(0.0, ny)
+                fres = (1.0 - ndv) ** 4 * 0.28
+                for ch in range(3):
+                    out[py, px, ch] = _shoulder(palette[ci, ch] * (0.25 + 0.35 * max(0.0, ndl)) + env + fres + spec)
+                continue
+            wrap = max(0.0, (ndl + 0.35) / 1.35)
+            sky = 0.5 + 0.5 * ny
+            amb = 0.30 + 0.16 * sky + 0.14 * ndv
+            li = (1.0 * amb + 0.42 * wrap * lit) * exposure    # soft studio light: a lit face at about 1, a strong fill
+            if fx != 0.0 or fy != 0.0 or fz != 0.0:          # Kajiya-Kay along the fibres
+                th_ = (fx * hx + fy * hy + fz * hz) / hl
+                spec = math.sqrt(max(0.0, 1.0 - th_ * th_)) ** 24 * gloss * lit
+            else:
+                ndh = max(0.0, (nx * hx + ny * hy + nz * hz) / hl)
+                spec = (ndh ** 40 * 0.8 + ndh ** 8 * 0.2) * gloss * lit
+            lum = 0.30 * palette[ci, 0] + 0.55 * palette[ci, 1] + 0.15 * palette[ci, 2] + 1e-3
+            dk = max(0.0, 1.0 - li)
+            for ch in range(3):
+                pc = palette[ci, ch]
+                tint = (pc / lum) ** (0.6 * dk)              # shade deepens in the dye colour, as on the yarn
+                out[py, px, ch] = _shoulder(pc * alb * li * tint + spec * (0.35 + 0.65 * pc))
+
+
 def soft_shape(X, r_vis, h, cmin=0.62):
     """How the soft yarn is pressed at every node: (Q, c), the direction it is flattened along and how much (1: round).
     It is flattened just enough to lie against the yarn it touches instead of running through it."""
@@ -677,10 +903,12 @@ class Renderer:
         if self._auto_floor:
             self.plane_p[1] = lo[1] - 0.9 * self.r * self.soft
 
-    def render(self, X, D, cam, colnode=None, radius=None, spheres=None, gap=2.0, shape_idx=None):
+    def render(self, X, D, cam, colnode=None, radius=None, spheres=None, gap=2.0, shape_idx=None, details=None,
+               details_t=1.0):
         """X, D: the nodes drawn and their directors.  colnode: palette index per node.  radius: per-node radius
         scale (the growing tip tapers in).  spheres: rows cx, cy, cz, radius, colour index.  shape_idx: for each node
-        drawn, its index in the scene given to set_scene (default: the first len(X) nodes)."""
+        drawn, its index in the scene given to set_scene (default: the first len(X) nodes).  details: a
+        details.Details (face, felt, appliques), shown as it is at reveal time details_t (0..1)."""
         import time
         tm = [time.perf_counter()]
         n = len(X)
@@ -729,6 +957,12 @@ class Renderer:
         if spheres is not None and len(spheres):
             _trace_spheres(np.ascontiguousarray(np.asarray(spheres, np.float64)), cam.pos, B, fpx, w, hh,
                            self.zb, self.nb, self.idb, self.cb)
+        dmesh = details.frame(details_t) if details is not None else None
+        if dmesh is not None:
+            if getattr(self, 'ub', None) is None:
+                self.ub = np.zeros((hh, w, 3), np.float32)
+            dV, dN, dU, dF, dE, dEL = dmesh
+            _raster_details(dV, dN, dU, dF, dE, cam.pos, B, fpx, w, hh, self.zb, self.nb, self.idb, self.cb, self.ub, 16)
         tm.append(time.perf_counter())
         # shadow map: the frame is fixed on the whole scene and snapped to whole texels
         l = self.ldir
@@ -756,6 +990,9 @@ class Renderer:
                hh, LB, lo, scale, self.SM, self.sm, self.ldir, self.palette, self.bg_top, self.bg_bot, self.plane_p,
                self.plane_n, self.r, rv, self.pitch, self.nply, self.out, ao_r, self.fuzz, self.sheen, self.halo,
                self.shadow_floor, self.exposure, self.ao_amt)
+        if dmesh is not None:
+            _shade_details(self.zb, self.nb, self.idb, self.cb, self.ub, cam.pos, B, fpx, w, hh, LB, lo, scale, self.SM,
+                           self.sm, self.ldir, self.palette, dEL, self.r, self.exposure, self.out)
         tm.append(time.perf_counter())
         img = self.out
         if self.ss > 1 or self.aa > 0:
