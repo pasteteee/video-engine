@@ -165,10 +165,18 @@ class Compositor:
             small = np.asarray(ph.resize((w // q, h // q), Image.BILINEAR), np.float32)
             pad = np.pad(small, ((h // q, h // q), (w // q, w // q), (0, 0)), mode="edge")
             from scipy.ndimage import gaussian_filter
-            pad = gaussian_filter(pad, (6, 30, 0), mode="nearest")   # the backdrop varies slowly across: no streaks
+            # blur only what lies outside the photo's inner 88% (the toy never reaches its border): normalized
+            # convolution, so the toy's colours do not bleed out; wide across, as the backdrop varies slowly there
+            wt = np.ones(pad.shape[:2], np.float32)
+            bh, bw = h // q, w // q
+            mh, mw = int(bh * 0.06), int(bw * 0.06)
+            wt[bh + mh:2 * bh - mh, bw + mw:2 * bw - mw] = 0
+            sig = (12, 90)
+            pad = gaussian_filter(pad * wt[..., None], sig + (0,), mode="nearest") / \
+                np.maximum(gaussian_filter(wt, sig, mode="nearest"), 1e-4)[..., None]
             big = Image.fromarray(np.clip(pad + 0.5, 0, 255).astype(np.uint8)).resize((3 * w, 3 * h), Image.BICUBIC)
             m = Image.new("L", (w, h), 0)
-            e = max(8, w // 40)                          # feather the photo's own edge into the carried backdrop
+            e = max(8, w // 16)                          # feather the photo's own edge into the carried backdrop
             ImageDraw.Draw(m).rectangle((e, e, w - e, h - e), fill=255)
             big.paste(ph, (w, h), m.filter(ImageFilter.GaussianBlur(e / 2)))
             self._ext = big
