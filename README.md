@@ -52,7 +52,7 @@ state.json                    одобрения владельца
 | Раскадровка шортса (схема `storyboard`) | `04_shots/storyboard.json` |
 | Контракт рендера вязания (схема `knit_plan`) | `06_render/knit/plan.json` + `0000.png…` |
 | Подписи, события музыки, текст рядов | `vengine/build/storyboard.py` |
-| Точка подключения рендера вязания | `vengine/build/knit.py` (`crochetsim` / `yarn` / `command`) |
+| Точка подключения рендера вязания | `vengine/build/knit.py` (`auto` / `crochetsim` / `yarn` / `command`) |
 | Композитор кадра | `vengine/build/comp.py` |
 | Музыка и звуки петель (numpy) | `vengine/build/audio.py` |
 | Агент | `.claude/agents/rs-build.md` |

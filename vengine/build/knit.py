@@ -4,8 +4,10 @@ Contract (schema `knit_plan`): the renderer writes OUTDIR/0000.png, 0001.png …
 the short) and OUTDIR/plan.json. The compositor never cares which renderer made them, so a better yarn renderer
 plugs in by changing `build.knit.renderer` in channel.json:
 
+    "auto"        "yarn" when vengine/yarn is in this checkout, else "crochetsim" (the default)
     "crochetsim"  vengine/build/knit_crochetsim.py (the yg4 code of the goat short; stopgap)
-    "yarn"        `python -m vengine yarn grow SPEC OUT --size --dur --reveal --frames a:b` (the new yarn package)
+    "yarn"        `python -m vengine yarn grow SPEC OUT --size --dur --reveal --frames a:b` (the new yarn package:
+                  flicker-free, motion blur; flags --ss --mblur --core go in build.knit.params.yarn)
     "command"     any argv in build.knit.command with {spec} {out} {dur} {reveal} {size} {a} {b} {i} {n}
 
 Each runs as N parallel processes over frame ranges; existing frames are skipped, so a render can be resumed.
@@ -24,14 +26,34 @@ from PIL import Image
 from .. import contracts
 
 
+def renderer(knit_cfg: dict) -> str:
+    """'auto' = the yarn package when it is installed in this checkout, else the crochetsim stopgap."""
+    r = knit_cfg.get("renderer", "auto")
+    if r == "auto":
+        import importlib.util
+        r = "yarn" if importlib.util.find_spec("vengine.yarn") is not None else "crochetsim"
+    return r
+
+
+def smooth_for(knit_cfg: dict):
+    """Temporal blend of neighbour frames: a list, or a map renderer -> list. The yarn renderer removes flicker
+    itself (and adds motion blur), so it gets none by default."""
+    sm = knit_cfg.get("smooth", {})
+    if isinstance(sm, dict):
+        sm = sm.get(renderer(knit_cfg), [0.0, 1.0, 0.0])
+    return sm
+
+
 def _nframes(dur: float, reveal: float, fps: int) -> int:
     return int(round((dur + reveal) * fps))
 
 
 def commands(knit_cfg: dict, spec: Path, out: Path, dur: float, reveal: float, size: str, fps: int, n: int,
              still: str | None = None) -> list[list[str]]:
-    r = knit_cfg.get("renderer", "crochetsim")
+    r = renderer(knit_cfg)
     params = knit_cfg.get("params", {})
+    if isinstance(params.get(r), dict) or any(isinstance(v, dict) for v in params.values()):
+        params = params.get(r, {})
     nf = _nframes(dur, reveal, fps)
     cmds = []
     for i in range(n):
@@ -48,7 +70,10 @@ def commands(knit_cfg: dict, spec: Path, out: Path, dur: float, reveal: float, s
                 cmd += ["--still", still]
         elif r == "yarn":
             cmd = [sys.executable, "-m", "vengine", "yarn", "grow", str(spec), str(out), "--size", size,
-                   "--dur", str(dur), "--reveal", str(reveal), "--frames", f"{a}:{b}"]
+                   "--dur", str(dur), "--reveal", str(reveal)]
+            for k, v in params.items():
+                cmd += [f"--{k.replace('_', '-')}", str(v)]
+            cmd += ["--still", still] if still else ["--frames", f"{a}:{b}"]
         elif r == "command":
             fill = dict(spec=spec, out=out, dur=dur, reveal=reveal, size=size, a=a, b=b, i=i, n=n)
             cmd = [str(x).format(**fill) for x in knit_cfg["command"]]

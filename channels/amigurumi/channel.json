@@ -50,20 +50,55 @@
   },
   "build": {
     "knit": {
-      "renderer": "crochetsim",
+      "renderer": "auto",
       "src": "/mnt/project-files/crochet-video/engine-v3/src",
       "amikit": "/home/user",
-      "params": {"soft": 1.2, "core": 0.0, "bright": 1.28, "fuzz": 0.08, "nply": 2, "ss": 2},
-      "smooth": [0.15, 0.7, 0.15]
+      "params": {
+        "crochetsim": {
+          "soft": 1.2,
+          "core": 0.0,
+          "bright": 1.28,
+          "fuzz": 0.08,
+          "nply": 2,
+          "ss": 2
+        },
+        "yarn": {}
+      },
+      "smooth": {
+        "crochetsim": [
+          0.15,
+          0.7,
+          0.15
+        ],
+        "yarn": [
+          0,
+          1,
+          0
+        ]
+      }
     },
     "fps": 30,
     "size": "1080x1920",
-    "timing": {"hook": 2.0, "grow": 15.0, "done": 3.0, "real": 4.0, "cta": 6.0, "beat": 0.5},
+    "timing": {
+      "hook": 2.0,
+      "grow": 15.0,
+      "done": 3.0,
+      "real": 4.0,
+      "cta": 6.0,
+      "beat": 0.5
+    },
     "cta": {
-      "lines": ["Free pattern", "+ 3D model"],
+      "lines": [
+        "Free pattern",
+        "+ 3D model"
+      ],
       "button": "amigurumi.ai",
       "chip": "Every round, step by step  ·  PDF"
     },
-    "music": {"bpm": 120, "key": "F", "style": "bright-pop"}
+    "music": {
+      "bpm": 120,
+      "key": "F",
+      "style": "bright-pop"
+    }
   }
 }

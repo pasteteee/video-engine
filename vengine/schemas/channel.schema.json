@@ -231,7 +231,7 @@
           "properties": {
             "renderer": {
               "type": "string",
-              "description": "Knit renderer adapter: 'crochetsim' (vengine/build/knit_crochetsim.py) or 'command' (any program that writes the knit_plan contract)"
+              "description": "'auto' (yarn when installed, else crochetsim), 'crochetsim', 'yarn' (python -m vengine yarn grow) or 'command'"
             },
             "command": {
               "type": "array",
@@ -250,16 +250,31 @@
             },
             "params": {
               "type": "object",
-              "description": "Look parameters passed to the renderer (soft, core, bright, fuzz, nply, ss)"
+              "description": "Flags for the renderer, flat or per renderer {crochetsim: {...}, yarn: {...}}"
             },
             "smooth": {
-              "type": "array",
-              "items": {
-                "type": "number"
-              },
-              "minItems": 3,
-              "maxItems": 3,
-              "description": "Temporal blend of neighbour knit frames [prev, this, next]; [0,1,0] = off"
+              "description": "Temporal blend [prev, this, next], flat or per renderer; [0,1,0] = off",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  }
+                }
+              ]
             }
           }
         },

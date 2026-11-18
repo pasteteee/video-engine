@@ -155,7 +155,7 @@ def test_knit_args_finish_yarn_on_done():
 def test_compositor_sections_and_stills(tmp_path):
     ep, knit = make_ep(tmp_path)
     ch = small_channel()
-    frames = K.KnitFrames(ep.folder / "06_render/knit", CH["build"]["knit"]["smooth"], (1080, 1920))
+    frames = K.KnitFrames(ep.folder / "06_render/knit", K.smooth_for(CH["build"]["knit"]), (1080, 1920))
     c = Compositor(ep.folder, SB_MIN, ch, frames)
     assert c.nframes == int(round(c.tm.t_end * FPS))
     for t in (0.3, c.tm.t_grow + 0.5, c.tm.t_done + 0.3, c.tm.t_real + 0.3, c.tm.t_cta + 0.9):
@@ -179,6 +179,10 @@ def test_knit_commands_for_each_renderer(tmp_path):
     assert len(cs) == 4 and cs[1][3:6] == [str(spec), str(out), "1/4"] and "--src" in cs[0] and "--soft" in cs[0]
     ys = K.commands({"renderer": "yarn"}, spec, out, 16, 3.5, "1080x1920", 30, 2)
     assert ys[0][-1] == "0:292" and ys[1][-1] == "292:585" and ys[0][3:5] == ["yarn", "grow"]
+    ys = K.commands({"renderer": "yarn", "params": {"yarn": {"mblur": 4}, "crochetsim": {"soft": 1}}}, spec, out, 1, 1, "1x1", 30, 1)
+    assert "--mblur" in ys[0] and "--soft" not in ys[0]
+    assert K.renderer({"renderer": "auto"}) in ("yarn", "crochetsim")
+    assert K.smooth_for({"renderer": "yarn", "smooth": {"crochetsim": [0.2, 0.6, 0.2]}}) == [0.0, 1.0, 0.0]
     cm = K.commands({"renderer": "command", "command": ["r", "{spec}", "{out}", "{a}-{b}"]}, spec, out, 1, 1, "1x1", 30, 2)
     assert cm[1] == ["r", str(spec), str(out), "30-60"]
 

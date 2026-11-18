@@ -51,7 +51,7 @@ def compositor(ep: Episode) -> Compositor:
     sb, ch = _load(ep)
     b = ch.get("build", {})
     from .comp import DESIGN
-    frames = K.KnitFrames(ep.path(KNIT_DIR), b.get("knit", {}).get("smooth", (0.0, 1.0, 0.0)), DESIGN)
+    frames = K.KnitFrames(ep.path(KNIT_DIR), K.smooth_for(b.get("knit", {})), DESIGN)
     return Compositor(ep.folder, sb, ch, frames)
 
 
