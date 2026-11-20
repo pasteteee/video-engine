@@ -61,13 +61,14 @@ def brighten(c, amount):
 class Grow:
     def __init__(self, spec, size=(1080, 1920), dur=16.0, reveal=3.5, ss=3, soft=1.35, core=0.3, core_shade=0.85,
                  bright=1.0, mblur=4, turn=250.0, max_px=6.0, ao=0.6, fov=FOV, view=None, floor=FLOOR, bg=None,
-                 rest=None, box=None, hook=False):
+                 rest=None, box=None, hook=False, per_stitch=False, live=None):
         """hook: draw a crochet hook working the newest stitch (hook.py).  view: the final view {az, el[, fov]} (from `vengine yarn match`), default the photo's usual angle.
         floor: strength of the toy's shadow on the floor under it (0: no floor).  bg: (top, bottom) backdrop colours,
         sRGB 0..1.  rest: film seconds when the final turn comes to rest (default the last frame).  box: where the
         finished toy sits in the last frame, (cx, cy, w, h) as fractions of the frame (default BOX)."""
         from .render import Renderer
         from .toy import toy_yarn
+        self.live = live
         self.W, self.H = size
         self.turn, self.max_px = float(turn), float(max_px)
         self.dur, self.reveal, self.mblur = float(dur), float(reveal), int(mblur)
@@ -119,13 +120,24 @@ class Grow:
         self.hook = None
         if hook:
             from .hook import HookRig
-            self.hook = HookRig(self, self.hook_pal, hook_mm=float((spec.get('yarn') or {}).get('hook_mm', 4.0)))
+            self.hook = HookRig(self, self.hook_pal, hook_mm=float((spec.get('yarn') or {}).get('hook_mm', 4.0)),
+                               per_stitch=per_stitch)
 
     # --------------------------------------------------------------------------------------------- the clock
     def prog(self, t):
         """Fraction of all yarn made at film time t: slow first (after round 3 of the first piece), then faster."""
-        x = t / self.dur
         p0 = self.pieces[0]
+        live = getattr(self, 'live', None)
+        if live:
+            # real time first: `live` = (seconds, stitches per second) from the magic ring, every stitch seen
+            Tl, rate = live
+            nps = (p0['end'] - p0['start']) / sum(p0['counts'])
+            if t <= Tl:
+                return t * rate * nps / self.NY
+            sL = Tl * rate * nps / self.NY
+            x = (t - Tl) / (self.dur - Tl)
+            return sL + (1 - sL) * (min(1.0, 0.03 * x + 0.97 * x ** 2.0) if x < 0.94 else 1.0)
+        x = t / self.dur
         s0 = (sum(p0['counts'][:3]) / sum(p0['counts'])) * (p0['end'] - p0['start']) / self.NY
         return s0 + (1 - s0) * (min(1.0, 0.06 * x + 0.94 * x ** 2.2) if x < 0.94 else 1.0)
 

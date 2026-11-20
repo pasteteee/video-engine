@@ -47,14 +47,17 @@ class HookRig:
 
     pal0: the palette index where the two hook colours are (the Grow appends them to its palette)."""
 
-    def __init__(self, g, pal0, hook_mm=4.0, enter=0.35, leave=(0.95, 1.02), follow=(9.0, 16.0), rate=2.2):
+    def __init__(self, g, pal0, hook_mm=4.0, enter=0.35, leave=(0.95, 1.02), follow=(9.0, 16.0), rate=2.2,
+                 per_stitch=False):
         self.g, self.pal0 = g, int(pal0)
+        self.per_stitch = bool(per_stitch)
         self.sc = float(hook_mm) / 4.0          # the head below is drawn for a 4 mm hook
         X, FPS = g.X, 30
         NF, NB = g.NF, g.NB
         self.fps = FPS
         tip = np.zeros((NF, 3)); front = np.zeros((NF, 3)); otip = np.zeros((NF, 3)); ofr = np.zeros((NF, 3))
         cols = np.zeros(NF, int)
+        base = np.zeros((NF, 3))
         right = np.zeros((NF, 3)); up = np.zeros((NF, 3)); fwd = np.zeros((NF, 3))
         pis = np.zeros(NF, int)
         for k, f in enumerate(g.plan):
@@ -67,13 +70,17 @@ class HookRig:
             n = int(np.clip(f['n'], p['start'] + 2, p['end'] - 1))
             nps = (p['end'] - p['start']) / max(1, sum(p['counts']))           # yarn nodes per stitch
             L = int(max(12, min(n - p['start'], f['count'] * nps)))           # the round being made
-            seg = X[n - L:n + 1]
+            seg = X[max(0, p['start'], n - L):n + 1]
+            if len(seg) < 3:
+                seg = X[p['start']:p['start'] + 12]
             ctr = seg.mean(0)
             # a round that is still tiny (the magic ring) has no clear centre: use the whole piece made so far
             if np.linalg.norm(seg - ctr, axis=1).mean() < 3.0:
                 ctr = X[p['start']:n + 1].mean(0)
             out = _unit(seg - ctr)
             tip[k], otip[k] = seg[-1], out[-1]
+            # the top of the stitch one round below the newest one: where the hook goes in for the next stitch
+            base[k] = X[max(p['start'], n - L + 1)]
             # the front of the rim: facing the camera and a little to its right (the hook comes in from the right)
             to_cam = _unit(cam.pos - seg)
             score = (out * _unit(to_cam + 0.6 * Bm[0])).sum(1)
@@ -87,6 +94,8 @@ class HookRig:
         sp = _gauss(ang, 0.6 * FPS)
         w = np.array([_smoothstep((v - follow[0]) / (follow[1] - follow[0])) for v in sp])
         w = _gauss(w, 0.3 * FPS)
+        if self.per_stitch:              # the hook always works the newest stitch itself: no holding on the rim
+            w = np.zeros(NF)
         P = tip * (1 - w)[:, None] + front * w[:, None]
         O = _unit(otip * (1 - w)[:, None] + ofr * w[:, None])
         # the hook's own frame: the shaft leans out of the fabric, up and to the right of the frame, a little towards
@@ -97,8 +106,10 @@ class HookRig:
         for k in np.nonzero(pis[1:] != pis[:-1])[0] + 1:
             kk = np.arange(NF)
             lift = np.maximum(lift, 16.0 * np.exp(-0.5 * ((kk - k) / (0.15 * FPS)) ** 2))
-        sig = 0.10 * FPS
+        sig = 0.10 * FPS if not self.per_stitch else 0.03 * FPS
         P = _gauss(P, sig)
+        self.B = _gauss(base, sig)
+        self.O = _unit(_gauss(O, sig))
         U = _unit(_gauss(U, 0.25 * FPS))
         P = P + U * lift[:, None]
         self.P, self.U = P, U
@@ -110,6 +121,8 @@ class HookRig:
         srate[np.concatenate([[False], pis[1:] != pis[:-1]])] = 0
         freq = np.minimum(_gauss(srate, 0.3 * FPS), rate)
         self.phase = np.cumsum(freq / FPS) * 2 * math.pi
+        # per stitch: one full cycle (in, yarn over, pull up, yarn over, pull through) for every stitch made
+        self.st = st
         # in and out: slides in along the shaft at the start, leaves the same way before the face is made
         dur = g.dur
         t = np.arange(NF) / FPS
@@ -134,8 +147,28 @@ class HookRig:
         V = _unit(np.cross(U, fw))                      # in the picture plane, across the shaft
         if V @ self._at(self.right, k) > 0:             # the lip on the lower-left of the shaft (as it hooks yarn)
             V = -V
-        dip = 0.5 - 0.5 * math.cos(float(self._at(self.phase, k)))
-        tip = self._at(self.P, k) + U * (away + 1.4 - 2.2 * dip) + V * 0.6 * dip
+        loops = 1
+        if self.per_stitch:
+            u = float(self._at(self.st, k)) % 1.0
+            O = _unit(self._at(self.O, k))
+            top = self._at(self.P, k)
+            ins = self._at(self.B, k) - O * 1.0 * self.sc          # through the stitch below, to the inside
+            rest = top + O * 0.9 * self.sc
+            keys = [(0.00, rest, 0.0, 1), (0.22, ins, 0.0, 1), (0.34, ins, 180.0, 1), (0.52, rest + U * 1.2, 180.0, 2),
+                    (0.64, rest + U * 1.2, 0.0, 2), (0.76, rest + U * 1.2, 180.0, 2), (0.92, rest, 0.0, 1),
+                    (1.00, rest, 0.0, 1)]
+            for (u0, p0, r0, l0), (u1, p1, r1, l1) in zip(keys[:-1], keys[1:]):
+                if u0 <= u <= u1:
+                    e = _smoothstep((u - u0) / (u1 - u0))
+                    base_pt = p0 * (1 - e) + p1 * e
+                    roll = math.radians(r0 * (1 - e) + r1 * e)
+                    loops = l0 if e < 0.5 else l1
+                    break
+            V = V * math.cos(roll) + np.cross(U, V) * math.sin(roll)
+            tip = base_pt + U * away
+        else:
+            dip = 0.5 - 0.5 * math.cos(float(self._at(self.phase, k)))
+            tip = self._at(self.P, k) + U * (away + 1.4 - 2.2 * dip) + V * 0.6 * dip
         rows = []
         metal, grip = self.pal0, self.pal0 + 1
 
@@ -160,6 +193,14 @@ class HookRig:
         # the working strand: from the stitch on the hook round the throat, along under the shaft and away
         col = int(self.cols[int(np.clip(round(k), 0, len(self.cols) - 1))])
         ry = 0.5 * self.g.d * 0.9
+        if self.per_stitch:              # the loops sitting on the shaft (1, or 2 after pulling up)
+            W2 = _unit(np.cross(U, V))
+            rr = 1.5 * sc + 0.75 * ry
+            for j in range(loops):
+                c0 = tip + U * (6.5 + 2.6 * j) * sc
+                ring = [c0 + rr * (V * math.cos(a) + W2 * math.sin(a)) for a in np.linspace(0, 2 * math.pi, 9)]
+                for a_, b_ in zip(ring[:-1], ring[1:]):
+                    rows.append([*a_, *b_, 0.8 * ry, col, 6])
         # it leaves the shaft after a few millimetres and rises to the left, to the other hand (off the frame)
         W = _unit(0.85 * self._at(self.up, k) - 0.45 * self._at(self.right, k) + 0.25 * U)
         p0, p1 = tip + (U * 3.2 - V * 0.9) * sc, tip + (U * 4.5 - V * 2.6) * sc
