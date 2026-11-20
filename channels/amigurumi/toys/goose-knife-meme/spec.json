@@ -1,0 +1,335 @@
+{
+ "name": "goose_knife_meme",
+ "title": "Goose with Attitude",
+ "title_ru": "Гусь с характером",
+ "subject": "goose",
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ },
+ "colours": {
+  "white": "#fbf8f2",
+  "orange": "#f7902e",
+  "pink": "#f48fb1",
+  "rose": "#ffb3c1",
+  "grey": "#b4b7be",
+  "dark grey": "#4a4c52",
+  "black": "#151313"
+ },
+ "colour_names_ru": {
+  "white": "белый",
+  "orange": "оранжевый",
+  "pink": "розовый",
+  "rose": "светло-розовый",
+  "grey": "серый",
+  "dark grey": "тёмно-серый"
+ },
+ "parts": [
+  {
+   "id": "body",
+   "name_ru": "тельце",
+   "name_en": "body",
+   "rounds": [
+    "mr 6",
+    "9",
+    "12",
+    "15",
+    "18",
+    "24",
+    "30",
+    "36",
+    "42",
+    "48",
+    "54",
+    "even 10",
+    "dec 6 to 42 every 2",
+    "dec 6 to 6"
+   ],
+   "colour": "white",
+   "stuff": "firm",
+   "flatten": 0.12
+  },
+  {
+   "id": "neck",
+   "name_ru": "голова с шеей",
+   "name_en": "head and neck",
+   "rounds": [
+    "mr 6",
+    "12",
+    "18",
+    "24",
+    "30",
+    "inc 6 to 42 every 2",
+    "even 2",
+    "36",
+    "36",
+    "30",
+    "24",
+    "even 9",
+    "27"
+   ],
+   "colour": "white",
+   "end": "open",
+   "stuff": "firm",
+   "bend": {
+    "deg": 50,
+    "at": 15,
+    "over": 3,
+    "toward": [
+     0,
+     0.2,
+     1
+    ]
+   }
+  },
+  {
+   "id": "beak",
+   "name_ru": "клюв",
+   "name_en": "beak",
+   "rounds": [
+    "mr 4",
+    "6",
+    "8",
+    "10",
+    "even 1",
+    "12"
+   ],
+   "colour": "orange",
+   "end": "open",
+   "stuff": "light"
+  },
+  {
+   "id": "wing",
+   "name_ru": "крыло",
+   "name_en": "wing",
+   "rounds": [
+    "mr 6",
+    "10",
+    "14",
+    "18",
+    "even 4",
+    "16",
+    "14"
+   ],
+   "colour": "white",
+   "end": "open",
+   "stuff": "light",
+   "flatten": 0.55
+  },
+  {
+   "id": "foot",
+   "name_ru": "лапка",
+   "name_en": "foot",
+   "rounds": [
+    "mr 6",
+    "10",
+    "14",
+    "even 3",
+    "12"
+   ],
+   "colour": "orange",
+   "end": "open",
+   "stuff": "none",
+   "flatten": 0.85
+  },
+  {
+   "id": "tail",
+   "name_ru": "хвостик",
+   "name_en": "tail",
+   "rounds": [
+    "mr 4",
+    "6",
+    "8",
+    "10",
+    "even 1"
+   ],
+   "colour": "white",
+   "end": "open",
+   "stuff": "light",
+   "flatten": 0.5
+  },
+  {
+   "id": "dagger",
+   "name_ru": "игрушечный кинжал",
+   "name_en": "toy dagger",
+   "rounds": [
+    "mr 4",
+    "6",
+    "even 4",
+    "12",
+    "8",
+    "even 7",
+    "6",
+    "4"
+   ],
+   "colour": "grey",
+   "end": "closed",
+   "stuff": "light",
+   "flatten": 0.8,
+   "colours": [
+    {
+     "rounds": [
+      1,
+      7
+     ],
+     "colour": "dark grey"
+    }
+   ]
+  }
+ ],
+ "assembly": [
+  {
+   "part": "body",
+   "axis": [
+    0,
+    -0.15,
+    1
+   ]
+  },
+  {
+   "part": "neck",
+   "on": "body",
+   "at": {
+    "round": 24,
+    "az": 0
+   },
+   "dir": [
+    0,
+    1,
+    -0.3
+   ],
+   "sink": 5
+  },
+  {
+   "part": "beak",
+   "on": "neck",
+   "at": {
+    "round": 11,
+    "az": 0
+   },
+   "dir": [
+    0,
+    -0.15,
+    1
+   ],
+   "sink": 1
+  },
+  {
+   "part": "wing",
+   "on": "body",
+   "at": {
+    "round": 16,
+    "az": 70
+   },
+   "dir": [
+    0.45,
+    0.0,
+    -1
+   ],
+   "mirror": true,
+   "seam": "flat",
+   "front": [
+    1,
+    0,
+    0
+   ]
+  },
+  {
+   "part": "tail",
+   "on": "body",
+   "at": {
+    "round": 4,
+    "az": 0
+   },
+   "dir": [
+    0,
+    1,
+    -0.7
+   ],
+   "front": [
+    1,
+    0,
+    0
+   ],
+   "seam": "flat",
+   "seam_line": [
+    0,
+    0.5,
+    0.85
+   ]
+  },
+  {
+   "part": "foot",
+   "on": "body",
+   "at": {
+    "round": 25,
+    "az": 165
+   },
+   "dir": [
+    0.3,
+    -0.15,
+    1
+   ],
+   "mirror": true
+  },
+  {
+   "part": "dagger",
+   "on": "body",
+   "at": {
+    "round": 22,
+    "az": -78
+   },
+   "attach": "start",
+   "dir": [
+    -0.2,
+    1,
+    0.25
+   ],
+   "front": [
+    0,
+    0,
+    1
+   ],
+   "sink": 2
+  }
+ ],
+ "face": [
+  {
+   "type": "safety_eye",
+   "on": "neck",
+   "at": {
+    "round": 9,
+    "az": 38
+   },
+   "size_mm": 8,
+   "mirror": true,
+   "highlight": true,
+   "id": "eye"
+  },
+  {
+   "type": "stitch",
+   "on": "neck",
+   "points": [
+    [
+     6.3,
+     52
+    ],
+    [
+     6.9,
+     40
+    ],
+    [
+     7.7,
+     27
+    ]
+   ],
+   "colour": "black",
+   "thickness_mm": 2.2,
+   "mirror": true,
+   "id": "brow"
+  }
+ ]
+}

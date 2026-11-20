@@ -1,0 +1,562 @@
+{
+ "name": "reindeer_sweater",
+ "title": "Reindeer in a Sweater",
+ "title_ru": "Олень в смешном свитере",
+ "subject": "reindeer",
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ },
+ "colours": {
+  "brown": "#a96b3f",
+  "cream": "#f3e6d0",
+  "green": "#2f7d4f",
+  "white": "#fbf8f2",
+  "red": "#d92b2b",
+  "beige": "#e6cfa0",
+  "black": "#171314",
+  "pink": "#f08aa0",
+  "dark brown": "#6b3f26"
+ },
+ "colour_names_ru": {
+  "brown": "коричневый",
+  "cream": "кремовый",
+  "green": "зелёный",
+  "white": "белый",
+  "red": "красный",
+  "beige": "бежевый (рога)",
+  "black": "чёрный",
+  "pink": "розовый",
+  "dark brown": "тёмно-коричневый"
+ },
+ "parts": [
+  {
+   "id": "body",
+   "name_ru": "тельце",
+   "name_en": "body",
+   "rounds": [
+    "mr 6",
+    "inc 6 to 54",
+    "even 5",
+    "48",
+    "even 2",
+    "45",
+    "even 1"
+   ],
+   "colour": "green",
+   "end": "open",
+   "stuff": "firm",
+   "colours": [
+    {
+     "rounds": [
+      1,
+      8
+     ],
+     "colour": "brown"
+    },
+    {
+     "rounds": [
+      9,
+      9
+     ],
+     "colour": "red"
+    },
+    {
+     "rounds": [
+      16,
+      16
+     ],
+     "colour": "red"
+    }
+   ]
+  },
+  {
+   "id": "hem",
+   "name_ru": "резинка по низу свитера",
+   "name_en": "sweater hem",
+   "rounds": [
+    "ring 54",
+    "rib 54 x1"
+   ],
+   "colour": "cream",
+   "end": "open",
+   "stuff": "none"
+  },
+  {
+   "id": "collar",
+   "name_ru": "воротник свитера",
+   "name_en": "sweater collar",
+   "rounds": [
+    "ring 48",
+    "rib 48 x1"
+   ],
+   "colour": "cream",
+   "end": "open",
+   "stuff": "none"
+  },
+  {
+   "id": "head",
+   "name_ru": "голова",
+   "name_en": "head",
+   "rounds": [
+    "mr 6",
+    "inc 6 to 48",
+    "inc 6 to 54 every 2",
+    "even 7",
+    "dec 6 to 42 every 2",
+    "dec 6 to 6"
+   ],
+   "colour": "brown",
+   "stuff": "firm"
+  },
+  {
+   "id": "arm",
+   "name_ru": "ножка-ручка в рукаве",
+   "name_en": "arm with sleeve",
+   "rounds": [
+    "mr 6",
+    "12",
+    "even 2",
+    "rib 12 x1",
+    "10",
+    "even 4",
+    "9"
+   ],
+   "colour": "green",
+   "end": "open",
+   "stuff": "light",
+   "colours": [
+    {
+     "rounds": [
+      1,
+      3
+     ],
+     "colour": "brown"
+    },
+    {
+     "rounds": [
+      4,
+      6
+     ],
+     "colour": "green"
+    },
+    {
+     "rounds": [
+      7,
+      7
+     ],
+     "colour": "cream"
+    }
+   ]
+  },
+  {
+   "id": "leg",
+   "name_ru": "ножка",
+   "name_en": "leg",
+   "rounds": [
+    "mr 6",
+    "inc 6 to 24",
+    "even 4",
+    "21",
+    "18",
+    "even 1"
+   ],
+   "colour": "brown",
+   "end": "open",
+   "stuff": "firm",
+   "colours": [
+    {
+     "rounds": [
+      1,
+      2
+     ],
+     "colour": "dark brown"
+    }
+   ]
+  },
+  {
+   "id": "star",
+   "name_ru": "звёздочка",
+   "name_en": "star",
+   "colour": "white",
+   "motif": {
+    "kind": "star",
+    "points": 6,
+    "length": 3.5
+   }
+  },
+  {
+   "id": "ear",
+   "name_ru": "Ушко",
+   "name_en": "ear",
+   "rounds": [
+    "mr 6",
+    "9",
+    "12",
+    "15",
+    "even 4",
+    "12",
+    "9"
+   ],
+   "colour": "brown",
+   "end": "open",
+   "stuff": "light",
+   "spoon": 0.55,
+   "colours": [
+    {
+     "inner": true,
+     "colour": "cream"
+    }
+   ]
+  },
+  {
+   "id": "muzzle",
+   "name_ru": "светлая мордочка",
+   "name_en": "muzzle patch",
+   "rounds": [
+    "mr 6",
+    "12",
+    "18",
+    "24"
+   ],
+   "colour": "cream",
+   "end": "open",
+   "stuff": "none"
+  },
+  {
+   "id": "nose",
+   "name_ru": "красный нос",
+   "name_en": "red nose",
+   "rounds": [
+    "mr 6",
+    "12",
+    "even 2",
+    "6"
+   ],
+   "colour": "red",
+   "end": "closed",
+   "stuff": "firm"
+  },
+  {
+   "id": "antler",
+   "name_ru": "рог",
+   "name_en": "antler",
+   "rounds": [
+    "mr 6",
+    "7",
+    "8",
+    "even 10",
+    "7"
+   ],
+   "colour": "beige",
+   "end": "open",
+   "stuff": "light",
+   "bend": {
+    "deg": 30,
+    "at": 9,
+    "over": 3,
+    "toward": [
+     0.4,
+     0.2,
+     0
+    ]
+   }
+  },
+  {
+   "id": "tine",
+   "name_ru": "отросток рога",
+   "name_en": "antler tine",
+   "rounds": [
+    "mr 5",
+    "6",
+    "even 4",
+    "5"
+   ],
+   "colour": "beige",
+   "end": "open",
+   "stuff": "light"
+  },
+  {
+   "id": "cheek",
+   "name_ru": "щёчка",
+   "name_en": "cheek",
+   "rounds": [
+    "mr 6",
+    "12"
+   ],
+   "colour": "pink",
+   "end": "open",
+   "stuff": "none"
+  }
+ ],
+ "assembly": [
+  {
+   "part": "body",
+   "axis": [
+    0,
+    1,
+    0
+   ]
+  },
+  {
+   "part": "hem",
+   "on": "body",
+   "at": {
+    "round": 9
+   },
+   "around": true,
+   "dir": [
+    0,
+    -1,
+    0
+   ]
+  },
+  {
+   "part": "head",
+   "on": "body",
+   "at": {
+    "round": "end"
+   },
+   "attach": "end",
+   "dir": [
+    0,
+    1,
+    0
+   ],
+   "sink": 0,
+   "sink_dir": "axis"
+  },
+  {
+   "part": "collar",
+   "on": "body",
+   "at": {
+    "round": 17
+   },
+   "around": true,
+   "dir": [
+    0,
+    1,
+    0
+   ]
+  },
+  {
+   "part": "star",
+   "on": "body",
+   "at": {
+    "round": 13.2,
+    "az": 0
+   },
+   "applique": true,
+   "lift": 1.2,
+   "pad": 2.5
+  },
+  {
+   "part": "arm",
+   "on": "body",
+   "at": {
+    "round": 16,
+    "az": 66
+   },
+   "dir": [
+    0.2,
+    -1,
+    0.45
+   ],
+   "mirror": true,
+   "avoid": true,
+   "contact": 0.6,
+   "seam": "flat"
+  },
+  {
+   "part": "leg",
+   "on": "body",
+   "at": {
+    "round": 5,
+    "az": 38
+   },
+   "dir": [
+    0.35,
+    0.05,
+    1
+   ],
+   "mirror": true
+  },
+  {
+   "part": "muzzle",
+   "on": "head",
+   "at": {
+    "round": 18,
+    "az": 0
+   },
+   "applique": true,
+   "pad": 2,
+   "lift": 0.6
+  },
+  {
+   "part": "nose",
+   "on": "head",
+   "at": {
+    "round": 18.6,
+    "az": 0
+   },
+   "dir": [
+    0,
+    -0.05,
+    1
+   ],
+   "sink": 2
+  },
+  {
+   "part": "ear",
+   "on": "head",
+   "at": {
+    "round": 9,
+    "az": 84
+   },
+   "dir": [
+    1,
+    0.15,
+    -0.1
+   ],
+   "mirror": true,
+   "front": [
+    0.2,
+    0.2,
+    1
+   ]
+  },
+  {
+   "part": "antler",
+   "on": "head",
+   "at": {
+    "round": 4.5,
+    "az": 38
+   },
+   "dir": [
+    0.5,
+    1,
+    -0.1
+   ],
+   "mirror": true,
+   "sink": 2
+  },
+  {
+   "part": "tine",
+   "name": "tine_a",
+   "on": "antler",
+   "at": {
+    "round": 6,
+    "az": 0
+   },
+   "dir": [
+    -0.3,
+    1,
+    0.2
+   ],
+   "mirror": true,
+   "sink": 1
+  },
+  {
+   "part": "tine",
+   "name": "tine_b",
+   "on": "antler",
+   "at": {
+    "round": 11,
+    "az": 0
+   },
+   "dir": [
+    0.9,
+    0.8,
+    0.2
+   ],
+   "mirror": true,
+   "sink": 1
+  },
+  {
+   "part": "cheek",
+   "on": "head",
+   "at": {
+    "round": 18,
+    "az": 58
+   },
+   "applique": true,
+   "mirror": true,
+   "lift": 0.6
+  }
+ ],
+ "face": [
+  {
+   "type": "satin",
+   "on": "head",
+   "at": {
+    "round": 14,
+    "az": 27
+   },
+   "width_mm": 9,
+   "height_mm": 10.5,
+   "shape": "oval",
+   "colour": "black",
+   "thickness_mm": 1.5,
+   "mirror": true,
+   "id": "eye"
+  },
+  {
+   "type": "satin",
+   "on": "head",
+   "at": {
+    "round": 13.4,
+    "az": 25
+   },
+   "width_mm": 3.2,
+   "height_mm": 3.6,
+   "shape": "oval",
+   "colour": "white",
+   "thickness_mm": 1.0,
+   "lift_mm": 0.8,
+   "mirror": true,
+   "id": "glint"
+  },
+  {
+   "type": "stitch",
+   "on": "head",
+   "points": [
+    [
+     19.6,
+     0
+    ],
+    [
+     20.3,
+     0
+    ]
+   ],
+   "colour": "black",
+   "thickness_mm": 1.0,
+   "id": "line"
+  },
+  {
+   "type": "stitch",
+   "on": "head",
+   "points": [
+    [
+     20.3,
+     0
+    ],
+    [
+     20.9,
+     9
+    ],
+    [
+     20.6,
+     17
+    ]
+   ],
+   "colour": "black",
+   "thickness_mm": 1.1,
+   "mirror": true,
+   "id": "smile"
+  }
+ ]
+}

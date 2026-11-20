@@ -1,0 +1,318 @@
+{
+ "name": "frog_crying_tears",
+ "title": "Crying Frog",
+ "title_ru": "Плачущая лягушка",
+ "subject": "frog",
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ },
+ "colours": {
+  "lime": "#9bd24a",
+  "pale yellow": "#f3f6c0",
+  "blue": "#5fb7ee",
+  "light blue": "#a9dcf7",
+  "dark green": "#2f5a2a",
+  "pink": "#ff9eb0",
+  "black": "#1b1616",
+  "white": "#ffffff"
+ },
+ "colour_names_ru": {
+  "lime": "салатовый",
+  "pale yellow": "светло-жёлтый",
+  "blue": "синий",
+  "light blue": "голубой",
+  "dark green": "тёмно-зелёный",
+  "pink": "розовый"
+ },
+ "parts": [
+  {
+   "id": "body",
+   "name_ru": "туловище",
+   "name_en": "body",
+   "rounds": [
+    "mr 6",
+    "inc 6 to 48",
+    "inc 6 to 60 every 2",
+    "even 7",
+    "dec 6 to 48 every 2",
+    "dec 6 to 6"
+   ],
+   "colour": "lime",
+   "stuff": "firm",
+   "flatten": 0.2,
+   "colours": [
+    {
+     "ellipse": {
+      "center": [
+       9,
+       0
+      ],
+      "radii": [
+       6,
+       48
+      ]
+     },
+     "colour": "pale yellow"
+    }
+   ]
+  },
+  {
+   "id": "eyebump",
+   "name_ru": "глазной бугорок",
+   "name_en": "eye bump",
+   "rounds": [
+    "mr 6",
+    "12",
+    "18",
+    "21",
+    "even 3",
+    "15",
+    "9"
+   ],
+   "colour": "lime",
+   "stuff": "firm"
+  },
+  {
+   "id": "arm",
+   "name_ru": "лапка",
+   "name_en": "arm",
+   "rounds": [
+    "mr 6",
+    "9",
+    "even 4",
+    "8"
+   ],
+   "colour": "lime",
+   "end": "open",
+   "stuff": "light"
+  },
+  {
+   "id": "foot",
+   "name_ru": "стопа",
+   "name_en": "foot",
+   "rounds": [
+    "mr 6",
+    "12",
+    "16",
+    "even 2",
+    "12"
+   ],
+   "colour": "lime",
+   "end": "open",
+   "stuff": "medium"
+  },
+  {
+   "id": "drop",
+   "name_ru": "капля",
+   "name_en": "tear drop",
+   "rounds": [
+    "mr 5",
+    "8",
+    "even 2",
+    "dec 4 to 4"
+   ],
+   "colour": "light blue",
+   "end": "closed",
+   "stuff": "medium",
+   "flatten": 0.2
+  },
+  {
+   "id": "cheek",
+   "name_ru": "щека",
+   "name_en": "cheek",
+   "rounds": [
+    "mr 6",
+    "12"
+   ],
+   "colour": "pink",
+   "end": "open",
+   "stuff": "none"
+  }
+ ],
+ "assembly": [
+  {
+   "part": "body",
+   "axis": [
+    0,
+    1,
+    0
+   ]
+  },
+  {
+   "part": "eyebump",
+   "on": "body",
+   "at": {
+    "round": 23,
+    "az": 36
+   },
+   "attach": "end",
+   "dir": [
+    0.4,
+    0.85,
+    0.55
+   ],
+   "mirror": true,
+   "sink": 7
+  },
+  {
+   "part": "arm",
+   "on": "body",
+   "at": {
+    "round": 15,
+    "az": 62
+   },
+   "dir": [
+    -0.5,
+    0.55,
+    1
+   ],
+   "mirror": true,
+   "seam": "flat"
+  },
+  {
+   "part": "foot",
+   "on": "body",
+   "at": {
+    "round": 3,
+    "az": 32
+   },
+   "dir": [
+    0.3,
+    -0.35,
+    1
+   ],
+   "mirror": true
+  },
+  {
+   "part": "drop",
+   "on": "body",
+   "at": {
+    "round": 3,
+    "az": 68
+   },
+   "attach": "start",
+   "dir": [
+    1,
+    -0.1,
+    0.5
+   ],
+   "sink": 3,
+   "mirror": true
+  },
+  {
+   "part": "cheek",
+   "on": "body",
+   "at": {
+    "round": 20,
+    "az": 44
+   },
+   "applique": true,
+   "mirror": true,
+   "lift": 1.0
+  }
+ ],
+ "face": [
+  {
+   "type": "safety_eye",
+   "on": "eyebump",
+   "at": {
+    "round": 4.5,
+    "az": 0
+   },
+   "size_mm": 15,
+   "mirror": true,
+   "highlight": true,
+   "id": "eye"
+  },
+  {
+   "type": "felt",
+   "on": "eyebump",
+   "at": {
+    "round": 4.6,
+    "az": 0
+   },
+   "size_mm": [
+    21,
+    21
+   ],
+   "colour": "white",
+   "mirror": true,
+   "id": "wet"
+  },
+  {
+   "type": "stitch",
+   "on": "body",
+   "points": [
+    [
+     21.5,
+     31
+    ],
+    [
+     19.5,
+     33
+    ],
+    [
+     17.5,
+     35
+    ],
+    [
+     16,
+     36
+    ]
+   ],
+   "colour": "blue",
+   "thickness_mm": 4,
+   "mirror": true,
+   "id": "stream"
+  },
+  {
+   "type": "satin",
+   "on": "body",
+   "at": {
+    "round": 14.8,
+    "az": 36
+   },
+   "width_mm": 6,
+   "height_mm": 8,
+   "shape": "oval",
+   "colour": "light blue",
+   "thickness_mm": 1.4,
+   "mirror": true,
+   "lift_mm": 0.5,
+   "id": "dropdot"
+  },
+  {
+   "type": "stitch",
+   "on": "body",
+   "points": [
+    [
+     17.6,
+     -22
+    ],
+    [
+     18.6,
+     -11
+    ],
+    [
+     19.2,
+     0
+    ],
+    [
+     18.6,
+     11
+    ],
+    [
+     17.6,
+     22
+    ]
+   ],
+   "colour": "dark green",
+   "thickness_mm": 1.6,
+   "id": "mouth"
+  }
+ ]
+}
