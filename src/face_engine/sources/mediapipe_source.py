@@ -15,7 +15,7 @@ from typing import Any, Iterator
 import numpy as np
 
 from face_engine.observations import FrameObservation, Hand, MediaInfo
-from face_engine.topology import MEDIAPIPE_BODY_IDS, MEDIAPIPE_FACE_IDS
+from face_engine.topology import BODY_INDEX, MEDIAPIPE_BODY_IDS, MEDIAPIPE_FACE_IDS
 
 _BASE = "https://storage.googleapis.com/mediapipe-models"
 MODEL_URLS = {
@@ -23,6 +23,9 @@ MODEL_URLS = {
     "pose_landmarker.task": f"{_BASE}/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task",
     "hand_landmarker.task": f"{_BASE}/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
 }
+_FACE_IDS = np.array(MEDIAPIPE_FACE_IDS)
+_BODY_IDS = list(MEDIAPIPE_BODY_IDS)
+_WRIST_ROWS = [BODY_INDEX["l_wrist"], BODY_INDEX["r_wrist"]]
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
 
 
@@ -117,26 +120,32 @@ class MediaPipeSource:
 
         def detect(key: str) -> Any:
             det = detectors[key]
-            return det.detect_for_video(image, int(round(time_s * 1000))) if video else det.detect(image)
+            return (
+                det.detect_for_video(image, int(round(time_s * 1000)))
+                if video
+                else det.detect(image)
+            )
 
         obs = FrameObservation(index=index, time_s=time_s)
         if "face" in detectors:
             res = detect("face")
             if res.face_landmarks:
-                mesh = _array(res.face_landmarks[0])
-                face = np.full((len(MEDIAPIPE_FACE_IDS), 3), np.nan)
-                ids = np.array(MEDIAPIPE_FACE_IDS)
-                ok = ids < len(mesh)  # iris points exist only in the 478-point mesh
-                face[ok] = _to_internal(mesh[ids[ok]], w, h)
+                mesh = res.face_landmarks[0]
+                ok = _FACE_IDS < len(mesh)  # iris points exist only in the 478-point mesh
+                face = np.full((len(_FACE_IDS), 3), np.nan)
+                face[ok] = _to_internal(_array([mesh[i] for i in _FACE_IDS[ok]]), w, h)
                 obs.face = face
         if "pose" in detectors:
             res = detect("pose")
             if res.pose_landmarks:
                 lms = res.pose_landmarks[0]
-                ids = list(MEDIAPIPE_BODY_IDS)
-                obs.body = _to_internal(_array([lms[i] for i in ids]), w, h)
-                obs.body_visibility = np.array([lms[i].visibility or 0.0 for i in ids])
-        if "hand" in detectors:
+                obs.body = _to_internal(_array([lms[i] for i in _BODY_IDS]), w, h)
+                obs.body_visibility = np.array([lms[i].visibility or 0.0 for i in _BODY_IDS])
+        # The hand model is costly; skip it when pose sees no wrist at all.
+        wrists_seen = (
+            obs.body_visibility is not None and obs.body_visibility[_WRIST_ROWS].max() >= 0.3
+        )
+        if "hand" in detectors and (wrists_seen or "pose" not in detectors):
             res = detect("hand")
             # Side is assigned later from the pose wrists, which is more reliable
             # than MediaPipe's handedness label (it assumes a mirrored selfie image).

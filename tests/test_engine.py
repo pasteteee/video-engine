@@ -19,8 +19,9 @@ def clip(n=int(12 * FPS)):
         t = i / FPS
         if 6 <= t < 6.5:
             return None
-        return synthetic_face({"smile": 1.0, "cheek_raise": 1.0} if 2 <= t < 3 else {},
-                              rng=rng, noise_px=0.2)
+        return synthetic_face(
+            {"smile": 1.0, "cheek_raise": 1.0} if 2 <= t < 3 else {}, rng=rng, noise_px=0.2
+        )
 
     def body(i):
         return synthetic_body("crossed" if 7 <= i / FPS < 9 else "rest")
@@ -32,7 +33,15 @@ def test_report_structure_and_json_safety(media):
     report = Engine().run(clip(), media, frames_fps=5)
     text = json.dumps(report, allow_nan=False)  # NaN must never reach the file
     assert "disclaimer" in report and "lie" not in " ".join(report["summary"]["highlights"])
-    assert set(report) >= {"meta", "glossary", "baseline", "summary", "segments", "events", "frames"}
+    assert set(report) >= {
+        "meta",
+        "glossary",
+        "baseline",
+        "summary",
+        "segments",
+        "events",
+        "frames",
+    }
     assert report["meta"]["frames"] == 360 and report["meta"]["duration_s"] == 12.0
     assert len(report["segments"]) == 3
     assert len(report["frames"]) == 60
@@ -44,6 +53,7 @@ def test_report_structure_and_json_safety(media):
     times = [e["start_s"] for e in report["events"]]
     assert times == sorted(times)
     assert {e["source"] for e in report["events"]} == {"face", "body"}
+    assert all("_span" not in e and e["frame_start"] <= e["frame_end"] for e in report["events"])
     assert len(text) < 400_000
 
 
@@ -55,8 +65,9 @@ def test_notable_segments_are_contrasted_with_clip(media):
 
 
 def test_single_photo_report():
-    frames = synthetic_clip(1, 1.0, lambda i: synthetic_face({"smile": 1.0}),
-                            lambda i: synthetic_body("open"))
+    frames = synthetic_clip(
+        1, 1.0, lambda i: synthetic_face({"smile": 1.0}), lambda i: synthetic_body("open")
+    )
     media = MediaInfo("photo.jpg", "image", 1.0, 800, 600, "synthetic")
     report = Engine().run(frames, media)
     json.dumps(report, allow_nan=False)
@@ -77,15 +88,22 @@ def test_custom_analyzer_can_replace_builtin(media):
         name = "other"
 
         def analyze(self, frames, fps, neutral=()):
-            return AnalyzerResult({"other.x": np.ones(len(frames))}, {"method": "none"},
-                                  [{"type": "ping", "start_s": 0.0, "end_s": 0.1}], {"other.x": "1"})
+            return AnalyzerResult(
+                {"other.x": np.ones(len(frames))},
+                {"method": "none"},
+                [{"type": "ping", "start_s": 0.0, "end_s": 0.1}],
+                {"other.x": "1"},
+            )
 
         def summarize(self, result, sl, fps):
             return {"n": int(result.features["other.x"][sl].sum())}
 
     report = Engine(analyzers=[Constant()]).run(clip(60), media)
     assert report["summary"]["other"] == {"n": 60}
-    assert report["events"][0]["source"] == "other"
+    ev = report["events"][0]
+    assert ev["source"] == "other"
+    # Plug-in events without a frame span get one from their times.
+    assert (ev["frame_start"], ev["frame_end"]) == (0, 2)
 
 
 def test_landmarks_roundtrip(tmp_path, media):
@@ -140,7 +158,8 @@ def test_cli_neutral_loader_follows_its_own_file_type(tmp_path, media, monkeypat
 def test_segment_event_counts_use_same_rounding(media):
     fps = 29.97
     frames = synthetic_clip(
-        int(10 * fps), fps,
+        int(10 * fps),
+        fps,
         lambda i: synthetic_face({"blink": 1.0} if 150 <= i < 153 else {}),
     )
     m = MediaInfo("x", "video", fps, 1280, 720, "synthetic")

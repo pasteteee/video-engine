@@ -60,6 +60,34 @@ def rnd(value: Any, digits: int = 3) -> Any:
     return None if np.isnan(value) else round(value, digits) + 0.0  # + 0.0 drops "-0.0"
 
 
+def clip01(x: np.ndarray) -> np.ndarray:
+    return np.clip(x, 0.0, 1.0)
+
+
+def nanmax(*xs: np.ndarray) -> np.ndarray:
+    """Element-wise max ignoring NaN (NaN only where all inputs are NaN)."""
+    return np.fmax.reduce(np.stack(xs))
+
+
+def nanmin(*xs: np.ndarray) -> np.ndarray:
+    return np.fmin.reduce(np.stack(xs))
+
+
+def nanmedian(x: np.ndarray) -> float:
+    """Median ignoring NaN; NaN (without a warning) when nothing is valid."""
+    x = np.asarray(x, dtype=float)
+    x = x[~np.isnan(x)]
+    return float(np.median(x)) if len(x) else float("nan")
+
+
+def mask_absent(features: Table, present: np.ndarray, keep: str) -> Table:
+    """Set every feature except ``keep`` to NaN on frames where nothing was detected."""
+    for k, v in features.items():
+        if k != keep:
+            v[~present] = np.nan
+    return features
+
+
 def nanstat(fn, x: np.ndarray) -> float | None:
     x = x[~np.isnan(x)]
     return rnd(fn(x)) if len(x) else None

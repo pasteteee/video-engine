@@ -134,6 +134,9 @@ def make_event(
             event["peak"] = round(float(signal[peak]), 3)
             event["peak_s"] = round(float(times[peak]), 3)
     event.update(extra)
+    # Frame range in the analysed sequence. Internal: the engine replaces it with
+    # video frame numbers (frame_start / frame_end) when writing the report.
+    event["_span"] = (start, end)
     return event
 
 
@@ -154,12 +157,6 @@ def threshold_events(
     return [make_event(kind, s, times, fps, signal, **extra) for s in spans]
 
 
-def event_span(event: dict[str, Any], times: np.ndarray, fps: float) -> tuple[int, int]:
-    """Frame range ``[start, end)`` covered by an event built with :func:`make_event`.
-
-    Event times are rounded to milliseconds, so lookups use a half-frame tolerance.
-    """
-    half = 0.5 / fps
-    start = int(np.searchsorted(times, event["start_s"] - half))
-    end = int(np.searchsorted(times, event["end_s"] - half))
-    return start, max(end, start + 1)
+def event_span(event: dict[str, Any]) -> tuple[int, int]:
+    """Frame range ``[start, end)`` of an event built with :func:`make_event`."""
+    return event["_span"]

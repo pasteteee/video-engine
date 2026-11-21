@@ -125,7 +125,7 @@ def test_baseline_is_robust_when_expression_dominates_part_of_clip():
     clip = face_clip(lambda t: {"brow_raise": 1.0} if t < 2.5 else {}, noise_px=0.3)
     res = FaceAnalyzer().analyze(clip, FPS)
     assert np.nanmean(res.features["au.AU01"][: int(2 * FPS)]) > 0.8
-    assert np.nanmean(res.features["au.AU01"][int(3 * FPS):]) < 0.1
+    assert np.nanmean(res.features["au.AU01"][int(3 * FPS) :]) < 0.1
 
 
 def test_blinks_and_squints_are_separated():
@@ -168,9 +168,7 @@ def test_head_nod_and_shake_events():
 
 
 def test_missing_face_frames():
-    frames = synthetic_clip(
-        int(3 * FPS), FPS, lambda i: None if 30 <= i < 45 else synthetic_face()
-    )
+    frames = synthetic_clip(int(3 * FPS), FPS, lambda i: None if 30 <= i < 45 else synthetic_face())
     f = FaceAnalyzer().analyze(frames, FPS).features
     assert f["face.present"][35] == 0.0
     assert np.isnan(f["au.AU12"][35])

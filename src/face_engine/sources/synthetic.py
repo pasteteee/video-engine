@@ -12,11 +12,19 @@ from typing import Callable, Mapping
 import numpy as np
 
 from face_engine.geometry import rotation_from_angles
-from face_engine.topology import BODY_INDEX, BODY_POINTS, CANONICAL_FACE, FACE_INDEX, HAND_NUM_POINTS
+from face_engine.topology import (
+    BODY_INDEX,
+    BODY_POINTS,
+    CANONICAL_FACE,
+    FACE_INDEX,
+    HAND_NUM_POINTS,
+)
 from face_engine.observations import FrameObservation, Hand
 
 
-def _move(pts: np.ndarray, names: tuple[str, ...], delta: tuple[float, float, float], a: float) -> None:
+def _move(
+    pts: np.ndarray, names: tuple[str, ...], delta: tuple[float, float, float], a: float
+) -> None:
     for n in names:
         pts[FACE_INDEX[n]] += a * np.asarray(delta)
 
@@ -118,10 +126,15 @@ def random_identity(rng: np.random.Generator, scale: float = 0.03) -> np.ndarray
 
 # ----------------------------------------------------------------- body
 _REST_BODY = {
-    "nose": (0.0, 0.9), "l_ear": (0.25, 0.95), "r_ear": (-0.25, 0.95),
-    "mouth_l": (0.08, 0.8), "mouth_r": (-0.08, 0.8),
-    "l_shoulder": (0.5, 0.0), "r_shoulder": (-0.5, 0.0),
-    "l_hip": (0.35, -1.5), "r_hip": (-0.35, -1.5),
+    "nose": (0.0, 0.9),
+    "l_ear": (0.25, 0.95),
+    "r_ear": (-0.25, 0.95),
+    "mouth_l": (0.08, 0.8),
+    "mouth_r": (-0.08, 0.8),
+    "l_shoulder": (0.5, 0.0),
+    "r_shoulder": (-0.5, 0.0),
+    "l_hip": (0.35, -1.5),
+    "r_hip": (-0.35, -1.5),
 }
 
 POSTURES: dict[str, dict[str, tuple[float, float]]] = {

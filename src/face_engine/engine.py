@@ -60,13 +60,18 @@ class Engine:
         fps = media.fps
         results = {a.name: a.analyze(frames, fps, neutral) for a in self.analyzers}
         times = np.array([f.time_s for f in frames])
-        events = sorted(
-            ({"source": name, **e} for name, r in results.items() for e in r.events),
-            key=lambda e: (e["start_s"], e["type"]),
+        tagged = sorted(
+            (
+                _public_event(name, e, frames, times, fps)
+                for name, r in results.items()
+                for e in r.events
+            ),
+            key=lambda p: (p[1]["start_s"], p[1]["type"]),
         )
+        events = [e for _, e in tagged]
         whole = slice(0, len(frames))
-        summary = {name: a.summarize(results[name], whole, fps) for name, a in self._named()}
-        segments = self._segments(results, times, events, fps, summary)
+        summary = {a.name: a.summarize(results[a.name], whole, fps) for a in self.analyzers}
+        segments = self._segments(results, times, tagged, fps, summary)
         summary["event_counts"] = dict(Counter(e["type"] for e in events))
         summary["highlights"] = _highlights(summary, events, times[-1] - times[0] + 1 / fps)
 
@@ -91,31 +96,50 @@ class Engine:
             report["frames"] = _frames(results, frames, stride)
         return report
 
-    def _named(self):
-        return ((a.name, a) for a in self.analyzers)
-
     def _segments(
         self,
         results: dict[str, AnalyzerResult],
         times: np.ndarray,
-        events: list[dict[str, Any]],
+        tagged: list[tuple[int, dict[str, Any]]],
         fps: float,
         clip_summary: dict[str, Any],
     ) -> list[dict[str, Any]]:
         seg_len = max(1, int(round(self.config.segment_s * fps)))
+        counts = Counter((start // seg_len, e["type"]) for start, e in tagged)
         out = []
         for k, start in enumerate(range(0, len(times), seg_len)):
             sl = slice(start, min(start + seg_len, len(times)))
-            t0, t1 = float(times[sl.start]), float(times[sl.stop - 1]) + 1 / fps
-            seg: dict[str, Any] = {"index": k, "start_s": rnd(t0), "end_s": rnd(t1)}
-            for name, a in self._named():
-                seg[name] = a.summarize(results[name], sl, fps)
-            lo, hi = rnd(t0), rnd(t1)  # same rounding as event times
-            inside = [e for e in events if lo <= e["start_s"] < hi]
-            seg["event_counts"] = dict(Counter(e["type"] for e in inside))
+            t1 = float(times[sl.stop - 1]) + 1 / fps
+            seg: dict[str, Any] = {"index": k, "start_s": rnd(times[sl.start]), "end_s": rnd(t1)}
+            for a in self.analyzers:
+                seg[a.name] = a.summarize(results[a.name], sl, fps)
+            seg["event_counts"] = {t: n for (b, t), n in counts.items() if b == k}
             seg["notable_vs_clip"] = _contrast(seg, clip_summary)
             out.append(seg)
         return out
+
+
+def _public_event(
+    source: str,
+    event: dict[str, Any],
+    frames: Sequence[FrameObservation],
+    times: np.ndarray,
+    fps: float,
+) -> tuple[int, dict[str, Any]]:
+    """(first frame position, report form of the event with video frame numbers).
+
+    Built-in analyzers attach their frame span; for plug-in analyzers that only
+    give times, the span is looked up with a half-frame tolerance.
+    """
+    out = {"source": source, **event}
+    span = out.pop("_span", None)
+    if span is None:
+        half = 0.5 / fps
+        start = int(np.searchsorted(times, out["start_s"] - half))
+        span = (start, max(start + 1, int(np.searchsorted(times, out["end_s"] - half))))
+    start, end = span
+    out["frame_start"], out["frame_end"] = frames[start].index, frames[end - 1].index
+    return start, out
 
 
 def _contrast(seg: dict[str, Any], clip: dict[str, Any]) -> dict[str, Any]:
@@ -140,15 +164,13 @@ def _stride(fps: float, frames_fps: float | None) -> int:
 def _frames(
     results: dict[str, AnalyzerResult], frames: Sequence[FrameObservation], stride: int
 ) -> list[dict[str, Any]]:
-    cols = {k: v for r in results.values() for k, v in r.features.items()}
-    rows = []
-    for i in range(0, len(frames), stride):
-        row: dict[str, Any] = {"i": frames[i].index, "t": rnd(frames[i].time_s)}
-        for k, v in cols.items():
-            val = rnd(v[i])
-            if val is not None:
-                row[k] = val
-        rows.append(row)
+    rows: list[dict[str, Any]] = [{"i": f.index, "t": rnd(f.time_s)} for f in frames[::stride]]
+    for r in results.values():
+        for k, v in r.features.items():
+            col = np.round(v[::stride].astype(float), 3) + 0.0
+            for row, val, ok in zip(rows, col.tolist(), ~np.isnan(col)):
+                if ok:
+                    row[k] = val
     return rows
 
 
@@ -162,7 +184,9 @@ def _jsonable(x: Any) -> Any:
     return x
 
 
-def _highlights(summary: dict[str, Any], events: list[dict[str, Any]], duration: float) -> list[str]:
+def _highlights(
+    summary: dict[str, Any], events: list[dict[str, Any]], duration: float
+) -> list[str]:
     """Plain-English sentences an LLM can quote or build on."""
     out: list[str] = []
     face, body = summary.get("face", {}), summary.get("body", {})
@@ -176,7 +200,9 @@ def _highlights(summary: dict[str, Any], events: list[dict[str, Any]], duration:
         rate = face.get("blink_rate_per_min")
         if rate is not None and duration >= 10:
             note = "above" if rate > 26 else "below" if rate < 8 else "within"
-            out.append(f"Blink rate {rate:.1f}/min ({note} the usual conversational range of ~8-26/min).")
+            out.append(
+                f"Blink rate {rate:.1f}/min ({note} the usual conversational range of ~8-26/min)."
+            )
         smiles = by_type.get("smile", [])
         if smiles:
             duch = sum(e.get("duchenne", False) for e in smiles)

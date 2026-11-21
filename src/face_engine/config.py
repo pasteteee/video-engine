@@ -20,6 +20,7 @@ class FaceConfig:
     brow_gap_full: float = 0.07
     eye_widen_full_rel: float = 0.35  # relative to neutral eye opening
     lid_tighten_full_rel: float = 0.40
+    eye_open_scale: float = 0.04  # typical lid-opening change, used to rank calm frames
     lower_lid_raise_full: float = 0.03
     nose_wrinkle_full: float = 0.05
     upper_lip_raise_full: float = 0.06

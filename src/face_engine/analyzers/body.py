@@ -12,17 +12,38 @@ from typing import Any, Sequence
 import numpy as np
 
 from face_engine import temporal as T
-from face_engine.analyzers.base import AnalyzerResult, fraction, measurement_table, nanstat
+from face_engine.analyzers.base import (
+    AnalyzerResult,
+    clip01,
+    fraction,
+    mask_absent,
+    measurement_table,
+    nanmax,
+    nanmedian,
+    nanmin,
+    nanstat,
+)
 from face_engine.config import BodyConfig
-from face_engine.topology import BODY_INDEX, HAND_INDEX_MCP, HAND_PINKY_MCP, HAND_WRIST
+from face_engine.topology import BODY_INDEX, HAND_INDEX_MCP, HAND_PINKY_MCP, HAND_WRIST, SIDES
 from face_engine.observations import FrameObservation, Hand, Table
 
-SIDES = ("l", "r")
 _FACE_PARTS = ("nose", "mouth_l", "mouth_r", "l_ear", "r_ear")
 _KEYS = (
-    "sw_px", "shoulder_roll", "lateral_lean", "head_x", "head_y", "neck",
-    "wrist_x_l", "wrist_y_l", "wrist_x_r", "wrist_y_r",
-    "touch_face_l", "touch_face_r", "hands_dist", "palm_l", "palm_r",
+    "sw_px",
+    "shoulder_roll",
+    "lateral_lean",
+    "head_x",
+    "head_y",
+    "neck",
+    "wrist_x_l",
+    "wrist_y_l",
+    "wrist_x_r",
+    "wrist_y_r",
+    "touch_face_l",
+    "touch_face_r",
+    "hands_dist",
+    "palm_l",
+    "palm_r",
 )
 _NAN_ROW = {k: float("nan") for k in _KEYS}
 
@@ -52,7 +73,9 @@ def _assign_sides(hands: list[Hand], body: np.ndarray, visible: dict[str, bool])
             if not cands:
                 continue
             wrist = hand.points[HAND_WRIST, :2]
-            side = min(cands, key=lambda s: np.linalg.norm(body[BODY_INDEX[f"{s}_wrist"], :2] - wrist))
+            side = min(
+                cands, key=lambda s: np.linalg.norm(body[BODY_INDEX[f"{s}_wrist"], :2] - wrist)
+            )
         out.setdefault(side, hand)
     return out
 
@@ -139,10 +162,10 @@ class BodyAnalyzer:
             if table and (~np.isnan(table["sw_px"])).any():
                 span = np.abs(table["wrist_x_l"] - table["wrist_x_r"])
                 values = {**table, "arm_span": span}
-                meas = {k: _nanmedian(values[k]) for k in keys}
+                meas = {k: nanmedian(values[k]) for k in keys}
                 # Pixel size depends on resolution and zoom, so it always comes from
                 # the clip itself, even when a separate neutral recording is given.
-                meas["sw_px"] = _nanmedian(m["sw_px"])
+                meas["sw_px"] = nanmedian(m["sw_px"])
                 n = int((~np.isnan(table["sw_px"])).sum())
                 return {"method": method, "frames_used": n, "measurements": meas}
         return {"method": "none", "frames_used": 0, "measurements": {k: float("nan") for k in keys}}
@@ -156,17 +179,17 @@ class BodyAnalyzer:
 
         f["body.lean_in"] = s["sw_px"] / base["sw_px"] - 1.0
         f["body.shoulder_roll_rel"] = s["shoulder_roll"] - base["shoulder_roll"]
-        f["body.lateral_lean_rel"] = s["lateral_lean"] - _nan_to(base["lateral_lean"], 0.0)
-        f["body.shrug"] = np.clip(-(s["neck"] - base["neck"]) / c.shrug_full, 0.0, 1.0)
+        f["body.lateral_lean_rel"] = s["lateral_lean"] - np.nan_to_num(base["lateral_lean"])
+        f["body.shrug"] = clip01(-(s["neck"] - base["neck"]) / c.shrug_full)
 
         speeds = []
         for side in SIDES:
             x, y = s[f"wrist_x_{side}"], s[f"wrist_y_{side}"]
             f[f"body.hand_height_{side}"] = y
             speeds.append(np.hypot(T.derivative(x, fps), T.derivative(y, fps)))
-        speed = _nanmax(*speeds)
+        speed = nanmax(*speeds)
         f["body.gesture_speed"] = speed
-        f["body.gesture_activity"] = np.clip(speed / c.gesture_speed_full, 0.0, 1.0)
+        f["body.gesture_activity"] = clip01(speed / c.gesture_speed_full)
         f["body.gesturing"] = (np.nan_to_num(speed) > c.gesture_speed).astype(float)
         f["body.hands_visible"] = sum((~np.isnan(m[f"wrist_x_{sd}"])).astype(float) for sd in SIDES)
 
@@ -176,10 +199,12 @@ class BodyAnalyzer:
         f["body.arm_openness"] = span
         f["body.arm_openness_rel"] = span - base["arm_span"]
         with np.errstate(invalid="ignore"):
-            crossed = (lx < rx) & (ly < -0.2) & (ry < -0.2) & (np.abs(lx) < 1.0) & (np.abs(rx) < 1.0)
+            crossed = (
+                (lx < rx) & (ly < -0.2) & (ry < -0.2) & (np.abs(lx) < 1.0) & (np.abs(rx) < 1.0)
+            )
             joined = (s["hands_dist"] < c.hands_joined_dist) & ~crossed
-            touch = _nanmin(s["touch_face_l"], s["touch_face_r"]) < c.face_touch_dist
-            palm = _nanmax(s["palm_l"], s["palm_r"])
+            touch = nanmin(s["touch_face_l"], s["touch_face_r"]) < c.face_touch_dist
+            palm = nanmax(s["palm_l"], s["palm_r"])
         f["body.arms_crossed"] = crossed.astype(float)
         f["body.hands_joined"] = joined.astype(float)
         f["body.face_touch"] = touch.astype(float)
@@ -189,10 +214,7 @@ class BodyAnalyzer:
         shown = (np.nan_to_num(palm, nan=-1.0) > c.palm_facing) & ~crossed & ~joined
         f["body.open_palms"] = shown.astype(float)
 
-        for k, v in f.items():
-            if k != "body.present":
-                v[~present] = np.nan
-        return f
+        return mask_absent(f, present, keep="body.present")
 
     def _events(self, f: Table, times: np.ndarray, fps: float) -> list[dict[str, Any]]:
         c = self.cfg
@@ -209,8 +231,9 @@ class BodyAnalyzer:
             )
         for e in ev:
             if e["type"] == "gesture":
-                sl = slice(*T.event_span(e, times, fps))
-                e["peak_speed_sw_s"] = nanstat(np.max, f["body.gesture_speed"][sl])
+                e["peak_speed_sw_s"] = nanstat(
+                    np.max, f["body.gesture_speed"][slice(*T.event_span(e))]
+                )
         ev += T.threshold_events("shrug", f["body.shrug"], 0.5, times, fps)
         lean = f["body.lean_in"]
         pivots = T.zigzag(lean, c.posture_shift)
@@ -218,7 +241,10 @@ class BodyAnalyzer:
             delta = float(lean[b] - lean[a])
             ev.append(
                 T.make_event(
-                    "posture_shift", (a, b + 1), times, fps,
+                    "posture_shift",
+                    (a, b + 1),
+                    times,
+                    fps,
                     direction="toward_camera" if delta > 0 else "away_from_camera",
                     delta=round(delta, 3),
                 )
@@ -249,26 +275,6 @@ class BodyAnalyzer:
             "shoulder_roll_rel_mean": nanstat(np.mean, f["body.shoulder_roll_rel"]),
             "shrug_peak": nanstat(np.max, f["body.shrug"]),
         }
-
-
-def _nanmedian(x: np.ndarray) -> float:
-    x = x[~np.isnan(x)]
-    return float(np.median(x)) if len(x) else float("nan")
-
-
-def _nan_to(x: float, default: float) -> float:
-    return default if np.isnan(x) else x
-
-
-def _nanmax(*xs: np.ndarray) -> np.ndarray:
-    stack = np.stack(xs)
-    out = np.max(np.where(np.isnan(stack), -np.inf, stack), axis=0)
-    return np.where(np.isinf(out), np.nan, out)
-
-
-def _nanmin(*xs: np.ndarray) -> np.ndarray:
-    return -_nanmax(*(-x for x in xs))
-
 
 
 GLOSSARY: dict[str, str] = {

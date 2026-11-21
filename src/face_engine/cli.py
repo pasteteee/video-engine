@@ -41,7 +41,8 @@ def cmd_analyze(args: argparse.Namespace) -> int:
         return source.read(path, **kw)
 
     media, frames = read(args.input, sample_fps=args.sample_fps, max_seconds=args.max_seconds)
-    neutral = read(args.neutral)[1] if args.neutral else []
+    # The neutral only feeds a median baseline: a few frames per second are plenty.
+    neutral = read(args.neutral, sample_fps=5.0, max_seconds=60.0)[1] if args.neutral else []
     if args.save_landmarks and Path(args.input).suffix != ".npz":
         save_landmarks(args.save_landmarks, media, frames)
     config = replace(EngineConfig(), segment_s=args.segment)
@@ -60,7 +61,12 @@ def cmd_models(args: argparse.Namespace) -> int:
 
 def cmd_demo(args: argparse.Namespace) -> int:
     """Analyze a synthetic 12-second clip; needs no detector or models."""
-    from face_engine.sources.synthetic import random_identity, synthetic_body, synthetic_clip, synthetic_face
+    from face_engine.sources.synthetic import (
+        random_identity,
+        synthetic_body,
+        synthetic_clip,
+        synthetic_face,
+    )
 
     fps = 30.0
     rng = np.random.default_rng(7)
@@ -87,8 +93,9 @@ def cmd_demo(args: argparse.Namespace) -> int:
         if 8.0 <= t < 9.0:
             return synthetic_body("face_touch")
         swing = 0.4 * np.sin(2 * np.pi * 1.5 * t) if 0.5 <= t < 2.0 else 0.0
-        return synthetic_body({"l_wrist": (1.1 + swing, -0.5), "r_wrist": (-0.6, -1.5)},
-                              palms_to_camera=t < 2.0)
+        return synthetic_body(
+            {"l_wrist": (1.1 + swing, -0.5), "r_wrist": (-0.6, -1.5)}, palms_to_camera=t < 2.0
+        )
 
     frames = synthetic_clip(int(12 * fps), fps, face, body)
     media = MediaInfo("synthetic-demo", "video", fps, 1280, 720, "synthetic")
@@ -104,10 +111,13 @@ def build_parser() -> argparse.ArgumentParser:
     a = sub.add_parser("analyze", help="analyze a photo, a video or a saved .npz of landmarks")
     a.add_argument("input")
     a.add_argument("-o", "--output", help="JSON report path (stdout if omitted)")
-    a.add_argument("--neutral", help="photo/video (or .npz) of the same person at rest, used as baseline")
+    a.add_argument(
+        "--neutral", help="photo/video (or .npz) of the same person at rest, used as baseline"
+    )
     a.add_argument("--segment", type=float, default=5.0, help="segment length in seconds")
-    a.add_argument("--frames-fps", type=float, default=5.0,
-                   help="per-frame rows written per second (0 = none)")
+    a.add_argument(
+        "--frames-fps", type=float, default=5.0, help="per-frame rows written per second (0 = none)"
+    )
     a.add_argument("--sample-fps", type=float, help="analyze the video at this frame rate")
     a.add_argument("--max-seconds", type=float, help="only analyze the first N seconds")
     a.add_argument("--no-body", action="store_true", help="skip pose and hands")

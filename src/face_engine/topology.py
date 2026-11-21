@@ -66,20 +66,34 @@ CANONICAL_FACE: np.ndarray = np.array([v[1] for v in _FACE.values()], dtype=floa
 
 # Points treated as (nearly) rigid with the skull; used to estimate head pose.
 FACE_ANCHORS: tuple[str, ...] = (
-    "r_eye_outer", "r_eye_inner", "l_eye_inner", "l_eye_outer",
-    "nose_bridge", "nose_tip", "r_face_side", "l_face_side", "forehead",
+    "r_eye_outer",
+    "r_eye_inner",
+    "l_eye_inner",
+    "l_eye_outer",
+    "nose_bridge",
+    "nose_tip",
+    "r_face_side",
+    "l_face_side",
+    "forehead",
 )
 
 # Body: MediaPipe Pose (BlazePose, 33 points) subset, named per subject side.
 _BODY: dict[str, int] = {
     "nose": 0,
-    "l_ear": 7, "r_ear": 8,
-    "mouth_l": 9, "mouth_r": 10,
-    "l_shoulder": 11, "r_shoulder": 12,
-    "l_elbow": 13, "r_elbow": 14,
-    "l_wrist": 15, "r_wrist": 16,
-    "l_index": 19, "r_index": 20,
-    "l_hip": 23, "r_hip": 24,
+    "l_ear": 7,
+    "r_ear": 8,
+    "mouth_l": 9,
+    "mouth_r": 10,
+    "l_shoulder": 11,
+    "r_shoulder": 12,
+    "l_elbow": 13,
+    "r_elbow": 14,
+    "l_wrist": 15,
+    "r_wrist": 16,
+    "l_index": 19,
+    "r_index": 20,
+    "l_hip": 23,
+    "r_hip": 24,
 }
 BODY_POINTS: tuple[str, ...] = tuple(_BODY)
 BODY_INDEX: dict[str, int] = {name: i for i, name in enumerate(BODY_POINTS)}
@@ -87,7 +101,8 @@ MEDIAPIPE_BODY_IDS: tuple[int, ...] = tuple(_BODY.values())
 
 # Hand: the 21-point MediaPipe hand model is used as-is (it is the de facto
 # standard layout). Only a few indices are used by the analyzers.
-HAND_WRIST, HAND_THUMB_TIP, HAND_INDEX_MCP, HAND_INDEX_TIP = 0, 4, 5, 8
-HAND_MIDDLE_TIP, HAND_PINKY_MCP, HAND_PINKY_TIP = 12, 17, 20
-HAND_FINGERTIPS = (4, 8, 12, 16, 20)
+HAND_WRIST, HAND_INDEX_MCP, HAND_PINKY_MCP = 0, 5, 17
 HAND_NUM_POINTS = 21
+
+# Subject sides, in the order used everywhere (also the on-disk hand-side code).
+SIDES: tuple[str, str] = ("l", "r")

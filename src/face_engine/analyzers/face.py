@@ -19,14 +19,21 @@ from typing import Any, Sequence
 import numpy as np
 
 from face_engine import temporal as T
-from face_engine.analyzers.base import AnalyzerResult, fraction, measurement_table, nanstat, rnd
+from face_engine.analyzers.base import (
+    AnalyzerResult,
+    clip01,
+    fraction,
+    mask_absent,
+    measurement_table,
+    nanstat,
+    rnd,
+)
 from face_engine.config import FaceConfig
 from face_engine.geometry import dist, head_angles, umeyama
-from face_engine.topology import CANONICAL_FACE, FACE_ANCHORS, FACE_INDEX
+from face_engine.topology import CANONICAL_FACE, FACE_ANCHORS, FACE_INDEX, SIDES
 from face_engine.observations import FrameObservation, Table
 
 _ANCHORS = [FACE_INDEX[n] for n in FACE_ANCHORS]
-SIDES = ("r", "l")
 
 # Prototype displays (after EMFACS). Scores measure similarity of the facial
 # configuration to the prototype, not a felt emotion.
@@ -116,10 +123,6 @@ def measure_frame(face: np.ndarray | None) -> dict[str, float]:
     return row
 
 
-def _clip01(x: np.ndarray) -> np.ndarray:
-    return np.clip(x, 0.0, 1.0)
-
-
 class FaceAnalyzer:
     name = "face"
 
@@ -130,7 +133,7 @@ class FaceAnalyzer:
         self._scale = {
             **{f"brow_inner_h_{s}": c.brow_raise_full for s in SIDES},
             **{f"brow_outer_h_{s}": c.brow_raise_full for s in SIDES},
-            **{f"eye_open_{s}": 0.04 for s in SIDES},
+            **{f"eye_open_{s}": c.eye_open_scale for s in SIDES},
             **{f"lower_lid_h_{s}": c.lower_lid_raise_full for s in SIDES},
             **{f"nose_eye_{s}": c.nose_wrinkle_full for s in SIDES},
             **{f"corner_h_{s}": c.corner_raise_full for s in SIDES},
@@ -164,10 +167,11 @@ class FaceAnalyzer:
             return {"face_visible": 0.0}
         n_frames = len(present)
         out: dict[str, Any] = {"face_visible": fraction(present, np.ones_like(present))}
+        peaks = {au: nanstat(np.max, f[f"au.{au}"]) for au in AU_NAMES}
         out["action_units"] = {
-            au: {"mean": nanstat(np.mean, f[f"au.{au}"]), "peak": nanstat(np.max, f[f"au.{au}"])}
-            for au in AU_NAMES
-            if (nanstat(np.max, f[f"au.{au}"]) or 0) >= 0.2
+            au: {"mean": nanstat(np.mean, f[f"au.{au}"]), "peak": peak}
+            for au, peak in peaks.items()
+            if (peak or 0) >= 0.2
         }
         expr = {k: nanstat(np.mean, f[f"expr.{k}"]) for k in (*EXPRESSIONS, "contempt")}
         top = max(expr, key=lambda k: expr[k] or 0)
@@ -182,7 +186,10 @@ class FaceAnalyzer:
             k: nanstat(np.mean, f[f"asym.{k}"]) for k in ("mouth", "brow", "eye")
         }
         duration_min = n_frames / fps / 60.0
-        blinks = self._blinks_starting_in(result.features["eye.closure"], sl, fps)
+        start, stop, _ = sl.indices(len(result.features["face.present"]))
+        blinks = sum(
+            1 for e in result.events if e["type"] == "blink" and start <= T.event_span(e)[0] < stop
+        )
         out["blinks"] = blinks
         out["blink_rate_per_min"] = rnd(blinks / duration_min) if n_frames > 1 else None
         out["head"] = {
@@ -197,13 +204,6 @@ class FaceAnalyzer:
         out["speaking_share"] = fraction(f["mouth.speaking"] > 0, present)
         out["reliability_mean"] = nanstat(np.mean, f["face.reliability"])
         return out
-
-    def _blinks_starting_in(self, closure: np.ndarray, sl: slice, fps: float) -> int:
-        """Blinks (closures no longer than ``blink_max_s``) that start inside ``sl``."""
-        start, stop, _ = sl.indices(len(closure))
-        max_len = self.cfg.blink_max_s * fps
-        spans = T.runs(np.nan_to_num(closure) >= self.cfg.blink_closure)
-        return sum(1 for s, e in spans if start <= s < stop and e - s <= max_len)
 
     # ---------------------------------------------------------------- baseline
     def _baseline(self, m: Table, neutral_m: Table) -> dict[str, Any]:
@@ -257,48 +257,46 @@ class FaceAnalyzer:
         for a in ("yaw", "pitch", "roll"):
             f[f"head.{a}"] = s[f"head_{a}"]
             f[f"head.{a}_rel"] = s[f"head_{a}"] - base_pose[a]
-        f["face.reliability"] = _clip01(
+        f["face.reliability"] = clip01(
             1.0 - (np.abs(f["head.yaw_rel"]) - c.reliable_yaw_deg) / (2 * c.reliable_yaw_deg)
         )
 
-        # Eye closure is relative to the person's own neutral opening.
-        for side in SIDES:
-            base_open = max(base[f"eye_open_{side}"], 1e-6)
-            f[f"eye.closure_{side}"] = _clip01(1.0 - s[f"eye_open_{side}"] / base_open)
-        closure = (f["eye.closure_r"] + f["eye.closure_l"]) / 2
-        f["eye.closure"] = closure
-
         au: dict[str, np.ndarray] = {}
         for side in SIDES:
+            # Eye opening is judged against the person's own neutral opening.
             base_open = max(base[f"eye_open_{side}"], 1e-6)
+            f[f"eye.closure_{side}"] = clip01(1.0 - s[f"eye_open_{side}"] / base_open)
             rel_open = d[f"eye_open_{side}"] / base_open
-            au[f"AU01_{side}"] = _clip01(d[f"brow_inner_h_{side}"] / c.brow_raise_full)
-            au[f"AU02_{side}"] = _clip01(d[f"brow_outer_h_{side}"] / c.brow_raise_full)
+            au[f"AU01_{side}"] = clip01(d[f"brow_inner_h_{side}"] / c.brow_raise_full)
+            au[f"AU02_{side}"] = clip01(d[f"brow_outer_h_{side}"] / c.brow_raise_full)
             # Brows drawn together is the key cue: in the sad brow (AU1+AU4) the
             # inner brows rise while still being pulled toward each other.
-            au[f"AU04_{side}"] = _clip01(
-                np.maximum(-d[f"brow_inner_h_{side}"] / c.brow_lower_full,
-                           -d["brow_gap"] / c.brow_gap_full)
+            au[f"AU04_{side}"] = clip01(
+                np.maximum(
+                    -d[f"brow_inner_h_{side}"] / c.brow_lower_full, -d["brow_gap"] / c.brow_gap_full
+                )
             )
-            au[f"AU05_{side}"] = _clip01(rel_open / c.eye_widen_full_rel)
-            au[f"AU06_{side}"] = _clip01(d[f"lower_lid_h_{side}"] / c.lower_lid_raise_full)
+            au[f"AU05_{side}"] = clip01(rel_open / c.eye_widen_full_rel)
+            au[f"AU06_{side}"] = clip01(d[f"lower_lid_h_{side}"] / c.lower_lid_raise_full)
             # Squint, not a blink: fades out once the eye is mostly closed. The part
             # of the narrowing explained by the lower lid rising (AU6) is removed.
             narrowing = -(d[f"eye_open_{side}"] + d[f"lower_lid_h_{side}"]) / base_open
-            squint = _clip01(narrowing / c.lid_tighten_full_rel)
+            squint = clip01(narrowing / c.lid_tighten_full_rel)
             near_blink = T.dilate(f[f"eye.closure_{side}"] >= c.blink_closure, w)
             au[f"AU07_{side}"] = np.where(near_blink, 0.0, squint)
-            au[f"AU09_{side}"] = _clip01(-d[f"nose_eye_{side}"] / c.nose_wrinkle_full)
-            au[f"AU12_{side}"] = _clip01(d[f"corner_h_{side}"] / c.corner_raise_full)
-            au[f"AU15_{side}"] = _clip01(-d[f"corner_h_{side}"] / c.corner_depress_full)
-        for code in ("AU01", "AU02", "AU04", "AU05", "AU06", "AU07", "AU09", "AU12", "AU15"):
+            au[f"AU09_{side}"] = clip01(-d[f"nose_eye_{side}"] / c.nose_wrinkle_full)
+            au[f"AU12_{side}"] = clip01(d[f"corner_h_{side}"] / c.corner_raise_full)
+            au[f"AU15_{side}"] = clip01(-d[f"corner_h_{side}"] / c.corner_depress_full)
+        closure = (f["eye.closure_r"] + f["eye.closure_l"]) / 2
+        f["eye.closure"] = closure
+        for code in {k[:-2] for k in au}:
             au[code] = (au[f"{code}_r"] + au[f"{code}_l"]) / 2
-        au["AU10"] = _clip01(-d["sub_lip"] / c.upper_lip_raise_full)
-        au["AU17"] = _clip01(-d["lip_chin"] / c.chin_raise_full)
-        au["AU20"] = _clip01(d["mouth_width"] / c.mouth_stretch_full) * (1.0 - au["AU12"])
-        au["AU23"] = _clip01(-d["lip_thick"] / c.lip_press_full)
-        au["AU25"] = _clip01(d["lip_gap"] / c.lip_part_full)
-        au["AU26"] = _clip01(d["jaw_open"] / c.jaw_drop_full)
+        au["AU10"] = clip01(-d["sub_lip"] / c.upper_lip_raise_full)
+        au["AU17"] = clip01(-d["lip_chin"] / c.chin_raise_full)
+        au["AU20"] = clip01(d["mouth_width"] / c.mouth_stretch_full) * (1.0 - au["AU12"])
+        au["AU23"] = clip01(-d["lip_thick"] / c.lip_press_full)
+        au["AU25"] = clip01(d["lip_gap"] / c.lip_part_full)
+        au["AU26"] = clip01(d["jaw_open"] / c.jaw_drop_full)
 
         for code in AU_NAMES:
             f[f"au.{code}"] = au[code]
@@ -339,10 +337,7 @@ class FaceAnalyzer:
         f["mouth.activity"] = lip_std
         f["mouth.speaking"] = (lip_std > c.speaking_lip_std).astype(float)
 
-        for k, v in f.items():
-            if k != "face.present":
-                v[~present] = np.nan
-        return f
+        return mask_absent(f, present, keep="face.present")
 
     # ---------------------------------------------------------------- events
     def _events(self, f: Table, times: np.ndarray, fps: float) -> list[dict[str, Any]]:
@@ -354,28 +349,23 @@ class FaceAnalyzer:
             kind = "blink" if dur <= c.blink_max_s else "eye_closure"
             ev.append(T.make_event(kind, span, times, fps, f["eye.closure"]))
 
-        def brief(e: dict[str, Any]) -> dict[str, Any]:
-            e["brief"] = e["duration_s"] < c.brief_event_s
-            return e
-
-        for code, label in AU_NAMES.items():
-            if code == "AU25":  # lips part constantly during speech; not informative
-                continue
-            ev += [
-                brief(e)
-                for e in T.threshold_events(
-                    "action_unit", f[f"au.{code}"], c.event_threshold, times, fps, au=code, label=label
-                )
-            ]
-        for name in (*EXPRESSIONS, "contempt"):
-            ev += [
-                brief(e)
-                for e in T.threshold_events(
-                    "expression", f[f"expr.{name}"], c.event_threshold, times, fps, expression=name
-                )
-            ]
+        # AU25 (lips part) is left out: it fires constantly during speech.
+        sources = [
+            (f"au.{code}", {"type": "action_unit", "au": code, "label": label})
+            for code, label in AU_NAMES.items()
+            if code != "AU25"
+        ]
+        sources += [
+            (f"expr.{name}", {"type": "expression", "expression": name})
+            for name in (*EXPRESSIONS, "contempt")
+        ]
+        for col, extra in sources:
+            kind = extra.pop("type")
+            for e in T.threshold_events(kind, f[col], c.event_threshold, times, fps, **extra):
+                e["brief"] = e["duration_s"] < c.brief_event_s
+                ev.append(e)
         for e in T.threshold_events("smile", f["au.AU12"], c.event_threshold, times, fps):
-            sl = slice(*T.event_span(e, times, fps))
+            sl = slice(*T.event_span(e))
             e["duchenne"] = bool(np.nanmax(f["au.AU06"][sl]) >= 0.3)
             e["asymmetry"] = rnd(np.nanmean(f["asym.mouth"][sl]))
             ev.append(e)
@@ -388,7 +378,6 @@ class FaceAnalyzer:
         return ev
 
 
-
 GLOSSARY: dict[str, str] = {
     "face.present": "1 if a face was detected in the frame.",
     "face.reliability": "0..1; drops as the head turns away from the person's neutral pose "
@@ -398,9 +387,8 @@ GLOSSARY: dict[str, str] = {
     "head.*_rel": "Same angles relative to the person's own neutral head pose.",
     "eye.closure[_l|_r]": "0 = eye as open as in the neutral face, 1 = fully closed.",
     "au.AUxx": "Geometric proxy of a FACS action unit, intensity 0..1, relative to the person's "
-    "neutral face. _l/_r are the subject's left/right sides. " + "; ".join(
-        f"{k} {v}" for k, v in AU_NAMES.items()
-    ),
+    "neutral face. _l/_r are the subject's left/right sides. "
+    + "; ".join(f"{k} {v}" for k, v in AU_NAMES.items()),
     "expr.*": "0..1 similarity of the face configuration to a prototypical display "
     "(happiness, sadness, surprise, fear, anger, disgust, contempt). It describes visible "
     "muscle movement, not what the person feels.",
