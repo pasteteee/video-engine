@@ -88,7 +88,7 @@ face-engine demo -o demo.json            # синтетический клип, 
 | `baseline` | метод и значения личной нейтрали лица и тела |
 | `summary` | сводка по всему клипу, счётчики событий, `highlights` (готовые фразы) |
 | `segments` | окна по N секунд: AU, доминирующее выражение, моргания, взгляд, речь, жесты, поза; `notable_vs_clip` — чем окно отличается от среднего по клипу |
-| `events` | лента событий с началом, концом, пиком: `blink`, `action_unit`, `expression`, `smile` (Дюшенн/асимметрия), `gaze_averted`, `head_nod`, `head_shake`, `gesture`, `face_touch`, `arms_crossed`, `hands_joined`, `open_palms`, `shrug`, `posture_shift` |
+| `events` | лента событий с началом, концом, пиком и номерами кадров видео (`frame_start`, `frame_end`): `blink`, `action_unit`, `expression`, `smile` (Дюшенн/асимметрия), `gaze_averted`, `head_nod`, `head_shake`, `gesture`, `face_touch`, `arms_crossed`, `hands_joined`, `open_palms`, `shrug`, `posture_shift` |
 | `frames` | покадровые значения всех признаков (с прореживанием) |
 
 ## Расширение и гибрид
