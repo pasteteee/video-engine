@@ -28,14 +28,19 @@ _NAN_ROW = {k: float("nan") for k in _KEYS}
 
 
 def palm_facing(points: np.ndarray, side: str) -> float:
-    """+1 when the palm faces the camera, -1 when the back of the hand does."""
+    """+1 when the palm faces the camera, -1 when the back of the hand does.
+
+    With the palm toward the camera and fingers up, the thumb of the subject's
+    right hand points toward the body midline (image +x); in-plane rotation
+    does not change the sign of the 2-D cross product used here.
+    """
     a = points[HAND_INDEX_MCP, :2] - points[HAND_WRIST, :2]
     b = points[HAND_PINKY_MCP, :2] - points[HAND_WRIST, :2]
     norm = np.linalg.norm(a) * np.linalg.norm(b)
     if norm < 1e-9:
         return float("nan")
     cross = (a[0] * b[1] - a[1] * b[0]) / norm
-    return float(-cross if side == "r" else cross)
+    return float(cross if side == "r" else -cross)
 
 
 def _assign_sides(hands: list[Hand], body: np.ndarray, visible: dict[str, bool]) -> dict[str, Hand]:
@@ -135,6 +140,9 @@ class BodyAnalyzer:
                 span = np.abs(table["wrist_x_l"] - table["wrist_x_r"])
                 values = {**table, "arm_span": span}
                 meas = {k: _nanmedian(values[k]) for k in keys}
+                # Pixel size depends on resolution and zoom, so it always comes from
+                # the clip itself, even when a separate neutral recording is given.
+                meas["sw_px"] = _nanmedian(m["sw_px"])
                 n = int((~np.isnan(table["sw_px"])).sum())
                 return {"method": method, "frames_used": n, "measurements": meas}
         return {"method": "none", "frames_used": 0, "measurements": {k: float("nan") for k in keys}}
@@ -201,7 +209,7 @@ class BodyAnalyzer:
             )
         for e in ev:
             if e["type"] == "gesture":
-                sl = slice(*T.event_span(e, times))
+                sl = slice(*T.event_span(e, times, fps))
                 e["peak_speed_sw_s"] = nanstat(np.max, f["body.gesture_speed"][sl])
         ev += T.threshold_events("shrug", f["body.shrug"], 0.5, times, fps)
         lean = f["body.lean_in"]

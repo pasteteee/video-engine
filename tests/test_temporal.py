@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from face_engine import temporal as T
 
@@ -47,4 +48,13 @@ def test_threshold_events_report_peak_and_duration():
     assert ev["type"] == "x" and ev["label"] == "demo"
     assert ev["peak"] == 0.9 and ev["peak_s"] == round(12 / 30, 3)
     assert ev["duration_s"] == 0.2
-    assert T.event_span(ev, times) == (10, 16)
+    assert T.event_span(ev, times, 30.0) == (10, 16)
+
+
+@pytest.mark.parametrize("fps", [30.0, 29.97, 25.0, 60.0])
+def test_event_span_roundtrips_every_span(fps):
+    times = np.arange(200) / fps
+    for start in range(0, 190, 7):
+        for length in (1, 2, 3, 9):
+            ev = T.make_event("x", (start, start + length), times, fps)
+            assert T.event_span(ev, times, fps) == (start, start + length)

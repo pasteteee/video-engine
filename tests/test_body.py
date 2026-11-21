@@ -119,3 +119,11 @@ def test_low_visibility_wrist_is_ignored():
     f = BodyAnalyzer().analyze([obs], FPS).features
     assert f["body.hands_visible"][0] == 1.0
     assert f["body.arms_crossed"][0] == 0.0
+
+
+def test_lean_in_ignores_resolution_of_neutral_reference():
+    clip = synthetic_clip(30, FPS, body_fn=lambda i: synthetic_body("rest"))
+    neutral = synthetic_clip(1, FPS, body_fn=lambda i: synthetic_body("rest", scale=3.0))
+    res = BodyAnalyzer().analyze(clip, FPS, neutral=neutral)
+    assert res.baseline["method"] == "neutral_reference"
+    assert np.nanmax(np.abs(res.features["body.lean_in"])) < 1e-9

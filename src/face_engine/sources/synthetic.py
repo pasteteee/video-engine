@@ -135,14 +135,17 @@ POSTURES: dict[str, dict[str, tuple[float, float]]] = {
 
 
 def synthetic_hand(side: str, palm_to_camera: bool, wrist: np.ndarray, size: float) -> np.ndarray:
-    """21 hand points, fingers up. For the right hand facing the camera the thumb is at -x."""
-    # Columns: x across the palm (thumb side negative), y along the fingers.
+    """21 hand points, fingers up.
+
+    Right hand, palm to camera: the thumb points toward the body midline (+x).
+    """
+    # Layout below has the thumb at -x; it is mirrored where needed.
     base_x = {1: -0.35, 5: -0.2, 9: 0.0, 13: 0.18, 17: 0.33}
     pts = np.zeros((HAND_NUM_POINTS, 3))
     for root, x in base_x.items():
         for j in range(4):
             pts[root + j] = (x * (1 + 0.15 * j), 0.45 + 0.2 * j if root != 1 else 0.1 + 0.15 * j, 0)
-    mirror = (side == "l") == palm_to_camera
+    mirror = (side == "r") == palm_to_camera
     if mirror:
         pts[:, 0] *= -1
     return wrist + size * pts

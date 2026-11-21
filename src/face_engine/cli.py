@@ -27,18 +27,23 @@ def _write(report: dict, out: str | None) -> None:
 def cmd_analyze(args: argparse.Namespace) -> int:
     from face_engine.sources import load_landmarks, save_landmarks
 
-    if Path(args.input).suffix == ".npz":
-        media, frames = load_landmarks(args.input)
-        neutral = load_landmarks(args.neutral)[1] if args.neutral else []
-    else:
-        from face_engine.sources.mediapipe_source import MediaPipeSource
+    source = None
 
-        models = Path(args.models) if args.models else None
-        source = MediaPipeSource(models, use_body=not args.no_body, use_hands=not args.no_hands)
-        media, frames = source.read(args.input, args.sample_fps, args.max_seconds)
-        neutral = source.read(args.neutral)[1] if args.neutral else []
-        if args.save_landmarks:
-            save_landmarks(args.save_landmarks, media, frames)
+    def read(path: str, **kw):
+        nonlocal source
+        if Path(path).suffix == ".npz":
+            return load_landmarks(path)
+        if source is None:
+            from face_engine.sources.mediapipe_source import MediaPipeSource
+
+            models = Path(args.models) if args.models else None
+            source = MediaPipeSource(models, use_body=not args.no_body, use_hands=not args.no_hands)
+        return source.read(path, **kw)
+
+    media, frames = read(args.input, sample_fps=args.sample_fps, max_seconds=args.max_seconds)
+    neutral = read(args.neutral)[1] if args.neutral else []
+    if args.save_landmarks and Path(args.input).suffix != ".npz":
+        save_landmarks(args.save_landmarks, media, frames)
     config = replace(EngineConfig(), segment_s=args.segment)
     report = Engine(config=config).run(frames, media, neutral, frames_fps=args.frames_fps)
     _write(report, args.output)

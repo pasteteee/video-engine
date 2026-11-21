@@ -154,8 +154,12 @@ def threshold_events(
     return [make_event(kind, s, times, fps, signal, **extra) for s in spans]
 
 
-def event_span(event: dict[str, Any], times: np.ndarray) -> tuple[int, int]:
-    """Frame range ``[start, end)`` covered by an event built with :func:`make_event`."""
-    start = int(np.searchsorted(times, event["start_s"] - 1e-9))
-    end = int(np.searchsorted(times, event["end_s"] - 1e-9))
+def event_span(event: dict[str, Any], times: np.ndarray, fps: float) -> tuple[int, int]:
+    """Frame range ``[start, end)`` covered by an event built with :func:`make_event`.
+
+    Event times are rounded to milliseconds, so lookups use a half-frame tolerance.
+    """
+    half = 0.5 / fps
+    start = int(np.searchsorted(times, event["start_s"] - half))
+    end = int(np.searchsorted(times, event["end_s"] - half))
     return start, max(end, start + 1)

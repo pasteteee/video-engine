@@ -113,3 +113,39 @@ def test_cli_demo_and_npz_analyze(tmp_path, media):
     out2 = tmp_path / "a.json"
     assert main(["analyze", str(lm), "-o", str(out2), "--segment", "1", "--frames-fps", "0"]) == 0
     assert len(json.loads(out2.read_text())["segments"]) == 3
+
+
+def test_cli_neutral_loader_follows_its_own_file_type(tmp_path, media, monkeypatch):
+    lm = tmp_path / "clip.npz"
+    save_landmarks(lm, media, clip(30))
+    calls = []
+
+    class FakeSource:
+        def __init__(self, *a, **kw):
+            pass
+
+        def read(self, path, **kw):
+            calls.append(path)
+            return media, clip(1)
+
+    import face_engine.sources.mediapipe_source as mps
+
+    monkeypatch.setattr(mps, "MediaPipeSource", FakeSource)
+    out = tmp_path / "r.json"
+    assert main(["analyze", str(lm), "--neutral", "rest.jpg", "-o", str(out)]) == 0
+    assert calls == ["rest.jpg"]
+    assert json.loads(out.read_text())["baseline"]["face"]["method"] == "neutral_reference"
+
+
+def test_segment_event_counts_use_same_rounding(media):
+    fps = 29.97
+    frames = synthetic_clip(
+        int(10 * fps), fps,
+        lambda i: synthetic_face({"blink": 1.0} if 150 <= i < 153 else {}),
+    )
+    m = MediaInfo("x", "video", fps, 1280, 720, "synthetic")
+    report = Engine().run(frames, m, frames_fps=0)
+    blink = next(e for e in report["events"] if e["type"] == "blink")
+    seg = next(s for s in report["segments"] if s["start_s"] <= blink["start_s"] < s["end_s"])
+    assert seg["event_counts"].get("blink") == 1
+    assert sum(s["event_counts"].get("blink", 0) for s in report["segments"]) == 1

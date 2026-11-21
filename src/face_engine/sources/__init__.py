@@ -52,24 +52,25 @@ def save_landmarks(path: str | Path, media: MediaInfo, frames: Sequence[FrameObs
 
 
 def load_landmarks(path: str | Path) -> tuple[MediaInfo, list[FrameObservation]]:
-    z = np.load(path, allow_pickle=False)
-    media = MediaInfo(**json.loads(str(z["media"])))
+    with np.load(path, allow_pickle=False) as z:
+        data = {k: z[k] for k in z.files}  # decompress every array once
+    media = MediaInfo(**json.loads(str(data["media"])))
     frames = []
-    for i in range(len(z["index"])):
-        face = z["face"][i]
-        body = z["body"][i]
+    for i, (index, time_s) in enumerate(zip(data["index"], data["time_s"])):
+        face, body = data["face"][i], data["body"][i]
+        has_body = not np.isnan(body).all()
         hands = [
-            Hand(z["hands"][i, j], None if s == 0 else _SIDES[s - 1])
-            for j, s in enumerate(z["hand_side"][i])
-            if not np.isnan(z["hands"][i, j]).all()
+            Hand(data["hands"][i, j], None if s == 0 else _SIDES[s - 1])
+            for j, s in enumerate(data["hand_side"][i])
+            if not np.isnan(data["hands"][i, j]).all()
         ]
         frames.append(
             FrameObservation(
-                index=int(z["index"][i]),
-                time_s=float(z["time_s"][i]),
+                index=int(index),
+                time_s=float(time_s),
                 face=None if np.isnan(face).all() else face,
-                body=None if np.isnan(body).all() else body,
-                body_visibility=None if np.isnan(body).all() else z["body_visibility"][i],
+                body=body if has_body else None,
+                body_visibility=data["body_visibility"][i] if has_body else None,
                 hands=hands,
             )
         )

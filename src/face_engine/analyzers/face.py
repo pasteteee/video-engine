@@ -182,7 +182,7 @@ class FaceAnalyzer:
             k: nanstat(np.mean, f[f"asym.{k}"]) for k in ("mouth", "brow", "eye")
         }
         duration_min = n_frames / fps / 60.0
-        blinks = len(T.runs(np.nan_to_num(f["eye.closure"]) >= self.cfg.blink_closure))
+        blinks = self._blinks_starting_in(result.features["eye.closure"], sl, fps)
         out["blinks"] = blinks
         out["blink_rate_per_min"] = rnd(blinks / duration_min) if n_frames > 1 else None
         out["head"] = {
@@ -197,6 +197,13 @@ class FaceAnalyzer:
         out["speaking_share"] = fraction(f["mouth.speaking"] > 0, present)
         out["reliability_mean"] = nanstat(np.mean, f["face.reliability"])
         return out
+
+    def _blinks_starting_in(self, closure: np.ndarray, sl: slice, fps: float) -> int:
+        """Blinks (closures no longer than ``blink_max_s``) that start inside ``sl``."""
+        start, stop, _ = sl.indices(len(closure))
+        max_len = self.cfg.blink_max_s * fps
+        spans = T.runs(np.nan_to_num(closure) >= self.cfg.blink_closure)
+        return sum(1 for s, e in spans if start <= s < stop and e - s <= max_len)
 
     # ---------------------------------------------------------------- baseline
     def _baseline(self, m: Table, neutral_m: Table) -> dict[str, Any]:
@@ -368,7 +375,7 @@ class FaceAnalyzer:
                 )
             ]
         for e in T.threshold_events("smile", f["au.AU12"], c.event_threshold, times, fps):
-            sl = slice(*T.event_span(e, times))
+            sl = slice(*T.event_span(e, times, fps))
             e["duchenne"] = bool(np.nanmax(f["au.AU06"][sl]) >= 0.3)
             e["asymmetry"] = rnd(np.nanmean(f["asym.mouth"][sl]))
             ev.append(e)

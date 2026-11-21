@@ -192,3 +192,19 @@ def test_missing_iris_points_only_disable_gaze():
     f = FaceAnalyzer().analyze([FrameObservation(0, 0.0, face=face)], FPS).features
     assert f["au.AU12"][0] > 0.9
     assert np.isnan(f["gaze.h"][0])
+
+
+def test_blink_count_excludes_long_closures_and_respects_segments():
+    def expr(t):
+        if any(abs(t - b) < 0.1 for b in (1.0, 2.0, 4.95)) or 3.0 <= t < 3.8:
+            return {"blink": 1.0}
+        return {}
+
+    clip = face_clip(expr)
+    fa = FaceAnalyzer()
+    res = fa.analyze(clip, FPS)
+    assert fa.summarize(res, slice(None), FPS)["blinks"] == 3
+    # The blink around 4.95 s straddles the 5 s boundary and is counted once.
+    first = fa.summarize(res, slice(0, int(5 * FPS)), FPS)["blinks"]
+    second = fa.summarize(res, slice(int(5 * FPS), None), FPS)["blinks"]
+    assert first + second == 3

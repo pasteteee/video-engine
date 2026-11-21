@@ -110,7 +110,8 @@ class Engine:
             seg: dict[str, Any] = {"index": k, "start_s": rnd(t0), "end_s": rnd(t1)}
             for name, a in self._named():
                 seg[name] = a.summarize(results[name], sl, fps)
-            inside = [e for e in events if t0 <= e["start_s"] < t1]
+            lo, hi = rnd(t0), rnd(t1)  # same rounding as event times
+            inside = [e for e in events if lo <= e["start_s"] < hi]
             seg["event_counts"] = dict(Counter(e["type"] for e in inside))
             seg["notable_vs_clip"] = _contrast(seg, clip_summary)
             out.append(seg)
