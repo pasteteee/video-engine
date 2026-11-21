@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from face_engine.analyzers.face import AU_NAMES, FaceAnalyzer
+from face_engine.geometry import rotation_from_angles
 from face_engine.observations import FrameObservation
 from face_engine.sources.synthetic import random_identity, synthetic_clip, synthetic_face
 
@@ -206,3 +207,96 @@ def test_blink_count_excludes_long_closures_and_respects_segments():
     first = fa.summarize(res, slice(0, int(5 * FPS)), FPS)["blinks"]
     second = fa.summarize(res, slice(int(5 * FPS), None), FPS)["blinks"]
     assert first + second == 3
+
+
+def test_distorted_outer_face_does_not_change_scale():
+    """Detectors bend temples/depth under strong roll; units stay anchored on the eyes."""
+    from face_engine.topology import FACE_INDEX
+
+    def face(i):
+        pts = synthetic_face(roll=45 if i >= 45 else 0)
+        if i >= 45:  # temples pushed outward by 25% of IOD, as seen on real footage
+            lateral = rotation_from_angles(0, 0, 45) @ np.array([1.0, 0.0, 0.0])
+            for n, sign in (("r_face_side", -1), ("l_face_side", 1)):
+                pts[FACE_INDEX[n]] += sign * 0.25 * 120 * lateral
+        return pts
+
+    res = FaceAnalyzer().analyze(synthetic_clip(90, FPS, face), FPS)
+    peak = max(np.nanmax(res.features[f"au.{au}"][45:]) for au in AU_NAMES)
+    assert peak < 0.15
+
+
+def _pitch_biased_clip():
+    """Head nods down and up; the detector shrinks vertical distances with pitch.
+
+    A genuine smile happens at 4-5 s while looking straight ahead.
+    """
+    from face_engine.topology import FACE_INDEX
+
+    rng = np.random.default_rng(3)
+
+    def face(i):
+        t = i / FPS
+        pitch = 30 * np.sin(2 * np.pi * t / 6)
+        expr = {"smile": 1.0} if 6.0 <= t < 7.0 else {}
+        pts = synthetic_face(expr, pitch=pitch, rng=rng, noise_px=0.2)
+        # Foreshortening-like artefact (grows like 1 - cos(pitch)): brows drop, lip thins.
+        k = (1 - np.cos(np.radians(pitch))) / (1 - np.cos(np.radians(30)))
+        for n in ("r_brow_inner", "l_brow_inner", "r_brow_mid", "l_brow_mid"):
+            pts[FACE_INDEX[n], 1] -= 0.08 * 120 * k
+        pts[FACE_INDEX["upper_lip_top"], 1] -= 0.06 * 120 * k
+        return pts
+
+    return synthetic_clip(int(12 * FPS), FPS, face)
+
+
+def test_pose_compensation_removes_pose_artefacts_but_keeps_expressions():
+    from face_engine.config import FaceConfig
+
+    clip = _pitch_biased_clip()
+    res = FaceAnalyzer().analyze(clip, FPS)
+    assert res.baseline["pose_compensation"] is True
+    t = np.arange(len(clip)) / FPS
+    calm = (t < 6.0) | (t >= 7.5)
+    assert np.nanmax(res.features["au.AU04"][calm]) < 0.3
+    assert np.nanmax(res.features["au.AU12"][(t >= 6.2) & (t < 6.8)]) > 0.8
+
+    off = FaceAnalyzer(FaceConfig(pose_compensation=False)).analyze(clip, FPS)
+    assert off.baseline["pose_compensation"] is False
+    on_expr = np.nanmean(res.features["face.expressivity"][calm])
+    off_expr = np.nanmean(off.features["face.expressivity"][calm])
+    assert off_expr > 2 * on_expr
+    assert (
+        np.nanmax(off.features["au.AU10"][calm])
+        > 0.4
+        > 0.2
+        > np.nanmax(res.features["au.AU10"][calm])
+    )
+
+
+def test_pose_compensation_skipped_for_static_or_short_clips():
+    clip = face_clip(lambda t: {}, n=FPS * 6)
+    assert FaceAnalyzer().analyze(clip, FPS).baseline["pose_compensation"] is False
+    short = face_clip(lambda t: {}, n=FPS)
+    assert FaceAnalyzer().analyze(short, FPS).baseline["pose_compensation"] is False
+
+
+def test_broad_smile_is_not_disgust():
+    """A laughing smile lifts nose wings and upper lip, but it reads as happiness."""
+    f = single(
+        {"smile": 1, "cheek_raise": 1, "nose_wrinkle": 0.8, "upper_lip_raise": 1, "jaw_drop": 0.4}
+    )
+    assert f["expr.happiness"] > 0.8
+    assert f["expr.disgust"] < 0.2 and f["expr.happiness"] > 4 * f["expr.disgust"]
+
+
+def test_no_expression_events_while_face_turned_away():
+    clip = synthetic_clip(
+        int(6 * FPS),
+        FPS,
+        lambda i: synthetic_face(
+            {"smile": 1.0} if 2 <= i / FPS < 3 else {}, yaw=55.0 if 2 <= i / FPS < 3 else 0.0
+        ),
+    )
+    res = FaceAnalyzer().analyze(clip, FPS)
+    assert not [e for e in res.events if e["type"] in ("action_unit", "expression")]

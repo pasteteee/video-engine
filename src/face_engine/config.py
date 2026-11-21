@@ -43,6 +43,11 @@ class FaceConfig:
     speaking_lip_std: float = 0.015
     reliable_yaw_deg: float = 20.0  # beyond this, asymmetry/AU values degrade
     baseline_quantile: float = 0.3  # share of calmest frames used for the baseline
+    pose_compensation: bool = True  # neutral as a function of head pose (see FaceAnalyzer)
+    pose_min_seconds: float = 3.0  # ...only for clips at least this long
+    pose_min_spread_deg: float = 3.0  # ...and with this much head movement
+    pose_bin_deg: float = 8.0  # head-pose bin size for the pose-dependent neutral
+    pose_bin_min_s: float = 0.4  # a pose must be held this long to define a bin
 
 
 @dataclass(frozen=True)

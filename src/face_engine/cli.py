@@ -104,6 +104,59 @@ def cmd_demo(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_visualize(args: argparse.Namespace) -> int:
+    """Overlay video/photo + timeline plot + contact sheet for visual checking."""
+    import cv2
+
+    from face_engine import viz
+    from face_engine.sources import load_landmarks, save_landmarks
+    from face_engine.sources.mediapipe_source import IMAGE_SUFFIXES, MediaPipeSource
+
+    out = Path(args.output)
+    out.mkdir(parents=True, exist_ok=True)
+    stem = Path(args.input).stem
+    lm_path = out / f"{stem}.landmarks.npz"
+    if args.landmarks:
+        media, frames = load_landmarks(args.landmarks)
+    else:
+        models = Path(args.models) if args.models else None
+        media, frames = MediaPipeSource(models).read(args.input, max_seconds=args.max_seconds)
+        save_landmarks(lm_path, media, frames)
+    report = Engine().run(frames, media, frames_fps=None)
+    _write(report, str(out / f"{stem}.report.json"))
+
+    if Path(args.input).suffix.lower() in IMAGE_SUFFIXES:
+        img = cv2.imread(args.input)
+        viz.draw_landmarks(img, frames[0], cv2)
+        panel = np.zeros((max(img.shape[0], 330), 260, 3), np.uint8)
+        viz.draw_panel(panel, report["frames"][0], [], cv2)
+        canvas = np.zeros((panel.shape[0], img.shape[1] + 260, 3), np.uint8)
+        canvas[: img.shape[0], : img.shape[1]] = img
+        canvas[:, img.shape[1] :] = panel
+        cv2.imwrite(str(out / f"{stem}.overlay.png"), canvas)
+        return 0
+
+    video = viz.render_overlay(args.input, frames, report, out / f"{stem}.overlay.mp4")
+    viz.plot_timeline(report, out / f"{stem}.timeline.png")
+    # Contact sheet: the frames where the strongest events peak.
+    peaks = sorted(
+        (e for e in report["events"] if "peak_s" in e and e["type"] in ("expression", "smile")),
+        key=lambda e: -e.get("peak", 0),
+    )
+    times = sorted({round(e["peak_s"], 1) for e in peaks[:30]})[:9] or [0.0]
+    cap = cv2.VideoCapture(str(video))
+    shots = []
+    for t in times:
+        cap.set(cv2.CAP_PROP_POS_MSEC, t * 1000)
+        ok, img = cap.read()
+        if ok:
+            shots.append(img)
+    cap.release()
+    if shots:
+        viz.contact_sheet(shots, out / f"{stem}.moments.png")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="face-engine", description=__doc__)
     sub = p.add_subparsers(dest="command", required=True)
@@ -135,6 +188,14 @@ def build_parser() -> argparse.ArgumentParser:
     d.add_argument("-o", "--output")
     d.add_argument("--frames-fps", type=float, default=0.0)
     d.set_defaults(func=cmd_demo)
+
+    v = sub.add_parser("visualize", help="overlay video, timeline plot and key-moment sheet")
+    v.add_argument("input", help="photo or video")
+    v.add_argument("-o", "--output", required=True, help="output directory")
+    v.add_argument("--landmarks", help="reuse a saved .npz instead of running the detector")
+    v.add_argument("--max-seconds", type=float)
+    v.add_argument("--models")
+    v.set_defaults(func=cmd_visualize)
     return p
 
 

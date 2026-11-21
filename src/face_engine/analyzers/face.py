@@ -46,6 +46,9 @@ EXPRESSIONS: dict[str, tuple[str, ...]] = {
     "disgust": ("AU09", "AU10"),
 }
 
+# Prototypes that do not co-occur with a lip-corner smile.
+SMILE_INHIBITED = frozenset({"sadness", "anger", "disgust"})
+
 AU_NAMES: dict[str, str] = {
     "AU01": "inner brow raiser",
     "AU02": "outer brow raiser",
@@ -67,9 +70,22 @@ LATERAL_AUS = ("AU01", "AU02", "AU04", "AU06", "AU12", "AU15")
 
 
 def align_face(points: np.ndarray) -> tuple[np.ndarray, np.ndarray, float]:
-    """Return (aligned points in IOD units, head rotation head->camera, IOD in pixels)."""
+    """Return (aligned points in IOD units, head rotation head->camera, IOD in pixels).
+
+    The similarity fit fixes the rotation; the scale is then re-anchored on the
+    eye centres. Detectors distort the outer face (temples, depth) under strong
+    head roll, which biases the fitted scale by 10-15% and would show up as fake
+    action units; the eye distance stays reliable.
+    """
     sim = umeyama(points[_ANCHORS], CANONICAL_FACE[_ANCHORS])
-    return sim.apply(points), sim.rotation.T, 1.0 / sim.scale
+    aligned = sim.apply(points)
+    iod = float(np.linalg.norm(_eye_centre(aligned, "l") - _eye_centre(aligned, "r")))
+    origin = aligned[FACE_INDEX["nose_bridge"]]
+    return (aligned - origin) / iod, sim.rotation.T, iod / sim.scale
+
+
+def _eye_centre(a: np.ndarray, side: str) -> np.ndarray:
+    return (a[FACE_INDEX[f"{side}_eye_outer"]] + a[FACE_INDEX[f"{side}_eye_inner"]]) / 2
 
 
 def face_measurements(a: np.ndarray) -> dict[str, float]:
@@ -155,7 +171,9 @@ class FaceAnalyzer:
         m = measurement_table([measure_frame(f.face) for f in frames])
         times = np.array([f.time_s for f in frames], dtype=float)
         neutral_m = measurement_table([measure_frame(f.face) for f in neutral])
+        compensated = self._compensate_pose(m, neutral_m, fps)
         baseline = self._baseline(m, neutral_m)
+        baseline["pose_compensation"] = compensated
         features = self._interpret(m, baseline["measurements"], baseline["head_pose"], fps)
         events = self._events(features, times, fps) if len(frames) > 1 else []
         return AnalyzerResult(features, baseline, events, GLOSSARY)
@@ -204,6 +222,56 @@ class FaceAnalyzer:
         out["speaking_share"] = fraction(f["mouth.speaking"] > 0, present)
         out["reliability_mean"] = nanstat(np.mean, f["face.reliability"])
         return out
+
+    # ---------------------------------------------------------- pose model
+    def _compensate_pose(self, m: Table, neutral_m: Table, fps: float) -> bool:
+        """Make the neutral a function of head pose, fitted on the clip itself.
+
+        2-D landmark detectors foreshorten the face when the head pitches or
+        turns, so a fixed neutral turns pose into fake action units. Frames are
+        grouped into head-pose bins; the median of each bin is that pose's
+        typical face (expressions are brief, so medians ignore them, and every
+        pose counts the same however long it was held). A quadratic in
+        (yaw, pitch) through the bin medians gives the pose-dependent part of
+        each measurement, which is subtracted from the clip and from the neutral
+        reference, leaving values "as if at the typical pose".
+        """
+        c = self.cfg
+        valid = ~np.isnan(m["head_yaw"])
+        if not c.pose_compensation or valid.sum() < c.pose_min_seconds * fps:
+            return False
+        yaw0, pitch0 = np.nanmedian(m["head_yaw"]), np.nanmedian(m["head_pitch"])
+        spread = max(np.nanstd(m["head_yaw"]), np.nanstd(m["head_pitch"]))
+        if spread < c.pose_min_spread_deg:
+            return False
+
+        def design(t: Table) -> np.ndarray:
+            y = np.radians(t["head_yaw"] - yaw0)
+            p = np.radians(t["head_pitch"] - pitch0)
+            return np.stack([y, p, y * y, p * p, y * p], axis=1)
+
+        x = design(m)
+        idx = np.flatnonzero(valid)
+        keys = np.floor(x[idx, :2] / np.radians(c.pose_bin_deg)).astype(int)
+        _, bin_of, counts = np.unique(keys, axis=0, return_inverse=True, return_counts=True)
+        bin_of = bin_of.ravel()
+        min_count = max(3, int(c.pose_bin_min_s * fps))
+        bins = [idx[bin_of == b] for b in np.flatnonzero(counts >= min_count)]
+        n_terms = 5 if len(bins) >= 8 else 2 if len(bins) >= 3 else 0
+        if not n_terms:
+            return False
+        xb = np.array([np.median(x[rows], axis=0) for rows in bins])[:, :n_terms]
+        xb1 = np.column_stack([np.ones(len(bins)), xb])
+        for k in MEASURE_KEYS:
+            yb = np.array([np.nanmedian(m[k][rows]) for rows in bins])
+            ok = ~np.isnan(yb)
+            if ok.sum() <= n_terms:
+                continue
+            beta = np.linalg.lstsq(xb1[ok], yb[ok], rcond=None)[0][1:]
+            m[k] = m[k] - x[:, :n_terms] @ beta
+            if neutral_m:
+                neutral_m[k] = neutral_m[k] - design(neutral_m)[:, :n_terms] @ beta
+        return True
 
     # ---------------------------------------------------------------- baseline
     def _baseline(self, m: Table, neutral_m: Table) -> dict[str, Any]:
@@ -277,12 +345,16 @@ class FaceAnalyzer:
                 )
             )
             au[f"AU05_{side}"] = clip01(rel_open / c.eye_widen_full_rel)
-            au[f"AU06_{side}"] = clip01(d[f"lower_lid_h_{side}"] / c.lower_lid_raise_full)
+            # Lid geometry is meaningless while the eye is (nearly) shut, so the
+            # lid-based units AU6/AU7 are blanked around blinks.
+            near_blink = T.dilate(f[f"eye.closure_{side}"] >= c.blink_closure, w)
+            au[f"AU06_{side}"] = np.where(
+                near_blink, 0.0, clip01(d[f"lower_lid_h_{side}"] / c.lower_lid_raise_full)
+            )
             # Squint, not a blink: fades out once the eye is mostly closed. The part
             # of the narrowing explained by the lower lid rising (AU6) is removed.
             narrowing = -(d[f"eye_open_{side}"] + d[f"lower_lid_h_{side}"]) / base_open
             squint = clip01(narrowing / c.lid_tighten_full_rel)
-            near_blink = T.dilate(f[f"eye.closure_{side}"] >= c.blink_closure, w)
             au[f"AU07_{side}"] = np.where(near_blink, 0.0, squint)
             au[f"AU09_{side}"] = clip01(-d[f"nose_eye_{side}"] / c.nose_wrinkle_full)
             au[f"AU12_{side}"] = clip01(d[f"corner_h_{side}"] / c.corner_raise_full)
@@ -305,7 +377,12 @@ class FaceAnalyzer:
 
         for name, parts in EXPRESSIONS.items():
             stack = np.stack([au[p] for p in parts])
-            f[f"expr.{name}"] = stack.mean(axis=0) * (stack >= 0.2).mean(axis=0)
+            score = stack.mean(axis=0) * (stack >= 0.2).mean(axis=0)
+            if name in SMILE_INHIBITED:
+                # A broad smile also raises the nose wings, lifts the upper lip and
+                # thins the lips (AU9/10/23 proxies); those prototypes exclude a smile.
+                score = score * (1.0 - np.maximum(au["AU12"], f["expr.happiness"]))
+            f[f"expr.{name}"] = score
         f["expr.contempt"] = np.abs(au["AU12_l"] - au["AU12_r"]) * (
             1.0 - np.minimum(au["AU12_l"], au["AU12_r"])
         )
@@ -359,9 +436,13 @@ class FaceAnalyzer:
             (f"expr.{name}", {"type": "expression", "expression": name})
             for name in (*EXPRESSIONS, "contempt")
         ]
+        # No AU/expression events while the face is turned too far to read reliably.
+        w = T.window_frames(fps, c.smoothing_s)
+        readable = ~T.dilate(np.nan_to_num(f["face.reliability"]) < 0.5, w)
         for col, extra in sources:
             kind = extra.pop("type")
-            for e in T.threshold_events(kind, f[col], c.event_threshold, times, fps, **extra):
+            signal = np.where(readable, f[col], np.nan)
+            for e in T.threshold_events(kind, signal, c.event_threshold, times, fps, **extra):
                 e["brief"] = e["duration_s"] < c.brief_event_s
                 ev.append(e)
         for e in T.threshold_events("smile", f["au.AU12"], c.event_threshold, times, fps):
