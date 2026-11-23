@@ -5,3 +5,4 @@ __pycache__/
 *.task
 .venv/
 *.fbcache.pkl
+*.bundle

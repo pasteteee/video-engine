@@ -17,7 +17,10 @@ Written for the next model or engineer who has to test this engine. Read it toge
 | `examples/` | sample reports: `demo_synthetic.json`, `photo_smile_crossed_arms.json` | no (data) |
 | `visual-tests/` | reports, overlay videos, timelines and key-moment sheets from two real test videos (Intel sample videos, CC BY 4.0) | no (data) |
 
-Git history: 6 commits (5 original + 1 for the feature bank and docs). `git log --oneline` shows them.
+Git history: 7 commits (5 original + 2 for the feature bank, docs and this restore script). The remote copy tool cannot write a `.git` folder,
+so the history ships as `face-engine-history.bundle`. Run `restore-git-history.cmd` once (or: `git init`,
+`git fetch face-engine-history.bundle master`, `git reset FETCH_HEAD`); then `git log --oneline` shows the 7 commits and
+`git status` lists only the untracked data folders.
 
 ## 1. Setup (Windows, PowerShell)
 
