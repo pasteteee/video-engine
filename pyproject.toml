@@ -13,6 +13,8 @@ dependencies = ["numpy>=1.24"]
 [project.optional-dependencies]
 mediapipe = ["mediapipe>=0.10.14", "opencv-python-headless>=4.8"]
 dev = ["pytest>=8"]
+viz = ["matplotlib>=3.7", "opencv-python-headless>=4.8"]
+featurebank = ["librosa>=0.10"]
 
 [project.scripts]
 face-engine = "face_engine.cli:main"
