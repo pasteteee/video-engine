@@ -79,6 +79,13 @@ class Details:
                 out[i] = float(np.max(z[ok] + np.sqrt(rv * rv - lat2[ok])))
         return out
 
+    def stack(self, it):
+        """What is laid next rests on this item's surface too (the envelope then includes its vertices)."""
+        V = it['V'][::2]
+        self.X = np.concatenate([self.X, V]) if self.X is not None and len(self.X) else V
+        from scipy.spatial import cKDTree
+        self.tree = cKDTree(self.X)
+
     # -------------------------------------------------------------------------------------------- builders
     def patch(self, P0, n0, radius, profile, ci, mat, rot=0.0, p1=0.0, p2=0.0, gloss=0.0, thick=1.0, na=120, nr=14,
               lift=0.0, seat=0.8):
@@ -237,6 +244,9 @@ def _thread_path(inst, pts, mirror, step=0.25):
     """Points [round, az] on a piece, densely along the surface: positions and normals."""
     P, N = [], []
     pts = [(float(r), float(a) * mirror) for r, a in pts]
+    # azimuths go the short way round: (-155, 180) is 25 degrees through the back, not 335 through the front
+    az = np.degrees(np.unwrap(np.radians([a for _, a in pts])))
+    pts = [(r, float(a)) for (r, _), a in zip(pts, az)]
     for (r0, a0), (r1, a1) in zip(pts[:-1], pts[1:]):
         p0, _ = inst.point(r0, a0)
         p1, _ = inst.point(r1, a1)
@@ -261,8 +271,14 @@ def build(spec, toy, X, cols, d, applique=()):
     def ci_of(name):
         return cols.setdefault(name, len(cols))
 
-    # pieces sewn on flat: their outline from amikit, stitches radiating from the centre
-    for inst in applique:
+    # pieces sewn on flat: their outline from amikit, in rounds of stitches; the bigger first, so a smaller piece
+    # sewn over a bigger one (a shark face over its hood trim) rests on it instead of cutting through it
+    def _area(inst):
+        try:
+            return float(inst.p.counts[-1]) * len(inst.p.counts)
+        except Exception:
+            return 0.0
+    for inst in sorted(applique, key=_area, reverse=True):
         p = inst.p
         M = float(p.M)
         motif = getattr(p, 'motif', None) is not None
@@ -287,10 +303,12 @@ def build(spec, toy, X, cols, d, applique=()):
             kk = np.exp(-0.5 * (np.arange(-6, 7) / 2.5) ** 2)
             rad = np.convolve(np.concatenate([rad[-6:], rad, rad[:6]]), kk / kk.sum(), 'valid')
         outline = (lambda A, Rr: (lambda t: np.interp(np.mod(t + np.pi, 2 * np.pi) - np.pi, A, Rr, period=2 * np.pi)))(ang, rad)
-        spokes = max(24, int(round(2 * np.pi * float(rad.mean()) / (0.42 * d))))
-        det.patch(P0, nrm, outline, pillow_profile((1.0 if motif else 0.75) * d, 2.0 if motif else 4.0), ci_of(p.colour), CROCHET,
-                  p1=spokes, p2=len(p.counts) if hasattr(p, 'counts') else 2, gloss=0.03, thick=d,
-                  na=240 if motif else 120, seat=0.7)
+        # rounds as they read on the toy: about one yarn width and a half each, however the pattern started
+        nrd = max(len(p.counts) if hasattr(p, 'counts') else 2, int(round(float(rad.mean()) / (1.35 * d))), 1)
+        det.patch(P0, nrm, outline, pillow_profile((0.8 if motif else 0.5) * d, 2.0 if motif else 5.0), ci_of(p.colour), CROCHET,
+                  p1=1.45 * d, p2=nrd, gloss=0.0, thick=d,
+                  na=240 if motif else 160, nr=20, seat=0.7)
+        det.stack(det.items[-1])
 
     for f, hname, az, sx, _m in face_items(spec, toy):
         kind = f['type']

@@ -680,13 +680,29 @@ def _shade(zb, nb, sb, pb, idb, cb, tb, colnode, ncol, h, cam_pos, B, fpx, W, H,
                 hz = ldir[2] - rz
                 hl = math.sqrt(hx * hx + hy * hy + hz * hz) + 1e-9
                 ndh = max(0.0, (nx * hx + ny * hy + nz * hz) / hl)
-                # a broad soft reflection of the softbox, not a pin-point
-                spec = (ndh ** 60 * 0.9 + ndh ** 12 * 0.10) * (0.3 + 0.7 * lit)
-                env = 0.03 + 0.05 * max(0.0, ny)
-                fres = (1.0 - ndv) ** 4 * 0.20
+                # a glossy safety eye as on the studio photos: deep and dark, with the softbox mirrored in it as a
+                # big soft catchlight up on the key side and a small second one opposite (both fixed to the view, so
+                # every eye in the shot looks the same way and they do not swim when the toy turns a little)
+                spec = (ndh ** 60 * 0.5 + ndh ** 12 * 0.05) * (0.3 + 0.7 * lit)
+                env = 0.012 + 0.02 * max(0.0, ny)
+                fres = (1.0 - ndv) ** 4 * 0.10
+                dn = nx * rx + ny * ry + nz * rz
+                qx = rx - 2.0 * dn * nx
+                qy = ry - 2.0 * dn * ny
+                qz = rz - 2.0 * dn * nz
+                # in the camera frame: B[0] right, B[1] up, B[2] forward
+                qr = qx * B[0, 0] + qy * B[0, 1] + qz * B[0, 2]
+                qu = qx * B[1, 0] + qy * B[1, 1] + qz * B[1, 2]
+                qf = qx * B[2, 0] + qy * B[2, 1] + qz * B[2, 2]
+                sgn = -1.0 if ldir[0] * B[0, 0] + ldir[1] * B[0, 1] + ldir[2] * B[0, 2] < 0.0 else 1.0      # the key side as seen in this shot
+                c1 = (qr * 0.42 * sgn + qu * 0.52 - qf * 0.74) / 1.0
+                c2 = (-qr * 0.30 * sgn - qu * 0.22 - qf * 0.93) / 1.0
+                cat = min(1.0, max(0.0, (c1 - 0.945) / 0.02)) * 1.6
+                cat += min(1.0, max(0.0, (c2 - 0.985) / 0.006)) * 0.9
+                cat += max(0.0, c1 - 0.80) ** 2 * 1.2           # a soft glow round the big catchlight
                 for ch in range(3):
                     pc = _lin(palette[ci, ch])
-                    out[py, px, ch] = _srgb(_shoulder(pc * (0.35 + 0.55 * ndl) * ao + env + fres + spec))
+                    out[py, px, ch] = _srgb(_shoulder(pc * (0.30 + 0.50 * ndl) * ao + env + fres + spec + cat))
                 continue
             kk = int(sb[py, px] / h)
             ci = colnode[min(max(kk, 0), ncol - 1)]
@@ -821,35 +837,37 @@ def _shade_details(zb, nb, idb, cb, ub, cam_pos, B, fpx, W, H, LB, lo, scale, SM
                 ny += slope * e2y
                 nz += slope * e2z
                 lane = math.floor(f * 6.0) + 13.0 * math.floor(a)
-                alb = (0.60 - 0.22 * (1.0 - bump ** 1.2) * l1 - 0.06 * (1.0 - l1)) * \
+                alb = (0.86 - 0.20 * (1.0 - bump ** 1.2) * l1 - 0.05 * (1.0 - l1)) * \
                       (1.0 + 0.08 * _vnoise(u * 1.3 + _hash(lane, 2.0) * 9.0, lane) * _lod(sp / 6.0, foot))
                 fx, fy, fz = e1x, e1y, e1z
-            elif mat == 2:                                   # a crocheted applique: stitches radiate from its centre
-                nsp = EL[e, 2]
-                nrd = EL[e, 3]
+            elif mat == 2:                                   # a crocheted applique: rounds of sc V's round its centre
+                sw = max(EL[e, 2], 0.3)                      # stitch width (mm)
+                nrd = max(EL[e, 3], 1.0)                     # rounds
                 rr = math.sqrt(u * u + v * v) + 1e-9
                 th = math.atan2(v, u)
-                s = th / TAU * nsp
-                f = s - math.floor(s)
-                q = 2.0 * f - 1.0
-                bump = math.sqrt(max(0.0, 1.0 - q * q))
-                l1 = _lod(TAU * rr / nsp, foot)
-                ctx = -math.sin(th) * e1x + math.cos(th) * e2x  # across the spokes
+                a = rho * nrd
+                k = math.floor(a)
+                fr = a - k                                   # 0 at the inner edge of the round, 1 at its top
+                rc = rr * (k + 0.5) / max(a, 1e-3)           # radius of the middle of this round (mm)
+                nst = max(6.0, math.floor(TAU * rc / sw + 0.5))
+                s = (th / TAU + 0.5 + 0.37 * k) * nst
+                fs = s - math.floor(s)
+                # each stitch is a short plump V: its two legs run from the top corners in to the base at the centre
+                lx = abs(fs - 0.5) - (0.12 + 0.36 * fr)
+                bump = math.exp(-(lx / 0.17) ** 2)
+                top = math.exp(-((fr - 0.93) / 0.07) ** 2)   # the top loops make a soft line at the round's edge
+                hgt = max(bump, 0.7 * top)
+                l1 = _lod(TAU * rc / nst, foot)
+                ctx = -math.sin(th) * e1x + math.cos(th) * e2x  # round the round
                 cty = -math.sin(th) * e1y + math.cos(th) * e2y
                 ctz = -math.sin(th) * e1z + math.cos(th) * e2z
-                slope = max(-1.4, min(1.4, -q / max(bump, 0.3))) * 0.30 * l1
+                slope = max(-1.0, min(1.0, -2.0 * lx / 0.17 * bump * (1.0 if fs > 0.5 else -1.0))) * 0.10 * l1
                 nx += slope * ctx
                 ny += slope * cty
                 nz += slope * ctz
-                alb = 1.0 - 0.22 * (1.0 - bump ** 1.2) * l1 - 0.05 * (1.0 - l1)
-                for k in range(1, int(nrd)):                 # the line where one round is worked into the last
-                    dk = (rho - k / nrd) / 0.035
-                    alb *= 1.0 - 0.16 * math.exp(-dk * dk)
-                alb *= 1.0 - 0.22 * math.exp(-(rr / 0.7) ** 2)  # the closed magic ring
-                alb *= 1.0 + 0.05 * _vnoise(rr * 1.7, math.floor(s) + 31.0)
-                fx = math.cos(th) * e1x + math.sin(th) * e2x
-                fy = math.cos(th) * e1y + math.sin(th) * e2y
-                fz = math.cos(th) * e1z + math.sin(th) * e2z
+                alb = 1.0 - 0.13 * (1.0 - hgt) * l1 - 0.04 * (1.0 - l1)
+                alb *= 1.0 - 0.06 * math.exp(-(rr / 0.6) ** 2)  # the closed magic ring
+                alb *= 1.0 + 0.05 * _vnoise(rr * 1.7, math.floor(s) + 31.0 * k)
             elif mat == 3:                                   # a plied thread: twist along its length
                 pitch = max(EL[e, 2], 1e-3)
                 nply = EL[e, 3]
@@ -893,7 +911,8 @@ def _shade_details(zb, nb, idb, cb, ub, cam_pos, B, fpx, W, H, LB, lo, scale, SM
             for ch in range(3):
                 pc = palette[ci, ch]
                 tint = (pc / lum) ** (0.6 * dk)              # shade deepens in the dye colour, as on the yarn
-                out[py, px, ch] = _shoulder(pc * alb * li * tint + spec * (0.35 + 0.65 * pc))
+                # lit in linear light like the yarn round it, so a white bobble stays white instead of going silver
+                out[py, px, ch] = _srgb(_shoulder(_lin(pc) * alb * li * tint + _lin(spec * (0.35 + 0.65 * pc))))
 
 
 def soft_shape(X, r_vis, h, cmin=0.62):

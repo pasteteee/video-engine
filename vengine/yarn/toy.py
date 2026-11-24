@@ -144,7 +144,14 @@ def piece_yarn(inst, lean, d, rmax=None, with_stitch=False):
     Nm = inst.base_normal(T, TH)
     # outward: away from the axis of the piece
     c = B.mean(0)
-    if np.mean(np.sum((B - c) * Nm, 1)) < 0:
+    app = getattr(inst, 'app', None)
+    if app is not None:                                     # sewn on flat: outward is away from the piece under it
+        par = app[0]
+        g = par.base(np.linspace(0.5, par.p.M - 0.5, 9)[:, None].repeat(8, 1).ravel(),
+                     np.tile(np.linspace(0, 2 * np.pi, 8, endpoint=False), 9)).mean(0)
+        if np.mean(np.sum((B - g) * Nm, 1)) < 0:
+            Nm = -Nm
+    elif np.mean(np.sum((B - c) * Nm, 1)) < 0:
         Nm = -Nm
     P = B + Nm * (NN * d)[:, None]
     if with_stitch:
@@ -190,6 +197,16 @@ def yarn_width(yarn):
     return max(t, 0.58 * float(yarn.get('stitch_mm', 4.0)))
 
 
+def _yarn_applique(inst):
+    """A piece sewn on flat that is big enough to show its stitches (a face, a snout, a hood trim, a pocket) is laid
+    as real yarn, round by round, like every other piece; a tiny one (a cheek of one or two rounds) stays a smooth
+    detail (details.py), where yarn would only make a knot."""
+    try:
+        return hasattr(inst.p, 'rounds') and max(inst.p.counts) >= 22
+    except Exception:
+        return False
+
+
 def toy_yarn(spec, rmax=None, parts=None):
     """All pieces as one chain with gaps between them.  Returns X, D, colour index per node, palette, gap."""
     toy, lean = _toy(spec)
@@ -201,7 +218,8 @@ def toy_yarn(spec, rmax=None, parts=None):
     for name, inst in toy.inst.items():
         if parts and name.split('_')[0] not in parts:
             continue
-        if getattr(inst, 'app', None) is not None or getattr(inst.p, 'motif', None) is not None:
+        if getattr(inst.p, 'motif', None) is not None or (getattr(inst, 'app', None) is not None and
+                                                           not _yarn_applique(inst)):
             applique.append(inst); continue
         if not hasattr(inst.p, 'rounds') or not hasattr(inst.p, 'counts'):
             warn(f'piece {name!r} has no rounds: not drawn'); continue
