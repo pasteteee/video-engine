@@ -1,0 +1,49 @@
+{
+ "name": "popcorn",
+ "title": "Popcorn",
+ "colours": {
+  "butter": "#fff4d6",
+  "gold": "#f0c868"
+ },
+ "parts": [
+  {
+   "id": "body",
+   "rounds": [
+    "mr 6",
+    "12",
+    "popcorns every 2",
+    "popcorns every 2 from 1",
+    "dec 6 to 6"
+   ],
+   "colour": "butter",
+   "stuff": "firm",
+   "colours": [
+    {
+     "rounds": [
+      1,
+      1
+     ],
+     "colour": "gold"
+    }
+   ]
+  }
+ ],
+ "assembly": [
+  {
+   "part": "body",
+   "axis": [
+    0,
+    1,
+    0
+   ]
+  }
+ ],
+ "face": [],
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ }
+}

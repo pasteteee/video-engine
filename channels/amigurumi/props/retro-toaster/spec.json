@@ -1,0 +1,186 @@
+{
+ "name": "retro_toaster",
+ "title": "Retro toaster",
+ "colours": {
+  "mint": "#9fd8c9",
+  "cream": "#fbf3e4",
+  "charcoal": "#2c2c30",
+  "chrome": "#c9ced6",
+  "red": "#e2484c"
+ },
+ "parts": [
+  {
+   "id": "body",
+   "rounds": [
+    "ch 17",
+    "inc 4 to 46",
+    "blo 46",
+    "even 13",
+    "flo 46",
+    "dec 6 to 34",
+    "dec 10 to 24"
+   ],
+   "colour": "mint",
+   "stuff": "firm",
+   "colours": [
+    {
+     "rounds": [
+      1,
+      4
+     ],
+     "colour": "cream"
+    },
+    {
+     "rounds": [
+      11,
+      12
+     ],
+     "colour": "cream"
+    }
+   ]
+  },
+  {
+   "id": "lever",
+   "rounds": [
+    "mr 6",
+    "even 4"
+   ],
+   "colour": "red",
+   "end": "closed",
+   "stuff": "firm",
+   "flatten": 0.3
+  },
+  {
+   "id": "knob",
+   "rounds": [
+    "mr 6",
+    "even 1"
+   ],
+   "colour": "chrome",
+   "end": "open",
+   "stuff": "light"
+  },
+  {
+   "id": "foot",
+   "rounds": [
+    "mr 6",
+    "even 2"
+   ],
+   "colour": "charcoal",
+   "end": "closed",
+   "stuff": "firm"
+  }
+ ],
+ "assembly": [
+  {
+   "part": "body",
+   "axis": [
+    0,
+    1,
+    0
+   ]
+  },
+  {
+   "part": "lever",
+   "on": "body",
+   "at": {
+    "round": 14,
+    "az": 90
+   },
+   "dir": [
+    1,
+    0,
+    0
+   ],
+   "sink": 2
+  },
+  {
+   "part": "knob",
+   "on": "body",
+   "at": {
+    "round": 9,
+    "az": 60
+   },
+   "applique": true
+  },
+  {
+   "part": "foot",
+   "on": "body",
+   "at": {
+    "round": 2,
+    "az": 45
+   },
+   "dir": [
+    0,
+    -1,
+    0
+   ],
+   "mirror": true,
+   "sink": 2
+  }
+ ],
+ "face": [
+  {
+   "type": "satin",
+   "on": "body",
+   "at": {
+    "round": 22.6,
+    "az": 90
+   },
+   "width_mm": 34,
+   "height_mm": 5,
+   "shape": "oval",
+   "colour": "charcoal",
+   "thickness_mm": 0.6,
+   "mirror": true,
+   "id": "slot"
+  },
+  {
+   "type": "safety_eye",
+   "on": "body",
+   "at": {
+    "round": 14,
+    "az": 14
+   },
+   "size_mm": 9,
+   "mirror": true,
+   "id": "eye"
+  },
+  {
+   "type": "stitch",
+   "on": "body",
+   "points": [
+    [
+     11.5,
+     -7
+    ],
+    [
+     10.8,
+     -3.5
+    ],
+    [
+     10.6,
+     0
+    ],
+    [
+     10.8,
+     3.5
+    ],
+    [
+     11.5,
+     7
+    ]
+   ],
+   "colour": "charcoal",
+   "thickness_mm": 1.4,
+   "id": "smile"
+  }
+ ],
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ }
+}

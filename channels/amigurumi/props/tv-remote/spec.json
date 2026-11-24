@@ -1,0 +1,119 @@
+{
+ "name": "tv_remote",
+ "title": "TV remote",
+ "colours": {
+  "charcoal": "#3a3d44",
+  "red": "#e0393e",
+  "grey": "#9aa0a8",
+  "teal": "#3fb6b0"
+ },
+ "parts": [
+  {
+   "id": "body",
+   "rounds": [
+    "ch 7",
+    "inc 4 to 22",
+    "even 24",
+    "dec 4 to 14",
+    "dec 7 to 7"
+   ],
+   "colour": "charcoal",
+   "stuff": "medium",
+   "flatten": 0.5
+  }
+ ],
+ "assembly": [
+  {
+   "part": "body",
+   "axis": [
+    0,
+    1,
+    0
+   ]
+  }
+ ],
+ "face": [
+  {
+   "type": "safety_nose",
+   "on": "body",
+   "at": {
+    "round": 24,
+    "az": 0
+   },
+   "size_mm": [
+    6,
+    6
+   ],
+   "shape": "oval",
+   "colour": "red",
+   "id": "power"
+  },
+  {
+   "type": "safety_nose",
+   "on": "body",
+   "at": {
+    "round": 18,
+    "az": 0
+   },
+   "size_mm": [
+    9,
+    9
+   ],
+   "shape": "oval",
+   "colour": "teal",
+   "id": "ok"
+  },
+  {
+   "type": "satin",
+   "on": "body",
+   "at": {
+    "round": 12,
+    "az": 14
+   },
+   "width_mm": 3,
+   "height_mm": 3,
+   "shape": "oval",
+   "colour": "grey",
+   "thickness_mm": 1.2,
+   "mirror": true,
+   "id": "b1"
+  },
+  {
+   "type": "satin",
+   "on": "body",
+   "at": {
+    "round": 9,
+    "az": 14
+   },
+   "width_mm": 3,
+   "height_mm": 3,
+   "shape": "oval",
+   "colour": "grey",
+   "thickness_mm": 1.2,
+   "mirror": true,
+   "id": "b2"
+  },
+  {
+   "type": "satin",
+   "on": "body",
+   "at": {
+    "round": 6,
+    "az": 14
+   },
+   "width_mm": 3,
+   "height_mm": 3,
+   "shape": "oval",
+   "colour": "grey",
+   "thickness_mm": 1.2,
+   "mirror": true,
+   "id": "b3"
+  }
+ ],
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ }
+}

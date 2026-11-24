@@ -1,0 +1,90 @@
+{
+ "name": "striped_sock",
+ "title": "Striped sock",
+ "colours": {
+  "cream": "#f4ede0",
+  "red": "#d8434b",
+  "mustard": "#e9b53c"
+ },
+ "parts": [
+  {
+   "id": "body",
+   "rounds": [
+    "mr 6",
+    "inc 6 to 18",
+    "even 6",
+    "even 14",
+    "blo 18",
+    "even 2"
+   ],
+   "colour": "cream",
+   "end": "open",
+   "stuff": "light",
+   "colours": [
+    {
+     "rounds": [
+      1,
+      4
+     ],
+     "colour": "red"
+    },
+    {
+     "rounds": [
+      12,
+      13
+     ],
+     "colour": "red"
+    },
+    {
+     "rounds": [
+      16,
+      17
+     ],
+     "colour": "mustard"
+    },
+    {
+     "rounds": [
+      20,
+      21
+     ],
+     "colour": "red"
+    },
+    {
+     "rounds": [
+      24,
+      27
+     ],
+     "colour": "red"
+    }
+   ],
+   "bend": {
+    "deg": 85,
+    "at": 7,
+    "over": 3,
+    "toward": [
+     0,
+     0,
+     1
+    ]
+   }
+  }
+ ],
+ "assembly": [
+  {
+   "part": "body",
+   "axis": [
+    0,
+    1,
+    0
+   ]
+  }
+ ],
+ "face": [],
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ }
+}
