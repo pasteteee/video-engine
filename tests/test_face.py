@@ -300,3 +300,11 @@ def test_no_expression_events_while_face_turned_away():
     )
     res = FaceAnalyzer().analyze(clip, FPS)
     assert not [e for e in res.events if e["type"] in ("action_unit", "expression")]
+
+
+
+@pytest.mark.parametrize('value', [0, -0.1, .6, float('nan'), float('inf')])
+def test_invalid_blink_release_threshold_is_rejected(value):
+    from face_engine.config import FaceConfig
+    with pytest.raises(ValueError, match='blink_release_closure'):
+        FaceAnalyzer(FaceConfig(blink_release_closure=value))

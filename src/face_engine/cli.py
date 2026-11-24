@@ -16,7 +16,7 @@ from face_engine.observations import MediaInfo
 
 
 def _write(report: dict, out: str | None) -> None:
-    text = json.dumps(report, ensure_ascii=False, indent=1)
+    text = json.dumps(report, ensure_ascii=False, indent=1, allow_nan=False)
     if out:
         Path(out).write_text(text, encoding="utf-8")
         print(f"wrote {out}", file=sys.stderr)
@@ -31,7 +31,7 @@ def cmd_analyze(args: argparse.Namespace) -> int:
 
     def read(path: str, **kw):
         nonlocal source
-        if Path(path).suffix == ".npz":
+        if Path(path).suffix.lower() == ".npz":
             return load_landmarks(path)
         if source is None:
             from face_engine.sources.mediapipe_source import MediaPipeSource

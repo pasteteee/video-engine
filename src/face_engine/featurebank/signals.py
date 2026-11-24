@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 from typing import Any, Sequence
 
@@ -24,14 +25,14 @@ def _speed(x: np.ndarray, fps: float) -> np.ndarray:
     return s
 
 
-def engine_signals(report: dict[str, Any], n: int) -> dict[str, np.ndarray]:
+def engine_signals(report: dict[str, Any], n: int, indices: Sequence[int] | None = None) -> dict[str, np.ndarray]:
     rf = {r["i"]: r for r in report["frames"]}
     keys = sorted({k for r in report["frames"] for k, v in r.items()
                    if k not in ("i", "t") and isinstance(v, (int, float))})
     out = {}
     for k in keys:
         out[k] = np.array([np.nan if rf.get(i, {}).get(k) is None else float(rf[i][k])
-                           for i in range(n)], float)
+                           for i in (range(n) if indices is None else indices)], float)
     return out
 
 
@@ -47,7 +48,7 @@ def geometry_signals(frames: Sequence[FrameObservation], fps: float) -> dict[str
     t = {k: np.full(n, np.nan) for k in names}
     for i, f in enumerate(frames):
         p = f.face
-        if p is not None and len(p) >= len(FACE_POINTS):
+        if p is not None and np.shape(p) == (len(FACE_POINTS), 3):
             io = _dist(p[F["r_eye_outer"]], p[F["l_eye_outer"]])
             if io > 1:
                 t["geo.face_scale"][i] = io
@@ -75,8 +76,11 @@ def geometry_signals(frames: Sequence[FrameObservation], fps: float) -> dict[str
                 v = p[F["l_eye_outer"]][:2] - p[F["r_eye_outer"]][:2]
                 t["geo.head_tilt_2d"][i] = float(np.degrees(np.arctan2(v[1], v[0])))
         b, vis = f.body, f.body_visibility
-        if b is not None and vis is not None:
-            ok = lambda k: vis[B[k]] > 0.5  # noqa: E731
+        if b is not None and np.shape(b) == (len(BODY_POINTS), 3):
+            vis = np.ones(len(b)) if vis is None else np.asarray(vis)
+            if vis.shape != (len(b),):
+                continue
+            ok = lambda k: np.isfinite(vis[B[k]]) and vis[B[k]] > 0.5 and np.isfinite(b[B[k]]).all()  # noqa: E731
             if ok("l_shoulder") and ok("r_shoulder"):
                 sw = _dist(b[B["l_shoulder"]], b[B["r_shoulder"]])
                 if sw > 1:
@@ -123,9 +127,11 @@ def kinematic_signals(sig: dict[str, np.ndarray], fps: float) -> dict[str, np.nd
 def audio_signals(clip: str, n: int, fps: float) -> dict[str, np.ndarray]:
     import librosa
 
-    pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", clip, "-ac", "1", "-ar", "16000", "-f", "s16le", "-"],
+    pcm = subprocess.run([os.environ.get("FACE_ENGINE_FFMPEG", "ffmpeg"), "-v", "error", "-i", clip, "-ac", "1", "-ar", "16000", "-f", "s16le", "-"],
                          capture_output=True, check=True).stdout
-    a = np.frombuffer(pcm, np.int16).astype(np.float32) / 32768
+    if not pcm:
+        raise ValueError("audio decoder returned no samples")
+    a = np.frombuffer(pcm, dtype="<i2").astype(np.float32) / 32768
     sr, hop = 16000, 160
     tf = lambda m: np.arange(m) * hop / sr  # noqa: E731
     tv = np.arange(n) / fps

@@ -45,7 +45,7 @@ class Engine:
     ) -> None:
         self.config = config or EngineConfig()
         self.analyzers: list[Analyzer] = list(
-            analyzers or (FaceAnalyzer(self.config.face), BodyAnalyzer(self.config.body))
+            (FaceAnalyzer(self.config.face), BodyAnalyzer(self.config.body)) if analyzers is None else analyzers
         )
 
     def run(
@@ -58,6 +58,17 @@ class Engine:
         if not frames:
             raise ValueError("no frames to analyze")
         fps = media.fps
+        if not np.isfinite(fps) or fps <= 0:
+            raise ValueError("fps must be finite and positive")
+        times = np.asarray([f.time_s for f in frames], dtype=float)
+        if not np.isfinite(times).all() or np.any(np.diff(times) <= 0):
+            raise ValueError("frame timestamps must be finite and strictly increasing")
+        if len(times) > 1 and not np.allclose(np.diff(times), 1 / fps, rtol=0.01, atol=1e-6):
+            raise ValueError("frames must be uniformly sampled at media.fps; resample first")
+        if not np.isfinite(self.config.segment_s) or self.config.segment_s <= 0:
+            raise ValueError("segment_s must be finite and positive")
+        if frames_fps is not None and (not np.isfinite(frames_fps) or frames_fps < 0):
+            raise ValueError("frames_fps must be finite and nonnegative")
         results = {a.name: a.analyze(frames, fps, neutral) for a in self.analyzers}
         times = np.array([f.time_s for f in frames])
         tagged = sorted(
@@ -84,6 +95,7 @@ class Engine:
                 "frames": len(frames),
                 "duration_s": rnd(len(frames) / fps),
                 "analyzers": list(results),
+                "engine_config": _jsonable(asdict(self.config)),
             },
             "glossary": {k: v for r in results.values() for k, v in r.glossary.items()},
             "baseline": {name: _jsonable(r.baseline) for name, r in results.items()},
@@ -168,7 +180,7 @@ def _frames(
     for r in results.values():
         for k, v in r.features.items():
             col = np.round(v[::stride].astype(float), 3) + 0.0
-            for row, val, ok in zip(rows, col.tolist(), ~np.isnan(col)):
+            for row, val, ok in zip(rows, col.tolist(), np.isfinite(col)):
                 if ok:
                     row[k] = val
     return rows

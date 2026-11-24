@@ -13,6 +13,17 @@ def window_frames(fps: float, seconds: float) -> int:
     return n if n % 2 else n + 1
 
 
+def hysteresis_runs(x: np.ndarray, high: float, low: float) -> list[tuple[int, int]]:
+    """Offline low-threshold intervals containing a high-threshold sample.
+
+    Missing observations break intervals. Low-only movements are rejected.
+    """
+    if not np.isfinite([high, low]).all() or low > high:
+        raise ValueError('finite thresholds with low <= high required')
+    return [(a, b) for a, b in runs(np.isfinite(x) & (x >= low))
+            if np.any(x[a:b] >= high)]
+
+
 def smooth(x: np.ndarray, window: int) -> np.ndarray:
     """Centred moving average that ignores NaNs and keeps NaN where input is NaN."""
     if window <= 1 or len(x) < 2:

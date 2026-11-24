@@ -8,6 +8,7 @@ the engine's own analyzers.
 from __future__ import annotations
 
 import os
+from contextlib import ExitStack
 import urllib.request
 from pathlib import Path
 from typing import Any, Iterator
@@ -96,18 +97,21 @@ class MediaPipeSource:
             "hand": (vision.HandLandmarker, vision.HandLandmarkerOptions, {"num_hands": 2}),
         }
         out = {}
-        for key, (cls, opts_cls, extra) in specs.items():
-            if not self.use[key]:
-                continue
-            model = self.models_dir / f"{key}_landmarker.task"
-            if not model.exists():
-                raise FileNotFoundError(
-                    f"model {model} not found; run `face-engine models` to download it"
+        with ExitStack() as cleanup:
+            for key, (cls, opts_cls, extra) in specs.items():
+                if not self.use[key]:
+                    continue
+                model = self.models_dir / f"{key}_landmarker.task"
+                if not model.exists():
+                    raise FileNotFoundError(
+                        f"model {model} not found; run `face-engine models` to download it"
+                    )
+                opts = opts_cls(
+                    base_options=BaseOptions(model_asset_path=str(model)), running_mode=mode, **extra
                 )
-            opts = opts_cls(
-                base_options=BaseOptions(model_asset_path=str(model)), running_mode=mode, **extra
-            )
-            out[key] = cls.create_from_options(opts)
+                out[key] = cls.create_from_options(opts)
+                cleanup.callback(out[key].close)
+            cleanup.pop_all()
         return out
 
     def _observe(
@@ -181,9 +185,10 @@ class MediaPipeSource:
         fps = src_fps / step
         w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        detectors = self._landmarkers(video=True)
+        detectors = {}
         frames: list[FrameObservation] = []
         try:
+            detectors = self._landmarkers(video=True)
             for i, rgb in _iter_frames(cap, step, cv2):
                 t = i / src_fps
                 if max_seconds is not None and t > max_seconds:

@@ -130,7 +130,7 @@ face-engine visualize photo.jpg -o viz/       # overlay.png
 ## Тесты
 
 ```bash
-pytest                                    # 119 тестов (118 без реального фото)
+pytest                                    # актуальные результаты: docs/TEST_RESULTS.md
 FACE_ENGINE_SAMPLES=dir_with_portrait_jpg pytest tests/test_mediapipe_integration.py
 ```
 
@@ -149,3 +149,22 @@ FACE_ENGINE_SAMPLES=dir_with_portrait_jpg pytest tests/test_mediapipe_integratio
   улыбается весь ролик, улыбка станет нейтралью; для таких случаев есть `--neutral`.
 * Во время речи AU рта (25, 26, 10, 23) шумят; смотрите на `mouth.speaking`.
 * Один человек в кадре; при нескольких берётся первое лицо и первая поза.
+
+
+## Аудит и расширение (24 ноября 2026)
+
+[Исследование и путь данных до LLM](docs/RESEARCH_AND_AUDIT.md),
+[список параметров и настроек](docs/PARAMETER_INVENTORY.json),
+[план проверок](docs/TEST_PLAN.md) и [результаты](docs/TEST_RESULTS.md).
+Добавлены геометрический прокси bilateral closed80, медленные закрытия глаз,
+максимальная длительность закрытия, покрытие глаз и кинематика головы.
+Engine требует равномерные возрастающие timestamps и положительный FPS.
+FeatureBank дополнительно требует начало временной сетки в нуле.
+Кеш featurebank теперь NPZ; старые pickle-кеши игнорируются, отчёт пересчитывается.
+
+
+Итог проверки: **179 тестов без пропусков**. Независимая оценка морганий:
+TalkingFace F1=0.898; Eyeblink8 (все 8 видео) F1=0.892.
+[Протокол и ошибки](docs/BENCHMARKS.md), [аудит выполнения](docs/COMPLETION_AUDIT.md).
+`meta.engine_config` сохраняет фактические настройки в JSON. Опциональный
+`blink_release_closure=0.25` повышает precision ценой recall; default остаётся None.

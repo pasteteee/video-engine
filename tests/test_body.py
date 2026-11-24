@@ -118,7 +118,7 @@ def test_low_visibility_wrist_is_ignored():
     obs = FrameObservation(0, 0.0, body=body, body_visibility=vis)
     f = BodyAnalyzer().analyze([obs], FPS).features
     assert f["body.hands_visible"][0] == 1.0
-    assert f["body.arms_crossed"][0] == 0.0
+    assert np.isnan(f["body.arms_crossed"][0])
 
 
 def test_lean_in_ignores_resolution_of_neutral_reference():

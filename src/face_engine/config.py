@@ -34,6 +34,7 @@ class FaceConfig:
 
     smoothing_s: float = 0.10
     blink_closure: float = 0.5  # eye closure (0..1) that counts as "closed"
+    blink_release_closure: float | None = None  # optional lower boundary threshold; None = core only
     blink_max_s: float = 0.5  # closures longer than this are "eye_closure" events
     event_threshold: float = 0.35  # AU / emotion intensity that starts an event
     brief_event_s: float = 0.5  # events shorter than this are flagged "brief"

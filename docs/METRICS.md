@@ -283,7 +283,7 @@ Events are sorted by `start_s`.
 | `baseline.face` | `method`, `frames_used`, `measurements` (section 2), `head_pose`, `pose_compensation` |
 | `baseline.body` | `method`, `frames_used`, `measurements` (`sw_px`, `shoulder_roll`, `lateral_lean`, `neck`, `arm_span`) |
 | `summary.face` | see the table below |
-| `summary.body` | `body_visible`, `hands_visible_mean`, `gesturing_share`, `gesture_activity_mean`, `face_touch_share`, `arms_crossed_share`, `hands_joined_share`, `open_palms_share`, `arm_openness_mean`, `arm_openness_rel_mean`, `lean_in_mean`, `shoulder_roll_rel_mean`, `shrug_peak` (shares = fraction of frames with a body where the flag > 0.5) |
+| `summary.body` | `body_visible`, `hands_visible_mean`, `gesturing_share`, `gesture_activity_mean`, `face_touch_share`, `arms_crossed_share`, `hands_joined_share`, `open_palms_share`, `arm_openness_mean`, `arm_openness_rel_mean`, `lean_in_mean`, `shoulder_roll_rel_mean`, `shrug_peak` (shares = fraction of finite observations of the corresponding feature where the flag > 0.5; null without observations) |
 | `summary.event_counts` | number of events per type |
 | `summary.highlights` | ready-made English sentences (dominant expression, blink rate vs 8–26/min only if the clip is ≥ 10 s, smile counts with Duchenne / one-sided (\|asymmetry\| ≥ 0.4), brief AU movements, nods/shakes, gaze-averted share, body shares, face touches, posture shifts) |
 | `segments[]` | the same summary over windows of `--segment` seconds (default 5) plus `event_counts` (by the event's first frame) and `notable_vs_clip` |
@@ -332,3 +332,20 @@ visible). Use these as sanity ranges, not norms.
 Male clip events: 31 blinks (13.9/min), 138 AU events (95 brief), 12 expression events, 1 nod, 1 shake, 9 gaze-averted.
 Female clip: 30 blinks (13.4/min), 269 AU events, 35 smiles (7 Duchenne), 11 posture shifts.
 Mostly brief AU06/AU07/AU09 events on a calm face are typical **detector noise** at this resolution.
+
+
+## Additions verified on 2026-11-24
+
+`meta.engine_config` records the effective Engine/Face/Body configuration.
+`eye.closed80` is bilateral relative geometric closure >=0.8, excluding unreliable observations.
+Face summaries include observed eye seconds, closed80 share, share of closures >=0.5 s,
+longest closure, and mean/p90 head angle-derivative norm. `head.angular_speed_deg_s`
+uses wrapped Euler differences; `head.angular_accel_deg_s2` is its absolute derivative.
+These are geometric quantities; closed80 is not calibrated pupil occlusion/PERCLOS.
+No derivatives cross missing frames. First-frame velocity is unavailable.
+
+Hidden wrists/palms produce missing behavior flags. Shares use each channel's finite
+observations, with null for zero coverage. A missing gesture is not recorded as a negative.
+`blink_release_closure=None` preserves default blink boundaries. Explicit 0.25 expands
+boundaries around high-threshold samples; evaluation found higher precision but lower recall/F1.
+See BENCHMARKS.md for the measured tradeoff and TEST_RESULTS.md for verification.

@@ -168,3 +168,12 @@ def test_segment_event_counts_use_same_rounding(media):
     seg = next(s for s in report["segments"] if s["start_s"] <= blink["start_s"] < s["end_s"])
     assert seg["event_counts"].get("blink") == 1
     assert sum(s["event_counts"].get("blink", 0) for s in report["segments"]) == 1
+
+
+
+def test_report_records_effective_engine_configuration(media):
+    from face_engine.config import EngineConfig, FaceConfig
+    config = EngineConfig(segment_s=2.5, face=FaceConfig(blink_release_closure=.25))
+    report = Engine(config=config).run(clip(30), media, frames_fps=0)
+    assert report['meta']['engine_config']['segment_s'] == 2.5
+    assert report['meta']['engine_config']['face']['blink_release_closure'] == .25

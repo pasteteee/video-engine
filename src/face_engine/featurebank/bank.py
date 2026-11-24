@@ -29,6 +29,13 @@ CROSS_KEYS = ("kin.head_angular_speed", "au.AU12", "au.AU06", "au.AU01", "au.AU0
 def _words(words: Sequence[Sequence[Any]]) -> list[tuple[float, float, str]]:
     out = []
     for w in words:
+        if len(w) != 3:
+            raise ValueError("each word must be [start_s, end_s, text]")
+        start, end = float(w[0]), float(w[1])
+        if not np.isfinite([start, end]).all() or start < 0 or end <= start:
+            raise ValueError("word timestamps must be finite, nonnegative and end > start")
+        if out and start < out[-1][0]:
+            raise ValueError("words must be sorted by start time")
         tok = lexicon.tokenize(str(w[2]))
         if tok:
             out.append((float(w[0]), float(w[1]), tok))
@@ -50,7 +57,8 @@ def _clauses(ws: list[tuple[float, float, str]], gap: float = 0.3) -> list[list[
 def _mask(n: int, fps: float, spans: list[tuple[float, float]]) -> np.ndarray:
     m = np.zeros(n, bool)
     for s, e in spans:
-        a, b = max(0, int(s * fps)), min(n, int(np.ceil(e * fps)) + 1)
+        # Half-open time spans: select sample times s <= t < e.
+        a, b = max(0, int(np.ceil(s * fps))), min(n, int(np.ceil(e * fps)))
         if b > a:
             m[a:b] = True
     return m
@@ -75,8 +83,15 @@ class FeatureBank:
     def run(self, report: dict[str, Any], frames: Sequence[FrameObservation], clip: str | None,
             words: Sequence[Sequence[Any]] | None) -> dict[str, Any]:
         fps, n = self.fps, len(frames)
+        if not n:
+            raise ValueError("no frames to analyze")
+        if not np.isfinite(fps) or fps <= 0 or not np.isfinite(self.dur) or self.dur <= 0:
+            raise ValueError("fps and duration_s must be finite and positive")
+        times = np.array([f.time_s for f in frames])
+        if not np.allclose(times, np.arange(n) / fps, rtol=0.01, atol=1e-6):
+            raise ValueError("feature bank requires uniform timestamps starting at zero")
         sig: dict[str, np.ndarray] = {}
-        sig.update(engine_signals(report, n))
+        sig.update(engine_signals(report, n, [f.index for f in frames]))
         sig.update(geometry_signals(frames, fps))
         sig.update(kinematic_signals(sig, fps))
         audio = None
@@ -275,7 +290,17 @@ class FeatureBank:
         for thr in (0.25, 0.5, 1.0, 1.5, 2.0):
             feats[f"timing.pauses_ge_{thr}s.per_min"] = float((gaps >= thr).sum() / mins)
         feats["timing.long_pause_share_of_time"] = float(gaps[gaps >= 1.0].sum() / self.dur)
-        feats["timing.silence_share"] = float(1 - sum(e - s for s, e, _ in ws) / self.dur)
+        # Union of clipped intervals: overlapping ASR words must not double-count speech.
+        spans = []
+        for s, e, _ in ws:
+            s, e = max(0.0, s), min(self.dur, e)
+            if e <= s:
+                continue
+            if spans and s <= spans[-1][1]:
+                spans[-1] = (spans[-1][0], max(spans[-1][1], e))
+            else:
+                spans.append((s, e))
+        feats["timing.silence_share"] = float(1 - sum(e - s for s, e in spans) / self.dur)
         dur_words = np.array([e - s for s, e, _ in ws])
         _stats("timing.word_duration_s", dur_words, feats)
         syl = np.array([lexicon.syllables(lexicon.bare(t)) for _, _, t in ws])
@@ -361,7 +386,7 @@ class FeatureBank:
                             best, blag = c, lag
                 if best > -2:
                     feats[f"cross.xcorr.{a}~{b}.peak"] = best
-                    feats[f"cross.xcorr.{a}~{b}.lag_ms"] = blag / fps * 1000  # >0: movement leads voice
+                    feats[f"cross.xcorr.{a}~{b}.lag_ms"] = blag / fps * 1000  # >0: movement lags voice
         # event alignment with speech structure
         b = lexicon.bare
         word_on = np.array([s for s, _, _ in ws]) if ws else np.array([])

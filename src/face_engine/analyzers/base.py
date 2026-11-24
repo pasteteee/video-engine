@@ -57,7 +57,7 @@ def rnd(value: Any, digits: int = 3) -> Any:
     if value is None:
         return None
     value = float(value)
-    return None if np.isnan(value) else round(value, digits) + 0.0  # + 0.0 drops "-0.0"
+    return None if not np.isfinite(value) else round(value, digits) + 0.0  # + 0.0 drops "-0.0"
 
 
 def clip01(x: np.ndarray) -> np.ndarray:

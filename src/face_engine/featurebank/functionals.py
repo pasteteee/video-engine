@@ -29,6 +29,10 @@ def _runs(mask: np.ndarray) -> list[int]:
 def compute(x: np.ndarray, fps: float, ref_mu: float, ref_sd: float) -> dict[str, float]:
     """All functionals for one series. ``ref_mu``/``ref_sd`` are the person's whole-clip
     baseline for this signal, so threshold features mean 'unusual for this person'."""
+    if not np.isfinite(fps) or fps <= 0:
+        raise ValueError("fps must be finite and positive")
+    x = np.asarray(x, dtype=float).copy()
+    x[~np.isfinite(x)] = np.nan
     n_all = len(x)
     v = _finite(x)
     res: dict[str, float] = {"valid_share": len(v) / n_all if n_all else 0.0}
@@ -76,11 +80,13 @@ def compute(x: np.ndarray, fps: float, ref_mu: float, ref_sd: float) -> dict[str
                 keep += 1
                 last = p
         res["peaks_per_min"] = keep / (len(v) / fps / 60)
-    lag = int(round(fps))
+    lag = max(1, int(round(fps)))
     if len(v) > 3 * lag and sd > 1e-9:
-        xf = np.where(np.isfinite(x), x - mu, 0.0)
-        a = xf[:-lag] * xf[lag:]
-        res["autocorr_1s"] = float(a.mean() / (sd**2))
+        pairs = np.isfinite(x[:-lag]) & np.isfinite(x[lag:])
+        if pairs.sum() >= 3:
+            a, b = x[:-lag][pairs], x[lag:][pairs]
+            if np.std(a) > 1e-9 and np.std(b) > 1e-9:
+                res["autocorr_1s"] = float(np.corrcoef(a, b)[0, 1])
     return res
 
 

@@ -281,9 +281,10 @@ def plot_timeline(report: dict[str, Any], out: str | Path, title: str = "") -> P
 
     ax = axes[4]
     for k, flag in enumerate(BODY_FLAGS):
-        on = np.nan_to_num(col(f"body.{flag}")) > 0.5
-        ax.fill_between(t, k, k + np.where(on, 0.8, 0), step="mid", color=f"C{k}")
-    ax.plot(t, len(BODY_FLAGS) + np.nan_to_num(col("body.gesture_activity")), color="k", lw=0.8)
+        values = col(f"body.{flag}")
+        height = np.where(np.isfinite(values), k + np.where(values > 0.5, 0.8, 0), np.nan)
+        ax.fill_between(t, k, height, step="mid", color=f"C{k}")
+    ax.plot(t, len(BODY_FLAGS) + col("body.gesture_activity"), color="k", lw=0.8)
     ax.set_yticks(
         [k + 0.4 for k in range(len(BODY_FLAGS))] + [len(BODY_FLAGS) + 0.5],
         [*BODY_FLAGS, "gesture activity"],

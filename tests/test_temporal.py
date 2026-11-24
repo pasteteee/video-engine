@@ -58,3 +58,16 @@ def test_event_span_roundtrips_every_span(fps):
         for length in (1, 2, 3, 9):
             ev = T.make_event("x", (start, start + length), times, fps)
             assert T.event_span(ev) == (start, start + length)
+
+
+
+def test_hysteresis_expands_boundaries_without_low_only_events():
+    from face_engine.temporal import hysteresis_runs
+    x = np.array([0.,.3,.7,.3,0.,.3,.4,.3,0.])
+    assert hysteresis_runs(x,.5,.25) == [(1,4)]
+    assert hysteresis_runs(x,.5,.5) == [(2,3)]
+
+
+def test_hysteresis_never_bridges_missing_data():
+    from face_engine.temporal import hysteresis_runs
+    assert hysteresis_runs(np.array([.3,.7,np.nan,.3,.7,.3]),.5,.25) == [(0,2),(3,6)]

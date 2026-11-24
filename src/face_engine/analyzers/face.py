@@ -28,6 +28,7 @@ from face_engine.analyzers.base import (
     nanstat,
     rnd,
 )
+from face_engine.behavior import enrich, summarize_behavior
 from face_engine.config import FaceConfig
 from face_engine.geometry import dist, head_angles, umeyama
 from face_engine.topology import CANONICAL_FACE, FACE_ANCHORS, FACE_INDEX, SIDES
@@ -130,9 +131,17 @@ _NAN_ROW = {k: float("nan") for k in MEASURE_KEYS + POSE_KEYS}
 
 
 def measure_frame(face: np.ndarray | None) -> dict[str, float]:
-    if face is None or np.isnan(face[_ANCHORS]).any():
+    if face is None:
         return dict(_NAN_ROW)
-    aligned, rotation, iod_px = align_face(face)
+    face = np.asarray(face, dtype=float)
+    if face.shape != CANONICAL_FACE.shape or not np.isfinite(face[_ANCHORS]).all():
+        return dict(_NAN_ROW)
+    try:
+        aligned, rotation, iod_px = align_face(face)
+    except (ValueError, np.linalg.LinAlgError):
+        return dict(_NAN_ROW)
+    if not np.isfinite(iod_px) or iod_px <= 1e-9:
+        return dict(_NAN_ROW)
     yaw, pitch, roll = head_angles(rotation)
     row = face_measurements(aligned)
     row.update(head_yaw=yaw, head_pitch=pitch, head_roll=roll, iod_px=iod_px)
@@ -145,6 +154,12 @@ class FaceAnalyzer:
     def __init__(self, config: FaceConfig | None = None) -> None:
         self.cfg = config or FaceConfig()
         c = self.cfg
+        if not np.isfinite(c.blink_closure) or not 0 < c.blink_closure <= 1:
+            raise ValueError("blink_closure must be in (0, 1]")
+        if c.blink_release_closure is not None and (
+            not np.isfinite(c.blink_release_closure) or not 0 < c.blink_release_closure <= c.blink_closure
+        ):
+            raise ValueError("blink_release_closure must be in (0, blink_closure]")
         # Rough per-measurement scale used to rank frames by "calmness".
         self._scale = {
             **{f"brow_inner_h_{s}": c.brow_raise_full for s in SIDES},
@@ -175,6 +190,7 @@ class FaceAnalyzer:
         baseline = self._baseline(m, neutral_m)
         baseline["pose_compensation"] = compensated
         features = self._interpret(m, baseline["measurements"], baseline["head_pose"], fps)
+        enrich(features, fps)
         events = self._events(features, times, fps) if len(frames) > 1 else []
         return AnalyzerResult(features, baseline, events, GLOSSARY)
 
@@ -185,6 +201,7 @@ class FaceAnalyzer:
             return {"face_visible": 0.0}
         n_frames = len(present)
         out: dict[str, Any] = {"face_visible": fraction(present, np.ones_like(present))}
+        out.update(summarize_behavior(f, fps))
         peaks = {au: nanstat(np.max, f[f"au.{au}"]) for au in AU_NAMES}
         out["action_units"] = {
             au: {"mean": nanstat(np.mean, f[f"au.{au}"]), "peak": peak}
@@ -420,8 +437,8 @@ class FaceAnalyzer:
     def _events(self, f: Table, times: np.ndarray, fps: float) -> list[dict[str, Any]]:
         c = self.cfg
         ev: list[dict[str, Any]] = []
-        closed = np.nan_to_num(f["eye.closure"]) >= c.blink_closure
-        for span in T.runs(closed):
+        low = c.blink_closure if c.blink_release_closure is None else c.blink_release_closure
+        for span in T.hysteresis_runs(f["eye.closure"], c.blink_closure, low):
             dur = (span[1] - span[0]) / fps
             kind = "blink" if dur <= c.blink_max_s else "eye_closure"
             ev.append(T.make_event(kind, span, times, fps, f["eye.closure"]))
@@ -460,6 +477,9 @@ class FaceAnalyzer:
 
 
 GLOSSARY: dict[str, str] = {
+    "eye.closed80": "Both eyes >=80% closed relative to neutral; NaN if unreliable. Geometric proxy, not calibrated pupil occlusion.",
+    "head.angular_speed_deg_s": "Euclidean norm of wrapped yaw/pitch/roll derivatives; degrees/s, not a rigid-body angular velocity.",
+    "head.angular_accel_deg_s2": "Absolute change of angular speed per second; missing across gaps.",
     "face.present": "1 if a face was detected in the frame.",
     "face.reliability": "0..1; drops as the head turns away from the person's neutral pose "
     "(asymmetry and AU values degrade beyond ~20 deg yaw).",

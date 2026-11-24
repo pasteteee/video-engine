@@ -67,7 +67,11 @@ def palm_facing(points: np.ndarray, side: str) -> float:
 def _assign_sides(hands: list[Hand], body: np.ndarray, visible: dict[str, bool]) -> dict[str, Hand]:
     out: dict[str, Hand] = {}
     for hand in hands:
+        if np.shape(hand.points) != (21, 3) or not np.isfinite(hand.points).all():
+            continue
         side = hand.side
+        if side not in (None, *SIDES):
+            continue
         if side is None:
             cands = [s for s in SIDES if visible[f"{s}_wrist"]]
             if not cands:
@@ -83,9 +87,14 @@ def _assign_sides(hands: list[Hand], body: np.ndarray, visible: dict[str, bool])
 def measure_frame(obs: FrameObservation, min_visibility: float) -> dict[str, float]:
     if obs.body is None:
         return dict(_NAN_ROW)
-    body = obs.body
-    vis = obs.body_visibility if obs.body_visibility is not None else np.ones(len(body))
-    visible = {n: bool(vis[i] >= min_visibility) for n, i in BODY_INDEX.items()}
+    body = np.asarray(obs.body, dtype=float)
+    if body.shape != (len(BODY_INDEX), 3):
+        return dict(_NAN_ROW)
+    vis = np.asarray(obs.body_visibility if obs.body_visibility is not None else np.ones(len(body)))
+    if vis.shape != (len(body),):
+        return dict(_NAN_ROW)
+    visible = {n: bool(np.isfinite(vis[i]) and vis[i] >= min_visibility and np.isfinite(body[i]).all())
+               for n, i in BODY_INDEX.items()}
     if not (visible["l_shoulder"] and visible["r_shoulder"]):
         return dict(_NAN_ROW)
 
@@ -190,7 +199,7 @@ class BodyAnalyzer:
         speed = nanmax(*speeds)
         f["body.gesture_speed"] = speed
         f["body.gesture_activity"] = clip01(speed / c.gesture_speed_full)
-        f["body.gesturing"] = (np.nan_to_num(speed) > c.gesture_speed).astype(float)
+        f["body.gesturing"] = np.where(np.isfinite(speed), speed > c.gesture_speed, np.nan)
         f["body.hands_visible"] = sum((~np.isnan(m[f"wrist_x_{sd}"])).astype(float) for sd in SIDES)
 
         lx, rx = s["wrist_x_l"], s["wrist_x_r"]
@@ -205,14 +214,14 @@ class BodyAnalyzer:
             joined = (s["hands_dist"] < c.hands_joined_dist) & ~crossed
             touch = nanmin(s["touch_face_l"], s["touch_face_r"]) < c.face_touch_dist
             palm = nanmax(s["palm_l"], s["palm_r"])
-        f["body.arms_crossed"] = crossed.astype(float)
-        f["body.hands_joined"] = joined.astype(float)
-        f["body.face_touch"] = touch.astype(float)
+        f["body.arms_crossed"] = np.where(np.isfinite(lx + rx + ly + ry), crossed, np.nan)
+        f["body.hands_joined"] = np.where(np.isfinite(s["hands_dist"]), joined, np.nan)
+        f["body.face_touch"] = np.where(np.isfinite(nanmin(s["touch_face_l"], s["touch_face_r"])), touch, np.nan)
         f["body.palm_to_camera"] = palm
         # Hands resting on the arms or on each other are not "shown" palms, and
         # hand landmarks are least reliable exactly in those configurations.
         shown = (np.nan_to_num(palm, nan=-1.0) > c.palm_facing) & ~crossed & ~joined
-        f["body.open_palms"] = shown.astype(float)
+        f["body.open_palms"] = np.where(np.isfinite(palm), shown, np.nan)
 
         return mask_absent(f, present, keep="body.present")
 
@@ -258,7 +267,7 @@ class BodyAnalyzer:
             return {"body_visible": 0.0}
 
         def share(col: str) -> float | None:
-            return fraction(np.nan_to_num(f[col]) > 0.5, present)
+            return fraction(f[col] > 0.5, present & np.isfinite(f[col]))
 
         return {
             "body_visible": fraction(present, np.ones_like(present)),
