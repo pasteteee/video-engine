@@ -24,7 +24,7 @@ import numpy as np
 
 WORLD_Y = np.array([0.0, 1.0, 0.0])
 FELT, SATIN, CROCHET, THREAD, PLASTIC = range(5)
-DRAWN = ('safety_eye', 'eye', 'safety_nose', 'satin', 'felt', 'stitch', 'embroidery', 'line', 'blush', 'strap')
+DRAWN = ('safety_eye', 'eye', 'safety_nose', 'satin', 'felt', 'stitch', 'embroidery', 'line', 'blush', 'strap', 'fringe')
 NE = 16                                     # floats per element row (see Details.table)
 
 
@@ -331,6 +331,34 @@ def build(spec, toy, X, cols, d, applique=()):
             envs = 0.5 * envs + 0.5 * np.convolve(np.pad(envs, k, mode='edge'), np.ones(2 * k + 1) / (2 * k + 1), 'valid')
             P = P + Nn * (envs + 0.3 * th + float(f.get('lift_mm', 0.0)))[:, None]
             det.tube(P, Nn, th, ci, gloss=0.06)
+            continue
+        if kind == 'fringe':
+            # strands of yarn knotted along a line (a fringe of hair): each hangs down the piece from its knot, lying
+            # on the stitches, a little apart and a little uneven so it reads as hair, not as a comb
+            cols_f = f.get('colours') or [col]
+            n = 2 * int(f.get('count', 12))           # each knotted strand hangs as two ends
+            L = float(f.get('length_mm', 8.0))
+            droop = float(f.get('droop', 0.8))
+            spread = float(f.get('spread', 0.25))
+            rmm = float(toy.yarn.get('round_mm', 3.6))
+            pts = [(float(r), float(a) * _m) for r, a in f['points']]
+            az_ = np.degrees(np.unwrap(np.radians([a for _, a in pts])))
+            rr_ = np.array([r for r, _ in pts])
+            seg = np.concatenate([[0], np.cumsum(np.hypot(np.diff(rr_), np.diff(az_) / 10.0))])
+            th = 1.2 * d
+            for j in range(n):
+                u = (j + 0.5) / n * seg[-1]
+                r0 = float(np.interp(u, seg, rr_)); a0 = float(np.interp(u, seg, az_))
+                jit = math.sin(j * 12.9898) * 0.5
+                lr = L * (1 + 0.18 * jit) / rmm * droop
+                da = spread * 18.0 * (u / seg[-1] - 0.5) * 2 + 4.0 * jit
+                path = [(r0 + lr * q, a0 + da * q * q) for q in np.linspace(0, 1, 6)]
+                P, Nn = _thread_path(inst, path, 1.0, step=0.4)
+                env = np.array([det.envelope(P[i:i + 1], Nn[i])[0] for i in range(len(P))])
+                env = np.where(np.isfinite(env), env, 0.0)
+                q = np.linspace(0, 1, len(P))
+                P = P + Nn * (env + 0.45 * th + 0.6 * th * (1 - q))[:, None]   # fuller at the knot
+                det.tube(P, Nn, th * (1.0 - 0.35 * q[len(q) // 2]), ci_of(cols_f[j % len(cols_f)]), gloss=0.04)
             continue
         if kind == 'blush':
             P0, n0 = inst.point(f['at']['round'], az)

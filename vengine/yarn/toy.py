@@ -102,7 +102,10 @@ def piece_yarn(inst, lean, d, rmax=None, with_stitch=False):
     prev_n = None
     ring = counts[0] <= 8                                    # begun in a magic ring (not a chain ring of 48)
     for i, rd in enumerate(rounds, 1):
-        tmpl = SC_RING if ring and i <= RING_ROUNDS else SC
+        # a round that (nearly) doubles the last one is all increases: its stitches fan out short and radial, as in the
+        # rounds by the ring, instead of pinched V's that read as a flower on a flat disc (a cookie, an ear)
+        steep = prev_n is not None and counts[i - 1] >= 1.45 * prev_n
+        tmpl = SC_RING if (ring and i <= RING_ROUNDS) or steep else SC
         n_i = counts[i - 1]
         hw = math.pi / n_i                                  # half a stitch, in angle
         k = 0; j = 0
