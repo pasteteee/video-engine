@@ -1,0 +1,10 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+*.npz
+*.task
+.venv/
+*.fbcache.pkl
+*.bundle
+
+.test-assets/
