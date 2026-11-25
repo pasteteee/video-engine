@@ -16,6 +16,7 @@ dev = ["pytest>=8"]
 test-media = ["imageio-ffmpeg>=0.5"]
 viz = ["matplotlib>=3.7", "opencv-python-headless>=4.8"]
 featurebank = ["librosa>=0.10"]
+transcribe = ["faster-whisper>=1.0"]
 
 [project.scripts]
 face-engine = "face_engine.cli:main"

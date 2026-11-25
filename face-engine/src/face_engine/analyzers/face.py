@@ -118,6 +118,7 @@ def face_measurements(a: np.ndarray) -> dict[str, float]:
     m["lip_thick"] = (p("upper_lip_top")[1] - p("upper_lip_inner")[1]) + (
         p("lower_lip_inner")[1] - p("lower_lip_bottom")[1]
     )
+    m["lower_lip_thick"] = p("lower_lip_inner")[1] - p("lower_lip_bottom")[1]
     m["lip_gap"] = p("upper_lip_inner")[1] - p("lower_lip_inner")[1]
     m["mouth_width"] = dist(p("r_mouth_corner"), p("l_mouth_corner"))
     m["jaw_open"] = dist(p("nose_tip"), p("chin"))
@@ -427,6 +428,10 @@ class FaceAnalyzer:
         f["gaze.dir_h_deg"], f["gaze.dir_v_deg"] = dir_h, dir_v
         f["gaze.averted"] = (np.hypot(dir_h, dir_v) > c.gaze_averted_deg).astype(float)
 
+        # Visible red lip vs neutral: < ~0.5 with closed lips = lips pressed in / sucked / bitten.
+        f["mouth.lip_thickness_rel"] = s["lip_thick"] / max(base["lip_thick"], 1e-6)
+        f["mouth.lower_lip_rel"] = s["lower_lip_thick"] / max(base["lower_lip_thick"], 1e-6)
+
         lip_std = T.rolling_std(s["lip_gap"], T.window_frames(fps, 0.5))
         f["mouth.activity"] = lip_std
         f["mouth.speaking"] = (lip_std > c.speaking_lip_std).astype(float)
@@ -501,6 +506,8 @@ GLOSSARY: dict[str, str] = {
     "gaze.h|v": "Iris offset vs neutral, in half eye-widths. h>0 toward image right, v>0 up.",
     "gaze.dir_h_deg|dir_v_deg": "Approximate gaze direction (head + eyes) vs neutral, degrees.",
     "gaze.averted": "1 when the approximate gaze direction is more than 15 deg off neutral.",
+    "mouth.lip_thickness_rel": "Visible red-lip height (upper + lower) vs the neutral; <0.5 with closed lips = lips pressed in, sucked or bitten.",
+    "mouth.lower_lip_rel": "Visible lower-lip height vs the neutral; drops when the lower lip is pulled in or bitten (AU28/AU32 proxy).",
     "mouth.activity": "Rolling std of lip opening (IOD units); high while talking.",
     "mouth.speaking": "1 when mouth movement looks like speech. Mouth AUs are less "
     "trustworthy while speaking.",
