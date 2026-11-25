@@ -25,10 +25,10 @@ def ami_materials():
     L(nt, uv.outputs[0], th.inputs[0]); L(nt, uv.outputs[0], ta.inputs[0])
     at = N(nt, 'ShaderNodeAttribute', attribute_name='col')
     mx = N(nt, 'ShaderNodeMix', data_type='RGBA', blend_type='MULTIPLY')
-    mx.inputs['Factor'].default_value = 0.75
+    mx.inputs['Factor'].default_value = 0.9
     L(nt, at.outputs['Color'], mx.inputs[6]); L(nt, ta.outputs['Color'], mx.inputs[7])
     L(nt, mx.outputs[2], bs.inputs['Base Color'])
-    setp(bs, Roughness=0.8, Sheen_Weight=0.7, Sheen_Roughness=0.4, Subsurface_Weight=0.08, Subsurface_Scale=0.002)
+    setp(bs, Roughness=0.85, Sheen_Weight=0.35, Sheen_Roughness=0.5, Subsurface_Weight=0.08, Subsurface_Scale=0.002)
     bump(nt, bs, th.outputs['Color'], 1.0, 0.0011)
     M[0] = m
     m, nt, bs = new_mat('ami_eye')
@@ -83,9 +83,11 @@ class AmiToy:
             self.arm[k] = dict(E=np.array(v['E']), ax=np.array(v['ax']), L=v['L'], tip=np.array(v['tip']),
                                side=self.pieces[k]['side'])
         self.pidx = {p['name']: k for k, p in enumerate(self.pieces)}
+        self.alias = rg.get('alias', {})
+        self.pmap = rg.get('pmap', {})
         self.objs = []
         for o in d['parts']:
-            k = self.pidx.get(o['piece'], 0)
+            k = self.kof(o['piece'])
             col = srgb2lin(o['C'])
             uv = o['UV'] if o['mat'] in (0, 2) else None
             ob = mesh_obj(f"{key}.{o['name']}", o['V'], o['F'], col, uv, coll, M[o['mat']])
@@ -135,6 +137,24 @@ class AmiToy:
         self.mouth = None
         self.TR = None
 
+    def kof(self, name, depth=0):
+        """Rig piece that carries a part: itself, its unmirrored id (cheek_L -> cheek), or the part it is sewn on."""
+        if name in self.pidx:
+            return self.pidx[name]
+        if self.pmap.get(name) in self.pidx:
+            return self.pidx[self.pmap[name]]
+        base = name[:-2] if name[-2:] in ('_L', '_R') else name
+        for nm in (base + '_L' if name.endswith('_L') else None, base):
+            if nm and nm in self.pidx:
+                return self.pidx[nm]
+        on = self.alias.get(base)
+        if on and depth < 6:
+            side = name[-2:] if name[-2:] in ('_L', '_R') else ''
+            if on + side in self.pidx:
+                return self.pidx[on + side]
+            return self.kof(on, depth + 1)
+        return 0
+
     def objs_piece_centre(self, k):
         Vs = [x['V'] for x in self.objs if x['k'] == k and x['mat'] == 0]
         return np.concatenate(Vs).mean(0) if Vs else np.zeros(3)
@@ -150,7 +170,7 @@ class AmiToy:
         for st, ms in d.items():
             obs = []
             for o in ms:
-                k = self.pidx.get(o['piece'], 0)
+                k = self.kof(o['piece'])
                 uv = o['UV'] if o['mat'] in (0, 2) else None
                 ob = mesh_obj(f"{self.key}.{st}.{o['name']}", o['V'], o['F'], srgb2lin(o['C']), uv, coll, M[o['mat']])
                 obs.append((ob, k))

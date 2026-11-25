@@ -2,6 +2,7 @@
 the rig (parents, joints, arm directions) taken from the yarn Dancer export and mapped into the same space.
 Usage: python3 export_ami.py tid[:height] ..."""
 import sys, json, pickle
+sys.path.insert(0, '/home/user/work/b3d')
 sys.path.insert(0, '/home/user')
 import numpy as np
 from amikit.toy import Toy
@@ -22,10 +23,10 @@ def load_spec(tid):
     raise FileNotFoundError(tid)
 
 
-def export(tid, height=None):
+def export(tid, height=None, ku=4, kv=4, relief=0.6, dest=None):
     sp = load_spec(tid)
     toy = Toy(sp)
-    parts = toy.build(ku=3, kv=3, relief=0.0)
+    parts = toy.build(ku=ku, kv=kv, relief=relief)
     allV = np.concatenate([p['V'] for p in parts])
     h0 = allV[:, 1].max() - allV[:, 1].min()
     s = (height / h0) if height else 1.0
@@ -41,6 +42,14 @@ def export(tid, height=None):
                         C=p['C'].astype(np.float32), N=p['N'].astype(np.float32),
                         UV=(p['UV'] if p.get('UV') is not None else np.zeros((len(V), 2))).astype(np.float32),
                         H=np.asarray(p.get('H', np.ones(len(V))), np.float32), fid=fid))
+    from unfold import unfold, tuck, backing, overlap_rounds, reorient
+    for o in out:                       # no folded stitches (dark specks) and no under-layer poking through
+        if o['mat'] == 0:
+            o['V'], _ = unfold(o['V'], o['F'], o['N'], iters=200, grow=2)
+    overlap_rounds(out, sp, kv)
+    tuck(out, sp)
+    backing(out, sp)
+    reorient(out)
     # rig from the Dancer export, mapped by a least-squares fit of piece centroids (scale + offset)
     rig = None
     try:
@@ -63,13 +72,28 @@ def export(tid, height=None):
         sph = []
         for row in z['spheres']:
             sph.append([row[0], *f(row[1:4]), row[4] * k, row[5]])
-        rig = dict(pieces=pcs, arm=arm, spheres=sph)
+        # pieces whose names differ between the two builds (arm_L vs arm_wave, leg_L vs leg_a): the rig piece whose
+        # yarn lies closest to the part
+        from scipy.spatial import cKDTree
+        trees = [(pc['name'], cKDTree(f(z['X'][pc['start']:pc['end']][::7]))) for pc in pcs]
+        names = {pc['name'] for pc in pcs}
+        pmap = {}
+        for o in out:
+            if o['mat'] == 0 and o['piece'] not in names and o['piece'] not in pmap:
+                Vq = o['V'][::max(1, len(o['V']) // 400)]
+                best = min(trees, key=lambda nt: float(nt[1].query(Vq)[0].mean()))
+                pmap[o['piece']] = best[0]
+        print(tid, 'mapped', pmap)
+        rig = dict(pieces=pcs, arm=arm, spheres=sph, pmap=pmap)
     except FileNotFoundError:
         rig = dict(pieces=[dict(name=o['piece'], role='stiff', side=0.0, parent=-1, joint=[0, 0, 0], dir=[0, -1, 0])
                            for o in out[:1]], arm={}, spheres=[])
+    # every assembled part follows the piece it is sewn on (cheeks on the face, ears on the head ...):
+    # alias = part id -> the part it is attached to, used for parts the Dancer rig does not carry
+    rig['alias'] = {a['part']: a['on'] for a in sp.get('assembly', []) if a.get('on')}
     allV = np.concatenate([o['V'] for o in out])
     res = dict(parts=out, rig=rig, height=float(allV[:, 1].max()), width=float(allV[:, 0].max() - allV[:, 0].min()))
-    pickle.dump(res, open(f'/home/user/work/b3d/{tid}.ami.pkl', 'wb'))
+    pickle.dump(res, open(dest or f'/home/user/work/b3d/{tid}.ami.pkl', 'wb'))
     print(tid, len(out), 'meshes', sum(len(o['V']) for o in out), 'verts', 'h', round(res['height'], 1))
 
 
