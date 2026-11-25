@@ -32,6 +32,22 @@ Talk to the owner in the profile's `work_language` (Russian for realstory). Firs
 5. Update the Planner (`planner-sync`) when the stage changes.
 6. Long session or switching agents → `handoff`.
 
+## Build shorts (channels with `"format": "build_short"`, e.g. amigurumi)
+No narration: the toy is crocheted stitch by stitch on screen, then the real toy and the free pattern.
+`vengine status` shows this chain:
+
+| # | Agent | Writes | Owner stop |
+|---|---|---|---|
+| 1 | rs-topics | `01_topic/topic_card.json` (which toy, why now) | **topic** |
+| 2 | rs-build | `04_shots/storyboard.json` (hook, captions, photos, CTA) | **script** (the storyboard) |
+| 3 | rs-build | `06_render/knit/` (`vengine build knit`) | no |
+| 4 | rs-build | `06_render/main.mp4` + `06_render/upload/` (`vengine build all`) | no |
+| 5 | rs-qa | `07_qa/qa_report.json` from the frame sheet | **final** |
+| 6 | rs-publisher | `08_publish/publish.json` | no |
+
+The knit renderer is pluggable (`build.knit.renderer` in channel.json): the compositor only reads the frames and
+`plan.json` (schema `knit_plan`), so a better yarn look lands without touching the rest.
+
 ## Morning flow ("что сегодня")
 rs-analyst → one-paragraph answer: what took off and why (evidence), then rs-topics → 3 topics with a recommendation. Wait for the pick.
 

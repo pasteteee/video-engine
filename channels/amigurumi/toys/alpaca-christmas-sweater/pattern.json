@@ -1,0 +1,8165 @@
+{
+ "name": "alpaca_christmas_sweater",
+ "title": "Alpaca in a Christmas Sweater",
+ "title_ru": "Альпака в рождественском свитере",
+ "size": {
+  "height_cm": 13.9,
+  "width_cm": 7.0,
+  "depth_cm": 9.6
+ },
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ },
+ "colours": [
+  {
+   "name": "red",
+   "hex": "#c9303a",
+   "stitches": 882,
+   "extra_m": 0,
+   "metres": 25
+  },
+  {
+   "name": "cream",
+   "hex": "#f3e6cf",
+   "stitches": 873,
+   "extra_m": 0,
+   "metres": 35
+  },
+  {
+   "name": "white",
+   "hex": "#fbf9f4",
+   "stitches": 216,
+   "extra_m": 0,
+   "metres": 10
+  },
+  {
+   "name": "taupe",
+   "hex": "#8a6a55",
+   "stitches": 120,
+   "extra_m": 0,
+   "metres": 5
+  },
+  {
+   "name": "ivory",
+   "hex": "#fbf5ea",
+   "stitches": 84,
+   "extra_m": 0,
+   "metres": 5
+  },
+  {
+   "name": "pink",
+   "hex": "#f4a3ad",
+   "stitches": 36,
+   "extra_m": 0,
+   "metres": 5
+  },
+  {
+   "name": "dusty pink",
+   "hex": "#f0b6bd",
+   "stitches": 10,
+   "extra_m": 0,
+   "metres": 5
+  }
+ ],
+ "hardware": [
+  {
+   "type": "safety_eye",
+   "count": 2,
+   "size_mm": 11,
+   "shape": null,
+   "colour": "black",
+   "highlight": true
+  },
+  {
+   "type": "satin",
+   "count": 2,
+   "size_mm": null,
+   "shape": "oval",
+   "colour": "ink",
+   "highlight": false
+  },
+  {
+   "type": "stitch",
+   "count": 1,
+   "size_mm": null,
+   "shape": null,
+   "colour": "ink",
+   "highlight": false
+  },
+  {
+   "type": "stitch",
+   "count": 2,
+   "size_mm": null,
+   "shape": null,
+   "colour": "ink",
+   "highlight": false
+  },
+  {
+   "type": "satin",
+   "count": 2,
+   "size_mm": null,
+   "shape": "oval",
+   "colour": "white",
+   "highlight": false
+  }
+ ],
+ "yarn_per_stitch_m": 0.024,
+ "parts": [
+  {
+   "id": "body",
+   "make": 1,
+   "instances": [
+    "body"
+   ],
+   "colour": "red",
+   "pair": false,
+   "main_colour": "red",
+   "uses": [
+    {
+     "name": "body",
+     "mirror": false,
+     "on": null,
+     "on_pair": false,
+     "side": null,
+     "on_part": null
+    }
+   ],
+   "edge": false,
+   "spoon": 0.0,
+   "dish": 0.0,
+   "press_dims": null,
+   "oval_axis": "side",
+   "start": "mr",
+   "chain": 0,
+   "closed": true,
+   "stuff": "firm",
+   "flatten": 0.0,
+   "squash": 0.0,
+   "bend": null,
+   "applique": false,
+   "bend_info": null,
+   "stuff_after": 21,
+   "safety_items": [],
+   "multicolour": true,
+   "symmetric_colours": false,
+   "rounds": [
+    {
+     "round": 1,
+     "n": 6,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       6
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "start": "mr",
+     "chain": 0,
+     "text_ru": "6 сбн",
+     "text_en": "6 sc"
+    },
+    {
+     "round": 2,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "6 пр",
+     "text_en": "inc ×6"
+    },
+    {
+     "round": 3,
+     "n": 18,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       18
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(1 сбн, пр) ×6",
+     "text_en": "(1 sc, inc) ×6"
+    },
+    {
+     "round": 4,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       1
+      ],
+      [
+       [
+        "inc",
+        "sc",
+        "sc"
+       ],
+       5
+      ],
+      [
+       [
+        "inc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "1 сбн, (пр, 2 сбн) ×5, пр, 1 сбн",
+     "text_en": "1 sc, (inc, 2 sc) ×5, inc, 1 sc"
+    },
+    {
+     "round": 5,
+     "n": 30,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc",
+        "sc",
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       30
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(3 сбн, пр) ×6",
+     "text_en": "(3 sc, inc) ×6"
+    },
+    {
+     "round": 6,
+     "n": 36,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc"
+       ],
+       1
+      ],
+      [
+       [
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ],
+       5
+      ],
+      [
+       [
+        "inc",
+        "sc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       36
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "2 сбн, (пр, 4 сбн) ×5, пр, 2 сбн",
+     "text_en": "2 sc, (inc, 4 sc) ×5, inc, 2 sc"
+    },
+    {
+     "round": 7,
+     "n": 42,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       42
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(5 сбн, пр) ×6",
+     "text_en": "(5 sc, inc) ×6"
+    },
+    {
+     "round": 8,
+     "n": 48,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc",
+        "sc"
+       ],
+       1
+      ],
+      [
+       [
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ],
+       5
+      ],
+      [
+       [
+        "inc",
+        "sc",
+        "sc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       48
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "3 сбн, (пр, 6 сбн) ×5, пр, 3 сбн",
+     "text_en": "3 sc, (inc, 6 sc) ×5, inc, 3 sc"
+    },
+    {
+     "round": 9,
+     "n": 48,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       48
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       48
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "48 сбн",
+     "text_en": "48 sc"
+    },
+    {
+     "round": 10,
+     "n": 48,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       48
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       48
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "48 сбн",
+     "text_en": "48 sc"
+    },
+    {
+     "round": 11,
+     "n": 48,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       48
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       48
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "48 сбн",
+     "text_en": "48 sc"
+    },
+    {
+     "round": 12,
+     "n": 48,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       48
+      ]
+     ],
+     "colour_runs": [
+      [
+       "white",
+       48
+      ]
+     ],
+     "segments": [
+      [
+       "white",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": "white",
+     "text_ru": "48 сбн",
+     "text_en": "48 sc"
+    },
+    {
+     "round": 13,
+     "n": 48,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       48
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       48
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": "red",
+     "text_ru": "48 сбн",
+     "text_en": "48 sc"
+    },
+    {
+     "round": 14,
+     "n": 48,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       48
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       2
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       3
+      ],
+      [
+       "white",
+       1
+      ],
+      [
+       "red",
+       1
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "white",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "red",
+       [
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "2 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 3 сбн красным, 1 сбн белым, 1 сбн красным",
+     "text_en": "2 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 3 sc in red, 1 sc in white, 1 sc in red"
+    },
+    {
+     "round": 15,
+     "n": 48,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       48
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       48
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "48 сбн",
+     "text_en": "48 sc"
+    },
+    {
+     "round": 16,
+     "n": 48,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       48
+      ]
+     ],
+     "colour_runs": [
+      [
+       "white",
+       48
+      ]
+     ],
+     "segments": [
+      [
+       "white",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": "white",
+     "text_ru": "48 сбн",
+     "text_en": "48 sc"
+    },
+    {
+     "round": 17,
+     "n": 48,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       48
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       48
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": "red",
+     "text_ru": "48 сбн",
+     "text_en": "48 sc"
+    },
+    {
+     "round": 18,
+     "n": 42,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc",
+        "sc"
+       ],
+       1
+      ],
+      [
+       [
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ],
+       5
+      ],
+      [
+       [
+        "dec",
+        "sc",
+        "sc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       42
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "3 сбн, (уб, 6 сбн) ×5, уб, 3 сбн",
+     "text_en": "3 sc, (dec, 6 sc) ×5, dec, 3 sc"
+    },
+    {
+     "round": 19,
+     "n": 36,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       36
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(5 сбн, уб) ×6",
+     "text_en": "(5 sc, dec) ×6"
+    },
+    {
+     "round": 20,
+     "n": 30,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc"
+       ],
+       1
+      ],
+      [
+       [
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ],
+       5
+      ],
+      [
+       [
+        "dec",
+        "sc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       30
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "2 сбн, (уб, 4 сбн) ×5, уб, 2 сбн",
+     "text_en": "2 sc, (dec, 4 sc) ×5, dec, 2 sc"
+    },
+    {
+     "round": 21,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "dec"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc",
+        "sc",
+        "dec"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "dec"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(3 сбн, уб) ×6",
+     "text_en": "(3 sc, dec) ×6"
+    },
+    {
+     "round": 22,
+     "n": 18,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "dec",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       1
+      ],
+      [
+       [
+        "dec",
+        "sc",
+        "sc"
+       ],
+       5
+      ],
+      [
+       [
+        "dec",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       18
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "dec",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "1 сбн, (уб, 2 сбн) ×5, уб, 1 сбн",
+     "text_en": "1 sc, (dec, 2 sc) ×5, dec, 1 sc"
+    },
+    {
+     "round": 23,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "dec",
+      "sc",
+      "dec",
+      "sc",
+      "dec",
+      "sc",
+      "dec",
+      "sc",
+      "dec",
+      "sc",
+      "dec"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "dec"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "dec",
+        "sc",
+        "dec",
+        "sc",
+        "dec",
+        "sc",
+        "dec",
+        "sc",
+        "dec",
+        "sc",
+        "dec"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(1 сбн, уб) ×6",
+     "text_en": "(1 sc, dec) ×6"
+    },
+    {
+     "round": 24,
+     "n": 6,
+     "loop": "both",
+     "ops": [
+      "dec",
+      "dec",
+      "dec",
+      "dec",
+      "dec",
+      "dec"
+     ],
+     "groups": [
+      [
+       [
+        "dec"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       6
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "dec",
+        "dec",
+        "dec",
+        "dec",
+        "dec",
+        "dec"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "6 уб",
+     "text_en": "dec ×6"
+    }
+   ],
+   "variants": [],
+   "ref": "up",
+   "size_mm": {
+    "diameter": 68.0,
+    "length": 62.0
+   },
+   "check": [],
+   "self_check": []
+  },
+  {
+   "id": "neck",
+   "make": 1,
+   "instances": [
+    "neck"
+   ],
+   "colour": "cream",
+   "pair": false,
+   "main_colour": "cream",
+   "uses": [
+    {
+     "name": "neck",
+     "mirror": false,
+     "on": "body",
+     "on_pair": false,
+     "side": null,
+     "on_part": "body"
+    }
+   ],
+   "edge": false,
+   "spoon": 0.0,
+   "dish": 0.0,
+   "press_dims": null,
+   "oval_axis": "side",
+   "start": "mr",
+   "chain": 0,
+   "closed": false,
+   "stuff": "firm",
+   "flatten": 0.0,
+   "squash": 0.0,
+   "bend": null,
+   "applique": false,
+   "bend_info": null,
+   "stuff_after": null,
+   "safety_items": [
+    "safety_eye"
+   ],
+   "multicolour": false,
+   "symmetric_colours": true,
+   "rounds": [
+    {
+     "round": 1,
+     "n": 6,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       6
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "start": "mr",
+     "chain": 0,
+     "text_ru": "6 сбн",
+     "text_en": "6 sc"
+    },
+    {
+     "round": 2,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "6 пр",
+     "text_en": "inc ×6"
+    },
+    {
+     "round": 3,
+     "n": 18,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       18
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(1 сбн, пр) ×6",
+     "text_en": "(1 sc, inc) ×6"
+    },
+    {
+     "round": 4,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       1
+      ],
+      [
+       [
+        "inc",
+        "sc",
+        "sc"
+       ],
+       5
+      ],
+      [
+       [
+        "inc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "1 сбн, (пр, 2 сбн) ×5, пр, 1 сбн",
+     "text_en": "1 sc, (inc, 2 sc) ×5, inc, 1 sc"
+    },
+    {
+     "round": 5,
+     "n": 30,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc",
+        "sc",
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       30
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(3 сбн, пр) ×6",
+     "text_en": "(3 sc, inc) ×6"
+    },
+    {
+     "round": 6,
+     "n": 36,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc"
+       ],
+       1
+      ],
+      [
+       [
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ],
+       5
+      ],
+      [
+       [
+        "inc",
+        "sc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       36
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "2 сбн, (пр, 4 сбн) ×5, пр, 2 сбн",
+     "text_en": "2 sc, (inc, 4 sc) ×5, inc, 2 sc"
+    },
+    {
+     "round": 7,
+     "n": 36,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       36
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       36
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "36 сбн",
+     "text_en": "36 sc"
+    },
+    {
+     "round": 8,
+     "n": 36,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       36
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       36
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "36 сбн",
+     "text_en": "36 sc"
+    },
+    {
+     "round": 9,
+     "n": 36,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       36
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       36
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "36 сбн",
+     "text_en": "36 sc"
+    },
+    {
+     "round": 10,
+     "n": 36,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       36
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       36
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "36 сбн",
+     "text_en": "36 sc"
+    },
+    {
+     "round": 11,
+     "n": 36,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       36
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       36
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "36 сбн",
+     "text_en": "36 sc"
+    },
+    {
+     "round": 12,
+     "n": 30,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc"
+       ],
+       1
+      ],
+      [
+       [
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ],
+       5
+      ],
+      [
+       [
+        "dec",
+        "sc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       30
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "2 сбн, (уб, 4 сбн) ×5, уб, 2 сбн",
+     "text_en": "2 sc, (dec, 4 sc) ×5, dec, 2 sc"
+    },
+    {
+     "round": 13,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "sc",
+      "dec"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc",
+        "sc",
+        "dec"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "sc",
+        "dec"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(3 сбн, уб) ×6",
+     "text_en": "(3 sc, dec) ×6"
+    },
+    {
+     "round": 14,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       24
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": "red",
+     "text_ru": "24 сбн",
+     "text_en": "24 sc"
+    },
+    {
+     "round": 15,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       24
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "24 сбн",
+     "text_en": "24 sc"
+    },
+    {
+     "round": 16,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       24
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "24 сбн",
+     "text_en": "24 sc"
+    },
+    {
+     "round": 17,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       24
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "24 сбн",
+     "text_en": "24 sc"
+    },
+    {
+     "round": 18,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       24
+      ]
+     ],
+     "colour_runs": [
+      [
+       "white",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "white",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": "white",
+     "text_ru": "24 сбн",
+     "text_en": "24 sc"
+    },
+    {
+     "round": 19,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       24
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": "red",
+     "text_ru": "24 сбн",
+     "text_en": "24 sc"
+    },
+    {
+     "round": 20,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       24
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "24 сбн",
+     "text_en": "24 sc"
+    },
+    {
+     "round": 21,
+     "n": 24,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       24
+      ]
+     ],
+     "colour_runs": [
+      [
+       "white",
+       24
+      ]
+     ],
+     "segments": [
+      [
+       "white",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": "white",
+     "text_ru": "24 сбн",
+     "text_en": "24 sc"
+    },
+    {
+     "round": 22,
+     "n": 30,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc"
+       ],
+       1
+      ],
+      [
+       [
+        "inc",
+        "sc",
+        "sc",
+        "sc"
+       ],
+       5
+      ],
+      [
+       [
+        "inc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "red",
+       30
+      ]
+     ],
+     "segments": [
+      [
+       "red",
+       [
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": "red",
+     "text_ru": "2 сбн, (пр, 3 сбн) ×5, пр, 1 сбн",
+     "text_en": "2 sc, (inc, 3 sc) ×5, inc, 1 sc"
+    }
+   ],
+   "variants": [],
+   "ref": "front",
+   "size_mm": {
+    "diameter": 49.0,
+    "length": 72.0
+   },
+   "check": [],
+   "self_check": []
+  },
+  {
+   "id": "muzzle",
+   "make": 1,
+   "instances": [
+    "muzzle"
+   ],
+   "colour": "ivory",
+   "pair": false,
+   "main_colour": "ivory",
+   "uses": [
+    {
+     "name": "muzzle",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    }
+   ],
+   "edge": false,
+   "spoon": 0.0,
+   "dish": 0.0,
+   "press_dims": null,
+   "oval_axis": "side",
+   "start": "ch",
+   "chain": 4,
+   "closed": false,
+   "stuff": "light",
+   "flatten": 0.0,
+   "squash": 0.0,
+   "bend": null,
+   "applique": false,
+   "bend_info": null,
+   "stuff_after": null,
+   "safety_items": [],
+   "multicolour": false,
+   "symmetric_colours": true,
+   "rounds": [
+    {
+     "round": 1,
+     "n": 8,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       8
+      ]
+     ],
+     "colour_runs": [
+      [
+       "ivory",
+       8
+      ]
+     ],
+     "segments": [
+      [
+       "ivory",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "start": "ch",
+     "chain": 4,
+     "text_ru": "8 сбн",
+     "text_en": "8 sc"
+    },
+    {
+     "round": 2,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "inc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "ivory",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "ivory",
+       [
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "пр, 1 сбн, пр, 2 сбн, пр, 1 сбн, пр",
+     "text_en": "inc, 1 sc, inc, 2 sc, inc, 1 sc, inc"
+    },
+    {
+     "round": 3,
+     "n": 16,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "ivory",
+       16
+      ]
+     ],
+     "segments": [
+      [
+       "ivory",
+       [
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "1 сбн, пр, 1 сбн, пр, 4 сбн, пр, 1 сбн, пр, 1 сбн",
+     "text_en": "1 sc, inc, 1 sc, inc, 4 sc, inc, 1 sc, inc, 1 sc"
+    },
+    {
+     "round": 4,
+     "n": 16,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       16
+      ]
+     ],
+     "colour_runs": [
+      [
+       "ivory",
+       16
+      ]
+     ],
+     "segments": [
+      [
+       "ivory",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "16 сбн",
+     "text_en": "16 sc"
+    },
+    {
+     "round": 5,
+     "n": 16,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       16
+      ]
+     ],
+     "colour_runs": [
+      [
+       "ivory",
+       16
+      ]
+     ],
+     "segments": [
+      [
+       "ivory",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "16 сбн",
+     "text_en": "16 sc"
+    },
+    {
+     "round": 6,
+     "n": 16,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       16
+      ]
+     ],
+     "colour_runs": [
+      [
+       "ivory",
+       16
+      ]
+     ],
+     "segments": [
+      [
+       "ivory",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "16 сбн",
+     "text_en": "16 sc"
+    }
+   ],
+   "variants": [],
+   "ref": "up",
+   "size_mm": {
+    "diameter": 24.0,
+    "length": 20.0,
+    "oval": [
+     24.0,
+     16.0
+    ],
+    "chain_lies": "x",
+    "start_at": "front"
+   },
+   "check": [],
+   "self_check": []
+  },
+  {
+   "id": "ear",
+   "make": 2,
+   "instances": [
+    "ear_L",
+    "ear_R"
+   ],
+   "colour": "cream",
+   "pair": true,
+   "main_colour": "cream",
+   "uses": [
+    {
+     "name": "ear_L",
+     "mirror": true,
+     "on": "neck",
+     "on_pair": false,
+     "side": "L",
+     "on_part": "neck"
+    }
+   ],
+   "edge": false,
+   "spoon": 0.55,
+   "dish": 0.0,
+   "press_dims": {
+    "depth": 2.6,
+    "layers": 5.7,
+    "width": 23.0
+   },
+   "oval_axis": "side",
+   "start": "mr",
+   "chain": 0,
+   "closed": false,
+   "stuff": "none",
+   "flatten": 0.0,
+   "squash": 0.0,
+   "bend": null,
+   "applique": false,
+   "bend_info": null,
+   "stuff_after": null,
+   "safety_items": [],
+   "multicolour": true,
+   "symmetric_colours": false,
+   "rounds": [
+    {
+     "round": 1,
+     "n": 4,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       4
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       4
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "start": "mr",
+     "chain": 0,
+     "text_ru": "4 сбн",
+     "text_en": "4 sc"
+    },
+    {
+     "round": 2,
+     "n": 7,
+     "loop": "both",
+     "ops": [
+      "inc",
+      "inc",
+      "inc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "inc",
+        "inc",
+        "inc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       7
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "inc",
+        "inc",
+        "inc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "3 пр, 1 сбн",
+     "text_en": "inc ×3, 1 sc"
+    },
+    {
+     "round": 3,
+     "n": 10,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc",
+      "inc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       10
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc",
+        "inc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "1 сбн, пр, 1 сбн, пр, 1 сбн, пр, 1 сбн",
+     "text_en": "1 sc, inc, 1 sc, inc, 1 sc, inc, 1 sc"
+    },
+    {
+     "round": 4,
+     "n": 13,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc",
+      "inc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc"
+       ],
+       1
+      ]
+     ],
+     "colour_runs": [
+      [
+       "dusty pink",
+       1
+      ],
+      [
+       "cream",
+       11
+      ],
+      [
+       "dusty pink",
+       1
+      ]
+     ],
+     "segments": [
+      [
+       "dusty pink",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "cream",
+       [
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc",
+        "sc",
+        "inc",
+        "sc"
+       ]
+      ],
+      [
+       "dusty pink",
+       [
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "[пыльно-розовым] 1 сбн [кремовым] пр, 2 сбн, пр, 2 сбн, пр, 1 сбн [пыльно-розовым] 1 сбн",
+     "text_en": "[dusty pink] 1 sc [cream] inc, 2 sc, inc, 2 sc, inc, 1 sc [dusty pink] 1 sc"
+    },
+    {
+     "round": 5,
+     "n": 13,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       13
+      ]
+     ],
+     "colour_runs": [
+      [
+       "dusty pink",
+       1
+      ],
+      [
+       "cream",
+       10
+      ],
+      [
+       "dusty pink",
+       2
+      ]
+     ],
+     "segments": [
+      [
+       "dusty pink",
+       [
+        "sc"
+       ]
+      ],
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ],
+      [
+       "dusty pink",
+       [
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "1 сбн пыльно-розовым, 10 сбн кремовым, 2 сбн пыльно-розовым",
+     "text_en": "1 sc in dusty pink, 10 sc in cream, 2 sc in dusty pink"
+    }
+   ],
+   "variants": [],
+   "ref": "front",
+   "size_mm": {
+    "diameter": 23.0,
+    "length": 14.0
+   },
+   "check": [],
+   "self_check": []
+  },
+  {
+   "id": "foot",
+   "make": 4,
+   "instances": [
+    "front_foot",
+    "front_foot_R",
+    "hind_foot",
+    "hind_foot_R"
+   ],
+   "colour": "taupe",
+   "pair": false,
+   "main_colour": "cream",
+   "uses": [
+    {
+     "name": "front_foot",
+     "mirror": true,
+     "on": "body",
+     "on_pair": false,
+     "side": "L",
+     "on_part": "body"
+    },
+    {
+     "name": "hind_foot",
+     "mirror": true,
+     "on": "body",
+     "on_pair": false,
+     "side": "L",
+     "on_part": "body"
+    }
+   ],
+   "edge": false,
+   "spoon": 0.0,
+   "dish": 0.0,
+   "press_dims": null,
+   "oval_axis": "side",
+   "start": "mr",
+   "chain": 0,
+   "closed": false,
+   "stuff": "firm",
+   "flatten": 0.0,
+   "squash": 0.0,
+   "bend": null,
+   "applique": false,
+   "bend_info": null,
+   "stuff_after": null,
+   "safety_items": [],
+   "multicolour": false,
+   "symmetric_colours": true,
+   "rounds": [
+    {
+     "round": 1,
+     "n": 6,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "taupe",
+       6
+      ]
+     ],
+     "segments": [
+      [
+       "taupe",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "start": "mr",
+     "chain": 0,
+     "text_ru": "6 сбн",
+     "text_en": "6 sc"
+    },
+    {
+     "round": 2,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "taupe",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "taupe",
+       [
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "6 пр",
+     "text_en": "inc ×6"
+    },
+    {
+     "round": 3,
+     "n": 12,
+     "loop": "blo",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       12
+      ]
+     ],
+     "colour_runs": [
+      [
+       "taupe",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "taupe",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "12 сбн",
+     "text_en": "12 sc"
+    },
+    {
+     "round": 4,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       12
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": "cream",
+     "text_ru": "12 сбн",
+     "text_en": "12 sc"
+    },
+    {
+     "round": 5,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       12
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "12 сбн",
+     "text_en": "12 sc"
+    },
+    {
+     "round": 6,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       12
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "12 сбн",
+     "text_en": "12 sc"
+    }
+   ],
+   "variants": [],
+   "ref": "front",
+   "size_mm": {
+    "diameter": 16.0,
+    "length": 18.0
+   },
+   "check": [],
+   "self_check": []
+  },
+  {
+   "id": "tail",
+   "make": 1,
+   "instances": [
+    "tail"
+   ],
+   "colour": "cream",
+   "pair": false,
+   "main_colour": "cream",
+   "uses": [
+    {
+     "name": "tail",
+     "mirror": false,
+     "on": "body",
+     "on_pair": false,
+     "side": null,
+     "on_part": "body"
+    }
+   ],
+   "edge": false,
+   "spoon": 0.0,
+   "dish": 0.0,
+   "press_dims": null,
+   "oval_axis": "side",
+   "start": "mr",
+   "chain": 0,
+   "closed": false,
+   "stuff": "firm",
+   "flatten": 0.0,
+   "squash": 0.0,
+   "bend": null,
+   "applique": false,
+   "bend_info": null,
+   "stuff_after": null,
+   "safety_items": [],
+   "multicolour": false,
+   "symmetric_colours": true,
+   "rounds": [
+    {
+     "round": 1,
+     "n": 6,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       6
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "start": "mr",
+     "chain": 0,
+     "text_ru": "6 сбн",
+     "text_en": "6 sc"
+    },
+    {
+     "round": 2,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "6 пр",
+     "text_en": "inc ×6"
+    },
+    {
+     "round": 3,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       12
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "12 сбн",
+     "text_en": "12 sc"
+    },
+    {
+     "round": 4,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       12
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "12 сбн",
+     "text_en": "12 sc"
+    },
+    {
+     "round": 5,
+     "n": 9,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "dec",
+      "sc",
+      "sc",
+      "dec"
+     ],
+     "groups": [
+      [
+       [
+        "sc",
+        "sc",
+        "dec"
+       ],
+       3
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       9
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "dec",
+        "sc",
+        "sc",
+        "dec"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(2 сбн, уб) ×3",
+     "text_en": "(2 sc, dec) ×3"
+    }
+   ],
+   "variants": [],
+   "ref": "up",
+   "size_mm": {
+    "diameter": 16.0,
+    "length": 16.0
+   },
+   "check": [],
+   "self_check": []
+  },
+  {
+   "id": "cheek",
+   "make": 2,
+   "instances": [
+    "cheek_L",
+    "cheek_R"
+   ],
+   "colour": "pink",
+   "pair": true,
+   "main_colour": "pink",
+   "uses": [
+    {
+     "name": "cheek_L",
+     "mirror": true,
+     "on": "neck",
+     "on_pair": false,
+     "side": "L",
+     "on_part": "neck"
+    }
+   ],
+   "edge": false,
+   "spoon": 0.0,
+   "dish": 0.0,
+   "press_dims": null,
+   "oval_axis": "side",
+   "start": "mr",
+   "chain": 0,
+   "closed": false,
+   "stuff": "none",
+   "flatten": 0.0,
+   "squash": 0.0,
+   "bend": null,
+   "applique": true,
+   "bend_info": null,
+   "stuff_after": null,
+   "safety_items": [],
+   "multicolour": false,
+   "symmetric_colours": true,
+   "rounds": [
+    {
+     "round": 1,
+     "n": 6,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "pink",
+       6
+      ]
+     ],
+     "segments": [
+      [
+       "pink",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "start": "mr",
+     "chain": 0,
+     "text_ru": "6 сбн",
+     "text_en": "6 sc"
+    },
+    {
+     "round": 2,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "pink",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "pink",
+       [
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "6 пр",
+     "text_en": "inc ×6"
+    }
+   ],
+   "variants": [],
+   "ref": "up",
+   "size_mm": {
+    "diameter": 15.0,
+    "length": 0.0,
+    "flat": 15.0
+   },
+   "check": [],
+   "self_check": []
+  },
+  {
+   "id": "tuft",
+   "make": 13,
+   "instances": [
+    "tf_a0",
+    "tf_a1",
+    "tf_a2",
+    "tf_a3",
+    "tf_a4",
+    "tf_a5",
+    "tf_b0",
+    "tf_b1",
+    "tf_b2",
+    "tf_b3",
+    "tf_b4",
+    "tf_b5",
+    "tf_top"
+   ],
+   "colour": "cream",
+   "pair": false,
+   "main_colour": "cream",
+   "uses": [
+    {
+     "name": "tf_top",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_a0",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_a1",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_a2",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_a3",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_a4",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_a5",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_b0",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_b1",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_b2",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_b3",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_b4",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    },
+    {
+     "name": "tf_b5",
+     "mirror": false,
+     "on": "neck",
+     "on_pair": false,
+     "side": null,
+     "on_part": "neck"
+    }
+   ],
+   "edge": false,
+   "spoon": 0.0,
+   "dish": 0.0,
+   "press_dims": null,
+   "oval_axis": "side",
+   "start": "mr",
+   "chain": 0,
+   "closed": false,
+   "stuff": "none",
+   "flatten": 0.0,
+   "squash": 0.0,
+   "bend": null,
+   "applique": true,
+   "bend_info": null,
+   "stuff_after": null,
+   "safety_items": [],
+   "multicolour": false,
+   "symmetric_colours": true,
+   "rounds": [
+    {
+     "round": 1,
+     "n": 6,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       6
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "start": "mr",
+     "chain": 0,
+     "text_ru": "6 сбн",
+     "text_en": "6 sc"
+    },
+    {
+     "round": 2,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc",
+      "inc"
+     ],
+     "groups": [
+      [
+       [
+        "inc"
+       ],
+       6
+      ]
+     ],
+     "colour_runs": [
+      [
+       "cream",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "cream",
+       [
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc",
+        "inc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "6 пр",
+     "text_en": "inc ×6"
+    }
+   ],
+   "variants": [],
+   "ref": "back",
+   "size_mm": {
+    "diameter": 15.0,
+    "length": 0.0,
+    "flat": 15.0
+   },
+   "check": [],
+   "self_check": []
+  },
+  {
+   "id": "flake",
+   "make": 2,
+   "instances": [
+    "flake_L",
+    "flake_R"
+   ],
+   "colour": "white",
+   "pair": true,
+   "main_colour": "white",
+   "uses": [
+    {
+     "name": "flake_L",
+     "mirror": true,
+     "on": "body",
+     "on_pair": false,
+     "side": "L",
+     "on_part": "body"
+    }
+   ],
+   "edge": false,
+   "spoon": 0.0,
+   "dish": 0.0,
+   "press_dims": null,
+   "oval_axis": "side",
+   "start": "motif",
+   "chain": 0,
+   "closed": false,
+   "stuff": "none",
+   "flatten": 0.0,
+   "squash": 0.0,
+   "bend": null,
+   "applique": true,
+   "bend_info": null,
+   "stuff_after": null,
+   "safety_items": [],
+   "multicolour": false,
+   "symmetric_colours": true,
+   "rounds": [
+    {
+     "round": 1,
+     "n": 12,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       12
+      ]
+     ],
+     "colour_runs": [
+      [
+       "white",
+       12
+      ]
+     ],
+     "segments": [
+      [
+       "white",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "start": null,
+     "chain": 0,
+     "text_ru": "в кольцо амигуруми: 12 сбн; сс в первую петлю, чтобы замкнуть",
+     "text_en": "into a magic ring; 12 sc; sl st in the first st to join",
+     "motif_label": "round"
+    },
+    {
+     "round": 2,
+     "n": 18,
+     "loop": "both",
+     "ops": [
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc",
+      "sc"
+     ],
+     "groups": [
+      [
+       [
+        "sc"
+       ],
+       18
+      ]
+     ],
+     "colour_runs": [
+      [
+       "white",
+       18
+      ]
+     ],
+     "segments": [
+      [
+       "white",
+       [
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc",
+        "sc"
+       ]
+      ]
+     ],
+     "change_to": null,
+     "text_ru": "(зубец (3 цеп. п., затем обратно по цепочке, начиная со 2-й цеп. п. от крючка: 1 сбн, 1 пссн), пропустите 1 п., 1 сс) ×6",
+     "text_en": "(point (ch 3, then back along the chain from the 2nd ch from hook: 1 sc, 1 hdc), skip 1 st, 1 sl st) ×6",
+     "motif_label": "round"
+    }
+   ],
+   "variants": [],
+   "ref": "up",
+   "size_mm": {
+    "diameter": 32.0,
+    "length": 0.0,
+    "flat": 32.0
+   },
+   "check": [],
+   "motif": {
+    "kind": "star",
+    "params": {
+     "kind": "star",
+     "points": 6,
+     "length": 3
+    },
+    "size": [
+     32.0,
+     28.0
+    ],
+    "rows_turned": false,
+    "sew": "base"
+   },
+   "self_check": []
+  }
+ ],
+ "assembly": [
+  {
+   "part": "body",
+   "name": "body",
+   "mirror": false,
+   "on_name": null,
+   "entry_no": 1,
+   "entries": 1,
+   "side": null,
+   "on_side": null,
+   "closed": true,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "firm",
+   "kind": "root",
+   "fine": {
+    "axis": [
+     0,
+     0,
+     1
+    ]
+   },
+   "start_at": "back"
+  },
+  {
+   "part": "neck",
+   "name": "neck",
+   "mirror": false,
+   "on_name": "body",
+   "entry_no": 1,
+   "entries": 1,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "firm",
+   "on": "body",
+   "kind": "by_opening",
+   "footprint": {
+    "rounds": [
+     6,
+     23
+    ],
+    "az_centre": 0.0,
+    "az_span": 120.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 16,
+    "count_at_mid": 48
+   },
+   "opening": 30,
+   "at": {
+    "piece": "body",
+    "round": 19,
+    "count_round": 19,
+    "n": 36,
+    "from": "up",
+    "stitches": 0.0,
+    "side": null,
+    "exact_round": 19.0
+   },
+   "dir": [
+    [
+     "up",
+     0.98
+    ]
+   ],
+   "fine": {
+    "dir": [
+     0.0,
+     0.9805806756909202,
+     0.19611613513818404
+    ],
+    "front": [
+     0.0,
+     -0.19611613513818407,
+     0.9805806756909201
+    ],
+    "sink": 12.0
+   },
+   "start_at": "up"
+  },
+  {
+   "part": "muzzle",
+   "name": "muzzle",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 1,
+   "entries": 1,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "light",
+   "on": "neck",
+   "kind": "by_opening",
+   "footprint": {
+    "rounds": [
+     9,
+     13
+    ],
+    "az_centre": 0.0,
+    "az_span": 65.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 6,
+    "count_at_mid": 36
+   },
+   "opening": 16,
+   "at": {
+    "piece": "neck",
+    "round": 11,
+    "count_round": 11,
+    "n": 36,
+    "from": "front",
+    "stitches": 0.0,
+    "side": null,
+    "exact_round": 11.0
+   },
+   "dir": [
+    [
+     "front",
+     0.98
+    ]
+   ],
+   "fine": {
+    "dir": [
+     0.0,
+     -0.19611613513818404,
+     0.9805806756909202
+    ],
+    "front": [
+     0.0,
+     0.9805806756909201,
+     0.19611613513818407
+    ]
+   },
+   "start_at": "front"
+  },
+  {
+   "part": "ear",
+   "name": "ear_L",
+   "mirror": true,
+   "on_name": "neck",
+   "entry_no": 1,
+   "entries": 1,
+   "side": "L",
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "spoon": true,
+   "on": "neck",
+   "kind": "by_opening",
+   "footprint": {
+    "rounds": [
+     2,
+     7
+    ],
+    "az_centre": 47.5,
+    "az_span": 65.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 4,
+    "count_at_mid": 24
+   },
+   "opening": 13,
+   "at": {
+    "piece": "neck",
+    "round": 4,
+    "count_round": 4,
+    "n": 24,
+    "from": "front",
+    "stitches": 4.13,
+    "side": "left",
+    "exact_round": 4.0
+   },
+   "dir": [
+    [
+     "up",
+     0.86
+    ],
+    [
+     "out",
+     0.51
+    ]
+   ],
+   "fine": {
+    "dir": [
+     0.5144957554275265,
+     0.8574929257125441,
+     0.0
+    ],
+    "front": [
+     0.0,
+     0.0,
+     1.0
+    ]
+   },
+   "start_at": "up"
+  },
+  {
+   "part": "foot",
+   "name": "front_foot",
+   "mirror": true,
+   "on_name": "body",
+   "entry_no": 1,
+   "entries": 2,
+   "side": "L",
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "firm",
+   "on": "body",
+   "kind": "by_opening",
+   "footprint": {
+    "rounds": [
+     16,
+     20
+    ],
+    "az_centre": 150.9,
+    "az_span": 31.9,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 4,
+    "count_at_mid": 42
+   },
+   "opening": 12,
+   "at": {
+    "piece": "body",
+    "round": 18,
+    "count_round": 18,
+    "n": 42,
+    "from": "down",
+    "stitches": 3.5,
+    "side": "left",
+    "exact_round": 18.0
+   },
+   "dir": [
+    [
+     "down",
+     0.97
+    ]
+   ],
+   "fine": {
+    "dir": [
+     0.1455213750217998,
+     -0.970142500145332,
+     0.1940285000290664
+    ],
+    "front": [
+     -0.028782275575687695,
+     0.19188183717125132,
+     0.9809958925380221
+    ]
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "foot",
+   "name": "hind_foot",
+   "mirror": true,
+   "on_name": "body",
+   "entry_no": 2,
+   "entries": 2,
+   "side": "L",
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "firm",
+   "on": "body",
+   "kind": "by_opening",
+   "footprint": {
+    "rounds": [
+     7,
+     10
+    ],
+    "az_centre": 151.9,
+    "az_span": 33.8,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 4,
+    "count_at_mid": 48
+   },
+   "opening": 12,
+   "at": {
+    "piece": "body",
+    "round": 8,
+    "count_round": 8,
+    "n": 48,
+    "from": "down",
+    "stitches": 4.0,
+    "side": "left",
+    "exact_round": 8.0
+   },
+   "dir": [
+    [
+     "down",
+     0.99
+    ]
+   ],
+   "fine": {
+    "dir": [
+     0.14834045293024462,
+     -0.9889363528682975,
+     0.0
+    ],
+    "front": [
+     0.0,
+     0.0,
+     1.0
+    ]
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tail",
+   "name": "tail",
+   "mirror": false,
+   "on_name": "body",
+   "entry_no": 1,
+   "entries": 1,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "firm",
+   "on": "body",
+   "kind": "by_opening",
+   "footprint": {
+    "rounds": [
+     1,
+     4
+    ],
+    "az_centre": 0.0,
+    "az_span": 168.8,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 6,
+    "count_at_mid": 12
+   },
+   "opening": 9,
+   "at": {
+    "piece": "body",
+    "round": 2,
+    "count_round": 2,
+    "n": 12,
+    "from": "up",
+    "stitches": 0.0,
+    "side": null,
+    "exact_round": 2.0
+   },
+   "dir": [
+    [
+     "back",
+     0.93
+    ],
+    [
+     "up",
+     0.37
+    ]
+   ],
+   "fine": {
+    "dir": [
+     0.0,
+     0.3713906763541037,
+     -0.9284766908852594
+    ],
+    "front": [
+     0.0,
+     0.9284766908852593,
+     0.3713906763541037
+    ],
+    "sink": 3.0
+   },
+   "start_at": "back"
+  },
+  {
+   "part": "cheek",
+   "name": "cheek_L",
+   "mirror": true,
+   "on_name": "neck",
+   "entry_no": 1,
+   "entries": 1,
+   "side": "L",
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     9,
+     12
+    ],
+    "az_centre": 45.0,
+    "az_span": 35.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 4,
+    "count_at_mid": 36
+   },
+   "at": {
+    "piece": "neck",
+    "between": [
+     10,
+     11
+    ],
+    "count_round": 10,
+    "n": 36,
+    "from": "front",
+    "stitches": 4.6,
+    "side": "left",
+    "exact_round": 10.5
+   },
+   "dir": [
+    [
+     "in",
+     0.7
+    ],
+    [
+     "back",
+     0.61
+    ],
+    [
+     "up",
+     0.37
+    ]
+   ],
+   "fine": {
+    "front": [
+     0.27662885673142273,
+     0.9296837896706315,
+     0.243237593408418
+    ],
+    "lift": 1.0
+   },
+   "start_at": "right"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_top",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 1,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     2,
+     3
+    ],
+    "az_centre": -23.8,
+    "az_span": 352.5,
+    "around": true,
+    "near_pole": null,
+    "stitches_across": 12,
+    "count_at_mid": 12
+   },
+   "at": {
+    "piece": "neck",
+    "round": 1,
+    "count_round": 1,
+    "n": 6,
+    "from": "front",
+    "stitches": 0.0,
+    "side": null,
+    "exact_round": 1.0
+   },
+   "dir": [
+    [
+     "down",
+     0.93
+    ],
+    [
+     "back",
+     0.36
+    ]
+   ],
+   "fine": {
+    "front": [
+     0.0,
+     0.36293545192647764,
+     -0.9318142828562586
+    ],
+    "lift": 6.0,
+    "pad": 9.0
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_a0",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 2,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     1,
+     4
+    ],
+    "az_centre": 0.0,
+    "az_span": 140.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 5,
+    "count_at_mid": 12
+   },
+   "at": {
+    "piece": "neck",
+    "between": [
+     2,
+     3
+    ],
+    "count_round": 2,
+    "n": 12,
+    "from": "front",
+    "stitches": 0.0,
+    "side": null,
+    "exact_round": 2.4
+   },
+   "dir": [
+    [
+     "down",
+     0.91
+    ],
+    [
+     "back",
+     0.42
+    ]
+   ],
+   "fine": {
+    "front": [
+     0.0,
+     0.4187768465896815,
+     -0.9080891766563471
+    ],
+    "lift": 3.0,
+    "pad": 7.0
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_a1",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 3,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     1,
+     4
+    ],
+    "az_centre": 60.0,
+    "az_span": 140.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 5,
+    "count_at_mid": 12
+   },
+   "at": {
+    "piece": "neck",
+    "between": [
+     2,
+     3
+    ],
+    "count_round": 2,
+    "n": 12,
+    "from": "front",
+    "stitches": 2.0,
+    "side": "left",
+    "exact_round": 2.4
+   },
+   "dir": [
+    [
+     "down",
+     0.93
+    ],
+    [
+     "back",
+     0.3
+    ]
+   ],
+   "fine": {
+    "front": [
+     -0.5132311184686993,
+     0.36529215305800034,
+     -0.77663084019991
+    ],
+    "lift": 3.0,
+    "pad": 7.0
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_a2",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 4,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     1,
+     4
+    ],
+    "az_centre": 120.0,
+    "az_span": 140.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 5,
+    "count_at_mid": 12
+   },
+   "at": {
+    "piece": "neck",
+    "between": [
+     2,
+     3
+    ],
+    "count_round": 2,
+    "n": 12,
+    "from": "front",
+    "stitches": 4.0,
+    "side": "left",
+    "exact_round": 2.4
+   },
+   "dir": [
+    [
+     "down",
+     0.98
+    ]
+   ],
+   "fine": {
+    "front": [
+     -0.9125309783736166,
+     0.2155154528042054,
+     -0.3476209186903003
+    ],
+    "lift": 3.0,
+    "pad": 7.0
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_a3",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 5,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     1,
+     4
+    ],
+    "az_centre": -180.0,
+    "az_span": 140.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 5,
+    "count_at_mid": 12
+   },
+   "at": {
+    "piece": "neck",
+    "between": [
+     2,
+     3
+    ],
+    "count_round": 2,
+    "n": 12,
+    "from": "back",
+    "stitches": 0.0,
+    "side": null,
+    "exact_round": 2.4
+   },
+   "dir": [
+    [
+     "down",
+     1.0
+    ]
+   ],
+   "fine": {
+    "front": [
+     0.0,
+     0.037298175061173,
+     0.9993041809865033
+    ],
+    "lift": 3.0,
+    "pad": 7.0
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_a4",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 6,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     1,
+     4
+    ],
+    "az_centre": -120.0,
+    "az_span": 140.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 5,
+    "count_at_mid": 12
+   },
+   "at": {
+    "piece": "neck",
+    "between": [
+     2,
+     3
+    ],
+    "count_round": 2,
+    "n": 12,
+    "from": "front",
+    "stitches": 4.0,
+    "side": "right",
+    "exact_round": 2.4
+   },
+   "dir": [
+    [
+     "down",
+     0.98
+    ]
+   ],
+   "fine": {
+    "front": [
+     0.912530978373613,
+     0.21551545280420317,
+     -0.34762091869031125
+    ],
+    "lift": 3.0,
+    "pad": 7.0
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_a5",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 7,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     1,
+     4
+    ],
+    "az_centre": -60.0,
+    "az_span": 140.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 5,
+    "count_at_mid": 12
+   },
+   "at": {
+    "piece": "neck",
+    "between": [
+     2,
+     3
+    ],
+    "count_round": 2,
+    "n": 12,
+    "from": "front",
+    "stitches": 2.0,
+    "side": "right",
+    "exact_round": 2.4
+   },
+   "dir": [
+    [
+     "down",
+     0.93
+    ],
+    [
+     "back",
+     0.3
+    ]
+   ],
+   "fine": {
+    "front": [
+     0.5132311184686769,
+     0.3652921530580051,
+     -0.7766308401999227
+    ],
+    "lift": 3.0,
+    "pad": 7.0
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_b0",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 8,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     2,
+     6
+    ],
+    "az_centre": 20.0,
+    "az_span": 60.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 4,
+    "count_at_mid": 24
+   },
+   "at": {
+    "piece": "neck",
+    "round": 4,
+    "count_round": 4,
+    "n": 24,
+    "from": "front",
+    "stitches": 1.33,
+    "side": "left",
+    "exact_round": 4.2
+   },
+   "dir": [
+    [
+     "down",
+     0.79
+    ],
+    [
+     "back",
+     0.59
+    ]
+   ],
+   "fine": {
+    "front": [
+     -0.20013285061204913,
+     0.6115223845461413,
+     -0.7654980178321147
+    ],
+    "lift": 1.5,
+    "pad": 5.5
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_b1",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 9,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     2,
+     6
+    ],
+    "az_centre": 90.0,
+    "az_span": 60.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 4,
+    "count_at_mid": 24
+   },
+   "at": {
+    "piece": "neck",
+    "round": 4,
+    "count_round": 4,
+    "n": 24,
+    "from": "front",
+    "stitches": 6.0,
+    "side": "left",
+    "exact_round": 4.2
+   },
+   "dir": [
+    [
+     "down",
+     0.87
+    ],
+    [
+     "in",
+     0.45
+    ]
+   ],
+   "fine": {
+    "front": [
+     -0.815688607001568,
+     0.48489631307713194,
+     -0.31548005003810586
+    ],
+    "lift": 1.5,
+    "pad": 5.5
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_b2",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 10,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     2,
+     6
+    ],
+    "az_centre": 160.0,
+    "az_span": 60.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 4,
+    "count_at_mid": 24
+   },
+   "at": {
+    "piece": "neck",
+    "round": 4,
+    "count_round": 4,
+    "n": 24,
+    "from": "back",
+    "stitches": 1.33,
+    "side": "left",
+    "exact_round": 4.2
+   },
+   "dir": [
+    [
+     "down",
+     0.96
+    ]
+   ],
+   "fine": {
+    "front": [
+     -0.5161814074894128,
+     0.2870481239904601,
+     0.8069449355909029
+    ],
+    "lift": 1.5,
+    "pad": 5.5
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_b3",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 11,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     2,
+     6
+    ],
+    "az_centre": -160.0,
+    "az_span": 60.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 4,
+    "count_at_mid": 24
+   },
+   "at": {
+    "piece": "neck",
+    "round": 4,
+    "count_round": 4,
+    "n": 24,
+    "from": "back",
+    "stitches": 1.33,
+    "side": "right",
+    "exact_round": 4.2
+   },
+   "dir": [
+    [
+     "down",
+     0.96
+    ]
+   ],
+   "fine": {
+    "front": [
+     0.5161814074894211,
+     0.2870481239904504,
+     0.806944935590901
+    ],
+    "lift": 1.5,
+    "pad": 5.5
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_b4",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 12,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     2,
+     6
+    ],
+    "az_centre": -90.0,
+    "az_span": 60.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 4,
+    "count_at_mid": 24
+   },
+   "at": {
+    "piece": "neck",
+    "round": 4,
+    "count_round": 4,
+    "n": 24,
+    "from": "front",
+    "stitches": 6.0,
+    "side": "right",
+    "exact_round": 4.2
+   },
+   "dir": [
+    [
+     "down",
+     0.87
+    ],
+    [
+     "in",
+     0.45
+    ]
+   ],
+   "fine": {
+    "front": [
+     0.8156886070015645,
+     0.48489631307713366,
+     -0.3154800500381119
+    ],
+    "lift": 1.5,
+    "pad": 5.5
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "tuft",
+   "name": "tf_b5",
+   "mirror": false,
+   "on_name": "neck",
+   "entry_no": 13,
+   "entries": 13,
+   "side": null,
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "neck",
+   "kind": "applique",
+   "footprint": {
+    "rounds": [
+     2,
+     6
+    ],
+    "az_centre": -20.0,
+    "az_span": 60.0,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 4,
+    "count_at_mid": 24
+   },
+   "at": {
+    "piece": "neck",
+    "round": 4,
+    "count_round": 4,
+    "n": 24,
+    "from": "front",
+    "stitches": 1.33,
+    "side": "right",
+    "exact_round": 4.2
+   },
+   "dir": [
+    [
+     "down",
+     0.79
+    ],
+    [
+     "back",
+     0.59
+    ]
+   ],
+   "fine": {
+    "front": [
+     0.20013285061210054,
+     0.6115223845461376,
+     -0.7654980178321042
+    ],
+    "lift": 1.5,
+    "pad": 5.5
+   },
+   "start_at": "down"
+  },
+  {
+   "part": "flake",
+   "name": "flake_L",
+   "mirror": true,
+   "on_name": "body",
+   "entry_no": 1,
+   "entries": 1,
+   "side": "L",
+   "on_side": null,
+   "on_pair": false,
+   "closed": false,
+   "seam_flat": false,
+   "squash": 0.0,
+   "flatten": 0.0,
+   "stuff": "none",
+   "on": "body",
+   "kind": "applique",
+   "motif": "star",
+   "footprint": {
+    "rounds": [
+     6,
+     12
+    ],
+    "az_centre": 91.9,
+    "az_span": 52.5,
+    "around": false,
+    "near_pole": null,
+    "stitches_across": 7,
+    "count_at_mid": 48
+   },
+   "at": {
+    "piece": "body",
+    "round": 9,
+    "count_round": 9,
+    "n": 48,
+    "from": "up",
+    "stitches": 12.27,
+    "side": "left",
+    "exact_round": 9.0
+   },
+   "dir": [
+    [
+     "in",
+     0.89
+    ],
+    [
+     "front",
+     0.46
+    ]
+   ],
+   "fine": {
+    "front": [
+     0.02759937849350186,
+     0.999518220344515,
+     -0.014198644516499949
+    ]
+   },
+   "start_at": "right"
+  }
+ ],
+ "face": [
+  {
+   "type": "safety_eye",
+   "on": "neck",
+   "pair": true,
+   "colour": "black",
+   "on_side": null,
+   "on_pair": false,
+   "at": {
+    "piece": "neck",
+    "round": 8,
+    "count_round": 8,
+    "n": 36,
+    "from": "front",
+    "stitches": 3.1,
+    "side": "left",
+    "exact_round": 8.2
+   },
+   "apart": 6,
+   "size_mm": 11,
+   "highlight": true
+  },
+  {
+   "type": "satin",
+   "on": "muzzle",
+   "pair": true,
+   "colour": "ink",
+   "on_side": null,
+   "on_pair": false,
+   "at": {
+    "piece": "muzzle",
+    "between": [
+     1,
+     2
+    ],
+    "count_round": 1,
+    "n": 8,
+    "from": "up",
+    "stitches": 0.89,
+    "side": "left",
+    "exact_round": 1.4
+   },
+   "apart": 2,
+   "shape": "oval",
+   "width_mm": 2.6,
+   "height_mm": 3.6,
+   "thickness_mm": 1.2,
+   "rotate": 25
+  },
+  {
+   "type": "stitch",
+   "on": "muzzle",
+   "pair": false,
+   "colour": "ink",
+   "on_side": null,
+   "on_pair": false,
+   "points": [
+    {
+     "piece": "muzzle",
+     "between": [
+      1,
+      2
+     ],
+     "count_round": 1,
+     "n": 8,
+     "from": "down",
+     "stitches": 0.0,
+     "side": null,
+     "exact_round": 1.6
+    },
+    {
+     "piece": "muzzle",
+     "between": [
+      2,
+      3
+     ],
+     "count_round": 2,
+     "n": 12,
+     "from": "down",
+     "stitches": 0.0,
+     "side": null,
+     "exact_round": 2.4
+    }
+   ],
+   "region": "back",
+   "thickness_mm": 1.0
+  },
+  {
+   "type": "stitch",
+   "on": "muzzle",
+   "pair": true,
+   "colour": "ink",
+   "on_side": null,
+   "on_pair": false,
+   "points": [
+    {
+     "piece": "muzzle",
+     "between": [
+      2,
+      3
+     ],
+     "count_round": 2,
+     "n": 12,
+     "from": "down",
+     "stitches": 0.0,
+     "side": null,
+     "exact_round": 2.4
+    },
+    {
+     "piece": "muzzle",
+     "round": 3,
+     "count_round": 3,
+     "n": 16,
+     "from": "down",
+     "stitches": 0.67,
+     "side": "left",
+     "exact_round": 2.8
+    },
+    {
+     "piece": "muzzle",
+     "round": 3,
+     "count_round": 3,
+     "n": 16,
+     "from": "down",
+     "stitches": 1.33,
+     "side": "left",
+     "exact_round": 2.7
+    }
+   ],
+   "region": "back",
+   "thickness_mm": 1.0
+  },
+  {
+   "type": "satin",
+   "on": "muzzle",
+   "pair": true,
+   "colour": "white",
+   "on_side": null,
+   "on_pair": false,
+   "at": {
+    "piece": "muzzle",
+    "round": 3,
+    "count_round": 3,
+    "n": 16,
+    "from": "down",
+    "stitches": 0.18,
+    "side": "left",
+    "exact_round": 2.9
+   },
+   "apart": 16,
+   "shape": "oval",
+   "width_mm": 3.8,
+   "height_mm": 5.4,
+   "thickness_mm": 1.4,
+   "lift_mm": 0.6
+  }
+ ],
+ "hex": {
+  "cream": "#f3e6cf",
+  "ivory": "#fbf5ea",
+  "red": "#c9303a",
+  "white": "#fbf9f4",
+  "green": "#2f8f5a",
+  "taupe": "#8a6a55",
+  "pink": "#f4a3ad",
+  "dusty pink": "#f0b6bd",
+  "ink": "#33261f",
+  "black": "#151313"
+ },
+ "flags": []
+}

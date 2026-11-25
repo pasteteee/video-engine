@@ -1,0 +1,442 @@
+{
+ "name": "hanging_santa_legs",
+ "title": "Santa Stuck in a Chimney",
+ "title_ru": "Дед Мороз застрял в трубе",
+ "subject": "chimney",
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ },
+ "colours": {
+  "brick": "#b04a3c",
+  "grey": "#d3cbc0",
+  "white": "#fbf8f1",
+  "red": "#d8343a",
+  "black": "#26201f",
+  "pink": "#ef9a8e"
+ },
+ "colour_names_ru": {
+  "brick": "кирпично-красный",
+  "grey": "светло-серый",
+  "white": "белый",
+  "red": "красный",
+  "black": "чёрный",
+  "pink": "розовый"
+ },
+ "parts": [
+  {
+   "id": "chimney",
+   "name_ru": "кирпичная труба",
+   "name_en": "brick chimney",
+   "rounds": [
+    "mr 6",
+    "inc 6 to 54",
+    "blo 54",
+    "even 12",
+    "inc 6 to 60",
+    "even 2",
+    "blo 60",
+    "dec 12 to 12",
+    "dec 6 to 6"
+   ],
+   "colour": "brick",
+   "stuff": "firm",
+   "end": "closed",
+   "colours": [
+    {
+     "rounds": [
+      13,
+      13
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      16,
+      16
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      19,
+      19
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      22,
+      22
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      11,
+      12
+     ],
+     "az": [
+      26,
+      34
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      11,
+      12
+     ],
+     "az": [
+      86,
+      94
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      11,
+      12
+     ],
+     "az": [
+      146,
+      154
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      11,
+      12
+     ],
+     "az": [
+      -154,
+      -146
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      11,
+      12
+     ],
+     "az": [
+      -94,
+      -86
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      11,
+      12
+     ],
+     "az": [
+      -34,
+      -26
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      14,
+      15
+     ],
+     "az": [
+      56,
+      64
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      14,
+      15
+     ],
+     "az": [
+      116,
+      124
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      14,
+      15
+     ],
+     "az": [
+      -184,
+      -176
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      14,
+      15
+     ],
+     "az": [
+      -124,
+      -116
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      14,
+      15
+     ],
+     "az": [
+      -64,
+      -56
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      17,
+      18
+     ],
+     "az": [
+      86,
+      94
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      17,
+      18
+     ],
+     "az": [
+      146,
+      154
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      17,
+      18
+     ],
+     "az": [
+      -154,
+      -146
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      17,
+      18
+     ],
+     "az": [
+      -94,
+      -86
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      20,
+      21
+     ],
+     "az": [
+      56,
+      64
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      20,
+      21
+     ],
+     "az": [
+      116,
+      124
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      20,
+      21
+     ],
+     "az": [
+      -184,
+      -176
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      20,
+      21
+     ],
+     "az": [
+      -124,
+      -116
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      20,
+      21
+     ],
+     "az": [
+      -64,
+      -56
+     ],
+     "colour": "grey"
+    },
+    {
+     "rounds": [
+      23,
+      34
+     ],
+     "colour": "white"
+    }
+   ]
+  },
+  {
+   "id": "leg",
+   "name_ru": "ножка Деда Мороза",
+   "name_en": "Santa leg",
+   "rounds": [
+    "ch 5",
+    "inc 6 to 22",
+    "even 3",
+    "dec 4 to 18",
+    "even 1",
+    "even 12"
+   ],
+   "oval_axis": "front",
+   "colour": "red",
+   "end": "open",
+   "stuff": "light",
+   "bend": {
+    "deg": 85,
+    "at": 9,
+    "over": 3,
+    "toward": [
+     0,
+     0,
+     1
+    ]
+   },
+   "colours": [
+    {
+     "rounds": [
+      1,
+      8
+     ],
+     "colour": "black"
+    },
+    {
+     "rounds": [
+      9,
+      10
+     ],
+     "colour": "white"
+    }
+   ]
+  }
+ ],
+ "assembly": [
+  {
+   "part": "chimney",
+   "axis": [
+    0,
+    1,
+    0
+   ],
+   "front": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "part": "leg",
+   "on": "chimney",
+   "at": {
+    "round": 31,
+    "az": 90
+   },
+   "dir": [
+    0.3,
+    1,
+    0.05
+   ],
+   "name": "leg_a",
+   "bend_toward": [
+    0.5,
+    0.3,
+    1
+   ]
+  },
+  {
+   "part": "leg",
+   "on": "chimney",
+   "at": {
+    "round": 31,
+    "az": -90
+   },
+   "dir": [
+    -0.45,
+    1,
+    -0.15
+   ],
+   "name": "leg_b",
+   "bend_toward": [
+    -1,
+    0.3,
+    0.2
+   ]
+  }
+ ],
+ "face": [
+  {
+   "type": "safety_eye",
+   "on": "chimney",
+   "at": {
+    "round": 16.5,
+    "az": 26
+   },
+   "size_mm": 13,
+   "mirror": true,
+   "highlight": true,
+   "id": "eye"
+  },
+  {
+   "type": "satin",
+   "on": "chimney",
+   "at": {
+    "round": 13.8,
+    "az": 0
+   },
+   "width_mm": 8,
+   "height_mm": 10,
+   "shape": "oval",
+   "colour": "black",
+   "thickness_mm": 1.6,
+   "id": "mouth"
+  },
+  {
+   "type": "blush",
+   "on": "chimney",
+   "at": {
+    "round": 14.5,
+    "az": 46
+   },
+   "size_mm": 10,
+   "colour": "pink",
+   "mirror": true
+  }
+ ]
+}

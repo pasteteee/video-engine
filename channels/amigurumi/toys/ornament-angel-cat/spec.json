@@ -1,0 +1,467 @@
+{
+ "name": "ornament_angel_cat",
+ "title": "Angel Cat Ornament",
+ "title_ru": "Кот-ангелочек (ёлочная игрушка)",
+ "subject": "angel cat",
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ },
+ "colours": {
+  "snow": "#fbfaf6",
+  "cream": "#fff9ee",
+  "gold": "#e2b030",
+  "pink": "#f6aab4",
+  "ebony": "#3a2a26",
+  "blush": "#ffb0bc"
+ },
+ "colour_names_ru": {
+  "snow": "белый",
+  "cream": "кремовый",
+  "gold": "золотистый",
+  "pink": "розовый",
+  "ebony": "тёмно-коричневый",
+  "blush": "светло-розовый"
+ },
+ "parts": [
+  {
+   "id": "body",
+   "name_ru": "тельце",
+   "name_en": "body",
+   "rounds": [
+    "mr 6",
+    "inc 6 to 48",
+    "blo 48",
+    "even 3",
+    "dec 6 to 42",
+    "even 2",
+    "dec 6 to 36",
+    "even 1"
+   ],
+   "colour": "snow",
+   "end": "open",
+   "stuff": "firm",
+   "colours": [
+    {
+     "ellipse": {
+      "center": [
+       9,
+       0
+      ],
+      "radii": [
+       5,
+       46
+      ]
+     },
+     "colour": "cream"
+    }
+   ]
+  },
+  {
+   "id": "head",
+   "name_ru": "голова",
+   "name_en": "head",
+   "rounds": [
+    "mr 6",
+    "inc 6 to 42",
+    "inc 6 to 60 every 2",
+    "even 6",
+    "dec 6 to 48 every 2",
+    "dec 6 to 6"
+   ],
+   "colour": "snow",
+   "stuff": "firm",
+   "colours": [
+    {
+     "ellipse": {
+      "center": [
+       20.2,
+       0
+      ],
+      "radii": [
+       4.2,
+       32
+      ]
+     },
+     "colour": "cream"
+    }
+   ]
+  },
+  {
+   "id": "ear",
+   "name_ru": "ушко",
+   "name_en": "ear",
+   "colour": "snow",
+   "preset": "ear",
+   "kind": "pointed",
+   "max": 19,
+   "inner": "pink",
+   "stuff": "light"
+  },
+  {
+   "id": "arm",
+   "name_ru": "лапка",
+   "name_en": "arm",
+   "rounds": [
+    "mr 6",
+    "10",
+    "even 3",
+    "8"
+   ],
+   "colour": "snow",
+   "end": "open",
+   "stuff": "light",
+   "colours": [
+    {
+     "rounds": [
+      1,
+      2
+     ],
+     "colour": "cream"
+    }
+   ]
+  },
+  {
+   "id": "foot",
+   "name_ru": "ножка",
+   "name_en": "foot",
+   "rounds": [
+    "mr 6",
+    "12",
+    "15",
+    "even 2",
+    "12"
+   ],
+   "colour": "cream",
+   "end": "open",
+   "stuff": "firm"
+  },
+  {
+   "id": "tail",
+   "name_ru": "хвостик",
+   "name_en": "tail",
+   "rounds": [
+    "mr 6",
+    "9",
+    "even 14"
+   ],
+   "colour": "snow",
+   "end": "open",
+   "stuff": "light",
+   "colours": [
+    {
+     "rounds": [
+      13,
+      14
+     ],
+     "colour": "cream"
+    }
+   ],
+   "bend": {
+    "deg": 90,
+    "at": 7,
+    "over": 5,
+    "toward": [
+     0.3,
+     1,
+     0.4
+    ]
+   }
+  },
+  {
+   "id": "cheek",
+   "name_ru": "Щёчка",
+   "name_en": "cheek",
+   "rounds": [
+    "mr 6",
+    "12"
+   ],
+   "colour": "blush",
+   "end": "open",
+   "stuff": "none"
+  },
+  {
+   "id": "wing",
+   "name_ru": "Крылышко",
+   "name_en": "wing",
+   "rounds": [
+    "mr 6",
+    "10",
+    "14",
+    "even 5",
+    "10",
+    "6"
+   ],
+   "colour": "cream",
+   "end": "open",
+   "stuff": "light",
+   "flatten": 0.7
+  },
+  {
+   "id": "loop",
+   "name_ru": "Петелька для подвеса",
+   "name_en": "hanging loop",
+   "colour": "gold",
+   "rounds": [
+    "ring 20",
+    "even 1"
+   ],
+   "end": "open",
+   "stuff": "none"
+  },
+  {
+   "id": "halo",
+   "name_ru": "Половинка нимба",
+   "name_en": "halo half",
+   "colour": "gold",
+   "cord": {
+    "length_mm": 64,
+    "thickness_mm": 3.4,
+    "curl_deg": 232,
+    "slip_back": true
+   }
+  }
+ ],
+ "assembly": [
+  {
+   "part": "body",
+   "axis": [
+    0,
+    1,
+    0
+   ]
+  },
+  {
+   "part": "head",
+   "on": "body",
+   "at": {
+    "round": "end"
+   },
+   "attach": "end",
+   "dir": [
+    0,
+    1,
+    0
+   ],
+   "sink": 16,
+   "sink_dir": "axis"
+  },
+  {
+   "part": "ear",
+   "on": "head",
+   "at": {
+    "round": 8,
+    "az": 72
+   },
+   "dir": [
+    0.9,
+    0.9,
+    0.1
+   ],
+   "mirror": true
+  },
+  {
+   "part": "arm",
+   "on": "body",
+   "at": {
+    "round": 9,
+    "az": 42
+   },
+   "dir": [
+    -0.2,
+    -0.5,
+    1
+   ],
+   "mirror": true,
+   "seam": "flat"
+  },
+  {
+   "part": "foot",
+   "on": "body",
+   "at": {
+    "round": 4,
+    "az": 32
+   },
+   "dir": [
+    0.25,
+    -0.25,
+    1
+   ],
+   "mirror": true
+  },
+  {
+   "part": "tail",
+   "on": "body",
+   "at": {
+    "round": 4,
+    "az": 155
+   },
+   "dir": [
+    0.7,
+    -0.05,
+    -1
+   ]
+  },
+  {
+   "part": "cheek",
+   "on": "head",
+   "at": {
+    "round": 18.5,
+    "az": 46
+   },
+   "applique": true,
+   "mirror": true,
+   "lift": 1.0
+  },
+  {
+   "part": "wing",
+   "on": "body",
+   "at": {
+    "round": 13,
+    "az": 125
+   },
+   "dir": [
+    0.8,
+    0.9,
+    -0.5
+   ],
+   "mirror": true,
+   "seam": "flat",
+   "front": [
+    0.3,
+    0,
+    1
+   ]
+  },
+  {
+   "part": "loop",
+   "on": "head",
+   "at": {
+    "round": 3,
+    "az": 180
+   },
+   "attach": "edge",
+   "dir": [
+    0,
+    1,
+    -0.35
+   ],
+   "face": [
+    0,
+    0.1,
+    1
+   ],
+   "sink": 3
+  },
+  {
+   "part": "halo",
+   "on": "head",
+   "at": {
+    "round": 2.5,
+    "az": 0
+   },
+   "dir": [
+    1,
+    0,
+    0
+   ],
+   "toward": [
+    0,
+    0.3,
+    -1
+   ],
+   "mirror": true
+  }
+ ],
+ "face": [
+  {
+   "type": "stitch",
+   "on": "head",
+   "points": [
+    [
+     15.0,
+     21
+    ],
+    [
+     15.8,
+     27
+    ],
+    [
+     15.0,
+     33
+    ]
+   ],
+   "colour": "ebony",
+   "thickness_mm": 1.4,
+   "mirror": true,
+   "id": "eye_arc"
+  },
+  {
+   "type": "satin",
+   "on": "head",
+   "at": {
+    "round": 17.3,
+    "az": 0
+   },
+   "width_mm": 6.5,
+   "height_mm": 4.8,
+   "shape": "triangle",
+   "colour": "pink",
+   "thickness_mm": 1.4,
+   "id": "nose"
+  },
+  {
+   "type": "stitch",
+   "on": "head",
+   "points": [
+    [
+     17.9,
+     0
+    ],
+    [
+     18.6,
+     0
+    ],
+    [
+     19.0,
+     -3
+    ],
+    [
+     18.7,
+     -6.5
+    ]
+   ],
+   "colour": "ebony",
+   "thickness_mm": 1.0,
+   "id": "mouth_r"
+  },
+  {
+   "type": "stitch",
+   "on": "head",
+   "points": [
+    [
+     17.9,
+     0
+    ],
+    [
+     18.6,
+     0
+    ],
+    [
+     19.0,
+     3
+    ],
+    [
+     18.7,
+     6.5
+    ]
+   ],
+   "colour": "ebony",
+   "thickness_mm": 1.0,
+   "id": "mouth_l"
+  }
+ ]
+}

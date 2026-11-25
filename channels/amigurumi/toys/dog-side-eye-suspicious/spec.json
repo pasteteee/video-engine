@@ -1,0 +1,427 @@
+{
+ "name": "dog_side_eye_suspicious",
+ "title": "Suspicious Side-Eye Dog",
+ "title_ru": "Подозрительная собака",
+ "subject": "dog",
+ "yarn": {
+  "weight": "DK",
+  "hook_mm": 2.5,
+  "stitch_mm": 4.0,
+  "round_mm": 3.6,
+  "thickness_mm": 1.9
+ },
+ "colours": {
+  "beige": "#e2c08f",
+  "cream": "#fbf1dc",
+  "brown": "#8a5a3a",
+  "dark brown": "#4a3024",
+  "black": "#1b1616",
+  "white": "#ffffff",
+  "pink": "#ff9eb0",
+  "grey": "#5b5155"
+ },
+ "colour_names_ru": {
+  "beige": "бежевый",
+  "cream": "кремовый",
+  "brown": "коричневый",
+  "dark brown": "тёмно-коричневый",
+  "pink": "розовый",
+  "grey": "серый"
+ },
+ "parts": [
+  {
+   "id": "body",
+   "name_ru": "тело с головой",
+   "name_en": "body with head",
+   "rounds": [
+    "mr 6",
+    "inc 6 to 36",
+    "inc 6 to 60 every 2",
+    "even 10",
+    "dec 6 to 48 every 2",
+    "dec 6 to 6"
+   ],
+   "colour": "beige",
+   "stuff": "firm",
+   "flatten": 0.08,
+   "colours": [
+    {
+     "ellipse": {
+      "center": [
+       26,
+       0
+      ],
+      "radii": [
+       7,
+       30
+      ]
+     },
+     "colour": "cream"
+    }
+   ]
+  },
+  {
+   "id": "muzzle",
+   "name_ru": "мордочка",
+   "name_en": "muzzle",
+   "rounds": [
+    "ch 4",
+    "14",
+    "18",
+    "even 2"
+   ],
+   "colour": "cream",
+   "end": "open",
+   "stuff": "light"
+  },
+  {
+   "id": "ear",
+   "name_ru": "ухо",
+   "name_en": "floppy ear",
+   "rounds": [
+    "mr 6",
+    "12",
+    "18",
+    "even 4",
+    "15",
+    "even 1"
+   ],
+   "colour": "brown",
+   "end": "open",
+   "stuff": "light",
+   "spoon": 0.45,
+   "bend": {
+    "drape": true,
+    "deg": 90,
+    "at": 9,
+    "over": 3,
+    "relax_mm": 6,
+    "toward": [
+     0.05,
+     -1,
+     0
+    ]
+   }
+  },
+  {
+   "id": "paw",
+   "name_ru": "лапка",
+   "name_en": "front paw",
+   "rounds": [
+    "mr 6",
+    "9",
+    "even 4",
+    "8"
+   ],
+   "colour": "beige",
+   "end": "open",
+   "stuff": "light"
+  },
+  {
+   "id": "foot",
+   "name_ru": "ножка",
+   "name_en": "foot",
+   "rounds": [
+    "mr 6",
+    "10",
+    "even 2",
+    "8"
+   ],
+   "colour": "beige",
+   "end": "open",
+   "stuff": "medium"
+  },
+  {
+   "id": "tail",
+   "name_ru": "хвост",
+   "name_en": "tail",
+   "rounds": [
+    "mr 5",
+    "8",
+    "even 8"
+   ],
+   "colour": "brown",
+   "end": "open",
+   "stuff": "light",
+   "bend": {
+    "deg": 60,
+    "at": 6,
+    "over": 3,
+    "toward": [
+     0,
+     1,
+     0
+    ]
+   }
+  },
+  {
+   "id": "bonehalf",
+   "name_ru": "половинка косточки",
+   "name_en": "bone half",
+   "rounds": [
+    "mr 6",
+    "10",
+    "even 6",
+    "8"
+   ],
+   "colour": "white",
+   "end": "closed",
+   "stuff": "medium"
+  },
+  {
+   "id": "knob",
+   "name_ru": "конец косточки",
+   "name_en": "bone end knob",
+   "rounds": [
+    "mr 6",
+    "10",
+    "even 1",
+    "dec 5 to 5"
+   ],
+   "colour": "white",
+   "end": "closed",
+   "stuff": "medium"
+  }
+ ],
+ "assembly": [
+  {
+   "part": "body",
+   "axis": [
+    0,
+    -1,
+    0
+   ],
+   "front": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "part": "muzzle",
+   "on": "body",
+   "at": {
+    "round": 18,
+    "az": 0
+   },
+   "dir": [
+    0,
+    -0.15,
+    1
+   ],
+   "sink": 2
+  },
+  {
+   "part": "ear",
+   "on": "body",
+   "at": {
+    "round": 9,
+    "az": 82
+   },
+   "dir": [
+    1,
+    -0.7,
+    0.05
+   ],
+   "mirror": true,
+   "front": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "part": "paw",
+   "on": "body",
+   "at": {
+    "round": 26,
+    "az": 44
+   },
+   "dir": [
+    0.1,
+    -0.35,
+    1
+   ],
+   "mirror": true,
+   "seam": "flat"
+  },
+  {
+   "part": "foot",
+   "on": "body",
+   "at": {
+    "round": 33,
+    "az": 30
+   },
+   "dir": [
+    0.1,
+    -0.2,
+    1
+   ],
+   "mirror": true
+  },
+  {
+   "part": "tail",
+   "on": "body",
+   "at": {
+    "round": 29,
+    "az": 180
+   },
+   "dir": [
+    0,
+    0.4,
+    -1
+   ]
+  },
+  {
+   "part": "bonehalf",
+   "on": "body",
+   "at": {
+    "round": 32,
+    "az": 6
+   },
+   "attach": "start",
+   "dir": [
+    1,
+    -0.05,
+    0.3
+   ],
+   "sink": 2,
+   "mirror": true
+  },
+  {
+   "part": "knob",
+   "on": "bonehalf",
+   "at": {
+    "round": "end",
+    "az": 55
+   },
+   "attach": "start",
+   "dir": [
+    1,
+    0.4,
+    0.2
+   ],
+   "sink": 2,
+   "mirror": true
+  }
+ ],
+ "face": [
+  {
+   "type": "felt",
+   "on": "body",
+   "at": {
+    "round": 14.4,
+    "az": 32
+   },
+   "size_mm": [
+    15,
+    12.5
+   ],
+   "colour": "white",
+   "mirror": true,
+   "id": "sclera"
+  },
+  {
+   "type": "safety_eye",
+   "on": "body",
+   "at": {
+    "round": 14.1,
+    "az": 43.0
+   },
+   "size_mm": 7,
+   "mirror": false,
+   "id": "eye_a"
+  },
+  {
+   "type": "safety_eye",
+   "on": "body",
+   "at": {
+    "round": 14.1,
+    "az": -21.0
+   },
+   "size_mm": 7,
+   "mirror": false,
+   "id": "eye_b"
+  },
+  {
+   "type": "stitch",
+   "on": "body",
+   "points": [
+    [
+     13.2,
+     15
+    ],
+    [
+     13.4,
+     28
+    ],
+    [
+     13.55,
+     40
+    ],
+    [
+     13.65,
+     48
+    ]
+   ],
+   "colour": "dark brown",
+   "thickness_mm": 3.0,
+   "mirror": true,
+   "id": "lid"
+  },
+  {
+   "type": "safety_nose",
+   "on": "muzzle",
+   "at": {
+    "round": 3.2,
+    "az": 0
+   },
+   "size_mm": [
+    11,
+    8
+   ],
+   "shape": "oval",
+   "colour": "black",
+   "id": "nose"
+  },
+  {
+   "type": "stitch",
+   "on": "muzzle",
+   "points": [
+    [
+     3.0,
+     180
+    ],
+    [
+     3.9,
+     180
+    ]
+   ],
+   "colour": "grey",
+   "thickness_mm": 1.0,
+   "id": "line"
+  },
+  {
+   "type": "stitch",
+   "on": "muzzle",
+   "points": [
+    [
+     3.9,
+     180
+    ],
+    [
+     4.3,
+     160
+    ],
+    [
+     4.2,
+     140
+    ]
+   ],
+   "colour": "grey",
+   "thickness_mm": 1.0,
+   "mirror": true,
+   "id": "mouth"
+  }
+ ]
+}
