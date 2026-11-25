@@ -26,7 +26,16 @@ def load_spec(tid):
 def export(tid, height=None, ku=4, kv=4, relief=0.6, dest=None):
     sp = load_spec(tid)
     toy = Toy(sp)
-    parts = toy.build(ku=ku, kv=kv, relief=relief)
+    parts = toy.build(ku=ku, kv=kv, relief=0.0)
+    if relief > 0:
+        # real stitch relief on the stuffed pieces (the silhouette shows the yarn); appliques stay smooth (they fold)
+        rel = toy.build(ku=ku, kv=kv, relief=relief)
+        app = {a['part'] for a in sp.get('assembly', []) if a.get('applique')}
+        for p, q in zip(parts, rel):
+            base = p['name'].split('@')[-1]
+            base = base[:-2] if base[-2:] in ('_L', '_R') else base
+            if p['mat'] == 0 and '@' not in p['name'] and base not in app and len(p['V']) == len(q['V']):
+                p['V'] = q['V']
     allV = np.concatenate([p['V'] for p in parts])
     h0 = allV[:, 1].max() - allV[:, 1].min()
     s = (height / h0) if height else 1.0

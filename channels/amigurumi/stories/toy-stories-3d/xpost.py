@@ -31,7 +31,7 @@ def end_card(im, t):
     y0 = int(1480 + (1 - k) * 520)
     dr.rounded_rectangle((70, y0, W - 70, y0 + 330), radius=48, fill=(255, 248, 236, 240), outline=(200, 40, 60, 255), width=8)
     dr.text((W // 2, y0 + 48), 'CROCHET THEM ALL', font=font(62), fill=(200, 40, 60, 255), anchor='mt')
-    dr.text((W // 2, y0 + 128), 'amigurumi.ai', font=font(118), fill=(36, 30, 60, 255), anchor='mt')
+    dr.text((W // 2, y0 + 136), 'amigurumi.ai', font=font(100), fill=(36, 30, 60, 255), anchor='mt')
     dr.text((W // 2, y0 + 262), 'free patterns  •  3D models', font=font(40), fill=(110, 100, 120, 255), anchor='mt')
     im.paste(lay, (0, 0), lay)
     if d > 1.6:

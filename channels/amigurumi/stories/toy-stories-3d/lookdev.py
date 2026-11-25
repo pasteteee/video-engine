@@ -53,7 +53,7 @@ sc.cycles.use_denoising = True
 sc.render.resolution_x = sc.render.resolution_y = a.px
 sc.view_settings.view_transform = 'AgX'
 try:
-    sc.view_settings.look = 'AgX - Medium High Contrast'
+    sc.view_settings.look = os.environ.get('LOOK', 'AgX - Medium High Contrast')
 except Exception:
     pass
 VIEWS = {'front': (0, H * 0.5, 2.6 * H, 40), 'q34': (35, H * 0.5, 2.6 * H, 40), 'face': (12, H * 0.72, 1.25 * H, 40),

@@ -87,7 +87,7 @@ def build():
         b.parent = tree_root; b.matrix_parent_inverse = tree_root.matrix_world.inverted()
         H['tbulbs'].append((m.node_tree.nodes['Emission'], i % 4))
     # ---------------------------------------------------------------- gift box with a lid (left)
-    gx, gz, gs = -150, -80, 0.088
+    gx, gz, gs = -168, -36, 0.088
     gift = new_mat('gift')[0]
     nt = gift.node_tree; bs = nt.nodes['Principled BSDF']
     tc = N(nt, 'ShaderNodeTexCoord'); ck = N(nt, 'ShaderNodeTexChecker', i_Scale=14.0)
@@ -117,6 +117,61 @@ def build():
         ob.parent = lid_p; ob.matrix_parent_inverse = lid_p.matrix_world.inverted()
     H['lid'] = lid_p
     H['gift'] = (gx, gz, gs / MM)
+    # ---------------------------------------------------------------- the little crocheted house; the chimney stands at
+    # its front-right corner, rising over the eaves
+    hx0, hx1, hz0, hz1, hw, hr = -112, 42, -140, -45, 40, 70
+    wall_k = fabric_mat('house_wall', (0.92, 0.66, 0.32), sheen=0.05, knit=True)
+    roof_k = fabric_mat('house_roof', (0.55, 0.04, 0.05), sheen=0.05, knit=True)
+    snow_k = fabric_mat('house_snow', (0.97, 0.97, 1.0), sheen=0.6, knit=True)
+    cx, cz = (hx0 + hx1) / 2, (hz0 + hz1) / 2
+    box(c, 'house', ((hx1 - hx0) * MM, (hz1 - hz0) * MM, hw * MM), T(cx, hw / 2, cz), wall_k, bevel=0.004, segs=3)
+    half = (hz1 - hz0) / 2 + 8
+    rise = hr - hw
+    ang = math.atan2(rise, half)
+    Lr = math.hypot(rise, half) + 4
+    for sgn in (-1, 1):
+        zc = cz + sgn * half / 2
+        box(c, 'roof', ((hx1 - hx0 + 16) * MM, Lr * MM, 7 * MM), T(cx, hw + rise / 2, zc), roof_k, bevel=0.003, segs=3,
+            rot=(sgn * ang, 0, 0))
+        box(c, 'roof_snow', ((hx1 - hx0 + 12) * MM, Lr * 0.55 * MM, 6 * MM), T(cx, hw + rise * 0.75 + 4, cz + sgn * half * 0.27),
+            snow_k, bevel=0.003, segs=3, rot=(sgn * ang, 0, 0))
+    for xg in (hx0, hx1):
+        V = [(xg * MM, -(hz0) * MM, hw * MM), (xg * MM, -(hz1) * MM, hw * MM), (xg * MM, -cz * MM, hr * MM)]
+        me = bpy.data.meshes.new('gable'); me.from_pydata(V, [], [(0, 1, 2)]); me.update()
+        go = bpy.data.objects.new('gable', me); c.objects.link(go); me.materials.append(wall_k)
+        md = go.modifiers.new('sol', 'SOLIDIFY'); md.thickness = 0.004
+    # the brick chimney (crocheted red with cream mortar rows), rising through the roof at the front right
+    chm = new_mat('chimney_brick')[0]
+    nt = chm.node_tree; bs = nt.nodes['Principled BSDF']
+    tc = N(nt, 'ShaderNodeNewGeometry'); bt = N(nt, 'ShaderNodeTexBrick', i_Scale=1.0)
+    bt.inputs['Color1'].default_value = (0.42, 0.05, 0.035, 1); bt.inputs['Color2'].default_value = (0.32, 0.04, 0.03, 1)
+    bt.inputs['Mortar'].default_value = (0.72, 0.66, 0.58, 1); bt.inputs['Mortar Size'].default_value = 0.0011
+    bt.inputs['Brick Width'].default_value = 0.016; bt.inputs['Row Height'].default_value = 0.008
+    sp_ = N(nt, 'ShaderNodeSeparateXYZ'); L(nt, tc.outputs['Position'], sp_.inputs[0])
+    ad_ = N(nt, 'ShaderNodeMath', operation='ADD'); L(nt, sp_.outputs[0], ad_.inputs[0]); L(nt, sp_.outputs[1], ad_.inputs[1])
+    cb_ = N(nt, 'ShaderNodeCombineXYZ'); L(nt, ad_.outputs[0], cb_.inputs[0]); L(nt, sp_.outputs[2], cb_.inputs[1])
+    L(nt, cb_.outputs[0], bt.inputs['Vector']); L(nt, bt.outputs[0], bs.inputs['Base Color'])
+    kn = N(nt, 'ShaderNodeTexWave', i_Scale=900.0, wave_profile='SIN'); L(nt, tc.outputs['Position'], kn.inputs['Vector'])
+    mxh = N(nt, 'ShaderNodeMath', operation='MULTIPLY_ADD', i_Value_001=0.4); L(nt, kn.outputs[1], mxh.inputs[0]); L(nt, bt.outputs[1], mxh.inputs[2])
+    bump(nt, bs, mxh.outputs[0], 0.6, 0.0015)
+    setp(bs, Roughness=0.9, Sheen_Weight=0.08)
+    chx, chz, chs, chh = 20, -58, 34, 84
+    box(c, 'chimney', (chs * MM, chs * MM, chh * MM), T(chx, chh / 2, chz), chm, bevel=0.003, segs=3)
+    box(c, 'chimney_cap', ((chs + 6) * MM, (chs + 6) * MM, 6 * MM), T(chx, chh - 2, chz), snow_k, bevel=0.003, segs=3)
+    hole, _, _ = plain('chimney_hole', (0.02, 0.015, 0.01), 0.9)
+    box(c, 'chimney_hole', ((chs - 8) * MM, (chs - 8) * MM, 1 * MM), T(chx, chh + 1.2, chz), hole, bevel=0)
+    H['chimney_top'] = (chx, chh, chz)
+    door_m, _, _ = plain('door', (0.36, 0.18, 0.08), 0.5)
+    box(c, 'door', (20 * MM, 2 * MM, 32 * MM), T(cx - 22, 16, hz1 + 1), door_m, bevel=0.002)
+    knob, _, _ = plain('knob', (0.9, 0.7, 0.3), 0.3, Metallic=1.0)
+    sphere(c, 'knob', 1.6 * MM, T(cx - 16, 16, hz1 + 2.5), knob, seg=10)
+    win_lit = emit('house_window', (1.0, 0.72, 0.35), 6.0)
+    H['house_win'] = win_lit.node_tree.nodes['Emission']
+    for wx in (cx + 14, cx + 38):
+        box(c, 'hwin', (16 * MM, 2 * MM, 16 * MM), T(wx, 30, hz1 + 1), win_lit, bevel=0.001)
+        box(c, 'hwin_bar', (17 * MM, 2.6 * MM, 2 * MM), T(wx, 30, hz1 + 1.2), door_m, bevel=0)
+        box(c, 'hwin_bar', (2 * MM, 2.6 * MM, 17 * MM), T(wx, 30, hz1 + 1.2), door_m, bevel=0)
+    H['house_light'] = point('house_light', T(cx + 26, 28, hz1 + 14), (1.0, 0.65, 0.3), 0.6, 0.01)
     # ---------------------------------------------------------------- cookies and milk (front right)
     px, pz = 100, 62
     plate_m, _, _ = plain('plate', (0.92, 0.9, 0.86), 0.15, Coat_Weight=0.6)
@@ -245,7 +300,7 @@ def build():
         s = sphere(c, 'snow', 0.006, (-2.32, random.uniform(1.18, 2.02), random.uniform(0.36, 1.44)), snow_m, seg=8)
         H['snow'].append((s, s.location.z, random.uniform(0.06, 0.12), random.uniform(0, 6.28)))
     # ---------------------------------------------------------------- soot puff balls (hidden until needed)
-    sm, _, _ = plain('soot_puff', (0.12, 0.11, 0.1), 0.95, Sheen_Weight=0.6)
+    sm, _, _ = plain('soot_puff', (0.32, 0.3, 0.29), 0.95, Sheen_Weight=0.8, Sheen_Roughness=0.3)
     H['puffs'] = [sphere(c, 'puff', 1.0, (0, 0, -5), sm, seg=16) for _ in range(14)]
     for b in H['puffs']:
         b.hide_render = True

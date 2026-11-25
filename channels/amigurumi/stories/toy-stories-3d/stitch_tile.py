@@ -38,7 +38,7 @@ for du in (-1, 0, 1):
         bar = np.clip(1 - ((vv - 1.0) / 0.09) ** 2, 0, 1) ** 0.5 * 0.35
         H = np.maximum(H, bar)
 # ply relief: plies stand out of the leg a little
-Hp = H * (0.86 + 0.14 * P)
+Hp = H * (0.74 + 0.26 * P)
 # fibres: fine directional noise along the plies
 n = rng.normal(size=(S // 4, S // 4))
 fib = np.array(Image.fromarray(((n - n.min()) / np.ptp(n) * 255).astype(np.uint8)).resize((S, S), Image.BICUBIC)) / 255.0
@@ -46,6 +46,6 @@ Hp = Hp + 0.03 * (fib - 0.5) * (H > 0.05)
 Hp = np.clip(Hp, 0, None); Hp /= Hp.max()
 Image.fromarray((Hp * 65535).astype(np.uint16)).save('/home/user/work/b3d/stitch_h.png')
 # cavity: dark between the legs and rounds, light on the plies' crowns
-ao = np.clip(0.25 + 0.95 * np.sqrt(np.clip(H, 0, 1)), 0, 1) * (0.9 + 0.1 * P)
+ao = np.clip(0.12 + 1.0 * np.sqrt(np.clip(H, 0, 1)), 0, 1) * (0.9 + 0.1 * P)
 Image.fromarray((ao * 255).astype(np.uint8)).save('/home/user/work/b3d/stitch_ao.png')
 print('ok', H.mean().round(3))

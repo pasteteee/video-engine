@@ -38,8 +38,8 @@ T_PH1, T_PH2, T_STILL = 16.3, 18.1, 21.8
 T_CRUNCH, T_WAIT, T_SNIFF1, T_SNIFF2 = 24.0, 25.8, 27.3, 29.0
 T_SIL, T_BUILD, T_BACK, T_HOHO, T_END = 30.3, 31.0, 35.5, 46.5, 54.4
 
-CH = (20.0, -30.0)                 # chimney
-GIFT = (-150.0, -80.0)
+CH = (20.0, -58.0)                 # chimney
+GIFT = (-168.0, -36.0)
 TREE = (130.0, -70.0)
 FOX_HANG = (78.0, 104.0, -20.0)
 PLATE = (100.0, 62.0)
@@ -63,6 +63,8 @@ def piece_centre(toy, name):
     return np.concatenate(Vs).mean(0) if Vs else None
 
 
+LEGS_HIDE = [x['ob'] for x in TOY['legs'].objs if x['name'].split('@')[-1].split('#')[0] == 'chimney']
+print('LEGS_HIDE', len(LEGS_HIDE), [x['name'] for x in TOY['legs'].objs][:6], flush=True)
 DOG_HEAD = TOY['dog'].kof('head')
 DOG_MOUTH = piece_centre(TOY['dog'], 'muzzle') + np.array([0.0, -15.0, 6.0])
 SANTA_ARM = [k for k, pc in enumerate(TOY['santa'].pieces) if pc['role'] == 'arm']
@@ -177,8 +179,8 @@ def act(t):
         el['armL'] += 150; el['armR'] += 150
         el['sq'] += -0.15 * math.sin(math.pi * u)
     else:
-        x, z, mv = path(t, [(T_STUCK + 0.8, -80, 30), (10.6, -80, 30), (11.3, -26, -22), (T_POP, -26, -22), (T_POP + 0.55, -80, 10),
-                            (15.9, -80, 10), (16.2, -26, -22), (T_STILL, -26, -22), (T_STILL + 0.5, -60, 20), (23.4, -60, 20),
+        x, z, mv = path(t, [(T_STUCK + 0.8, -80, 30), (10.6, -80, 30), (11.3, -10, -32), (T_POP, -10, -32), (T_POP + 0.55, -80, 10),
+                            (15.9, -80, 10), (16.2, -10, -32), (T_STILL, -10, -32), (T_STILL + 0.5, -60, 20), (23.4, -60, 20),
                             (T_WAIT, -60, 20), (T_BACK, -80, 30), (T_DROP + 0.5, -78, 34)])
         el.update(x=x, z=z)
         walk(el, t, mv)
@@ -188,7 +190,7 @@ def act(t):
         el['yaw'] += face_yaw(x, z, CH[0], CH[1], 0.35)
         if 11.3 <= t < T_POP:                                   # grab and pull the boot
             u = ease((t - 11.3) / 0.3)
-            el['aimL'] = (0.55, 0.85, -0.2); el['aimR'] = (0.75, 0.75, -0.2)
+            el['aimL'] = (0.35, 1.0, -0.3); el['aimR'] = (0.5, 0.95, -0.3)
             el['roll'] += 18 * ease((t - T_GRUNT) / 0.4) + shake(t, 2.5 * (t > T_GRUNT))
             el['eye'] *= 0.8 if t > T_GRUNT else 1.0
             el['squint'] = 0.6 if t > T_GRUNT else 0.0
@@ -201,7 +203,7 @@ def act(t):
             el['eye'] *= pop_eyes(t, T_POP + 0.05, 1.6, 0.6)
             el['armL'] += 120 * (1 - ease((d - 0.6) / 0.5)); el['armR'] += 120 * (1 - ease((d - 0.6) / 0.5))
         if T_PH1 <= t < T_STILL:                                # pulls again, with the reindeer
-            el['aimL'] = (0.55, 0.85, -0.2); el['aimR'] = (0.75, 0.75, -0.2)
+            el['aimL'] = (0.35, 1.0, -0.3); el['aimR'] = (0.5, 0.95, -0.3)
             tug = max(0.0, math.sin(2 * math.pi * (t - T_PH1) / (2 * BEAT)))
             el['roll'] += 20 + 8 * tug
             el['squint'] = 0.7
@@ -230,7 +232,7 @@ def act(t):
     if t < 14.4:
         de.update(show=0.0)
     else:
-        x, z, mv = path(t, [(14.4, -270, 4), (15.6, -110, 0), (16.0, -70, -18), (T_STILL, -70, -18), (T_STILL + 0.5, -110, 10), (23.4, -110, 10),
+        x, z, mv = path(t, [(14.4, -280, 30), (15.6, -110, 20), (16.0, -52, -26), (T_STILL, -52, -26), (T_STILL + 0.5, -110, 10), (23.4, -110, 10),
                             (T_BACK, -134, 20), (T_DROP + 0.5, -134, 20)])
         de.update(x=x, z=z)
         walk(de, t, mv, 2.0)
@@ -270,7 +272,7 @@ def act(t):
         fx['roll'] += 200 * u
         fx['eye'] *= 1.5
     else:
-        x, z, mv = path(t, [(T_PH2 + 0.5, 60, 24), (19.6, -110, -6), (T_STILL, -110, -6), (T_STILL + 0.5, -135, 40),
+        x, z, mv = path(t, [(T_PH2 + 0.5, 60, 24), (19.6, -92, -16), (T_STILL, -92, -16), (T_STILL + 0.5, -135, 40),
                             (T_BACK, -78, 62), (T_DROP + 0.5, -78, 62)])
         fx.update(x=x, z=z)
         if t < 19.6:
@@ -314,8 +316,8 @@ def act(t):
     if t < 22.6:
         dg.update(show=0.0)
     else:
-        x, z, mv = path(t, [(22.6, 250, -40), (23.6, 142, 12), (26.4, 142, 12), (28.6, 84, -30), (T_BACK, 84, -30),
-                            (T_DROP, 80, 30), (T_DROP + 0.6, 92, 40)])
+        x, z, mv = path(t, [(22.6, 250, -40), (23.6, 142, 12), (26.4, 142, 12), (28.6, 72, -32), (T_BUILD, 72, -32), (T_BUILD + 1.2, 125, 14),
+                            (T_DROP, 125, 14), (T_DROP + 0.6, 92, 40)])
         dg.update(x=x, z=z)
         walk(dg, t, mv, 2.6)
         dg['yaw'] += -40 * mv
@@ -339,7 +341,7 @@ def act(t):
     if t < T_DROP:
         sa.update(show=0.0)
     elif t < T_DROP + 0.75:
-        pos, u = ballistic(t, T_DROP, T_DROP + 0.75, (CH[0], 30, CH[1]), (10, 0, 50), 150)
+        pos, u = ballistic(t, T_DROP, T_DROP + 0.75, (CH[0], 80, CH[1]), (10, 0, 50), 150)
         sa.update(x=pos[0], y=max(0.0, pos[1]), z=pos[2], scale=0.35 + 0.65 * back_out(clamp((t - T_DROP) / 0.3)))
         sa['yaw'] += 360 * eout(u)
         sa['armL'] += 150; sa['armR'] += 150
@@ -396,7 +398,7 @@ def puffs(t, events):
             x = org[0] + r * math.cos(a) * u
             z = org[2] + r * math.sin(a) * 0.5 * u
             y = org[1] + rise * u + 10 * (j % 3)
-            s = (6 + 9 * ((j * 3) % 4) / 3) * math.sin(math.pi * clamp(d / 1.4)) ** 0.6
+            s = (4 + 7 * ((j * 3) % 4) / 3) * (1.6 if n > 6 else 1.0) * math.sin(math.pi * clamp(d / 1.4)) ** 0.6
             ob.location = T(x, y, z)
             ob.scale = (s * MM,) * 3
             ob.hide_render = False
@@ -430,15 +432,15 @@ def set_events(t, ps, hold_cookie):
         lid.location = T(*pos)
         lid.rotation_euler = (math.radians(-160 * eout(u)), math.radians(70 * u), math.radians(30 * u))
     # soot: thud puff, sniff puffs, build puffs, the drop cloud
-    top = (CH[0], 52, CH[1])
+    top = (CH[0], 92, CH[1])
     ev = [(T_THUD, top, 5, 30, 40)]
     for k in range(int(max(0, (min(t, T_DROP) - T_BUILD) / BEAT)) + 1):
         tb = T_BUILD + k * BEAT
         if tb < T_DROP and t >= T_BUILD:
-            ev.append((tb, top, 2, 12, 25))
-    ev.append((T_DROP, (CH[0], 45, CH[1]), 12, 110, 70))
-    puffs(t, ev[-3:] if len(ev) > 3 else ev)
-    sparks(t, T_DROP, (CH[0], 60, CH[1]))
+            ev.append((tb, top, 4, 22, 30))
+    ev.append((T_DROP, (CH[0], 86, CH[1]), 12, 110, 70))
+    puffs(t, [e for e in ev if 0 <= t - e[0] < 1.4][-3:])
+    sparks(t, T_DROP, (CH[0], 95, CH[1]))
     # the cookie in the pug's mouth (then Santa's hand)
     ck = H['cookies'][3]
     if hold_cookie:
@@ -592,7 +594,7 @@ sc.render.resolution_percentage = a.pct
 sc.render.image_settings.file_format = 'PNG'
 sc.view_settings.view_transform = 'AgX'
 try:
-    sc.view_settings.look = 'AgX - Medium High Contrast'
+    sc.view_settings.look = 'AgX - Punchy'
 except Exception:
     pass
 
@@ -601,6 +603,8 @@ def do(t):
     ps, hold = act(t)
     for k, toy in TOY.items():
         toy.pose(ps[k])
+    for ob in LEGS_HIDE:
+        ob.hide_render = True
     set_events(t, ps, hold)
     pose_camera(t)
 

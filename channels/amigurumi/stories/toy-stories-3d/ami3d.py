@@ -25,11 +25,18 @@ def ami_materials():
     L(nt, uv.outputs[0], th.inputs[0]); L(nt, uv.outputs[0], ta.inputs[0])
     at = N(nt, 'ShaderNodeAttribute', attribute_name='col')
     mx = N(nt, 'ShaderNodeMix', data_type='RGBA', blend_type='MULTIPLY')
-    mx.inputs['Factor'].default_value = 0.9
+    import os as _os
+    YB = float(_os.environ.get('YARN_BUMP', 1.0)); YD = float(_os.environ.get('YARN_DIST', 0.003))
+    YA = float(_os.environ.get('YARN_AO', 1.0)); YS = float(_os.environ.get('YARN_SHEEN', 0.1))
+    YT = float(_os.environ.get('YARN_SAT', 1.25))
+    mx.inputs['Factor'].default_value = YA
     L(nt, at.outputs['Color'], mx.inputs[6]); L(nt, ta.outputs['Color'], mx.inputs[7])
-    L(nt, mx.outputs[2], bs.inputs['Base Color'])
-    setp(bs, Roughness=0.85, Sheen_Weight=0.35, Sheen_Roughness=0.5, Subsurface_Weight=0.08, Subsurface_Scale=0.002)
-    bump(nt, bs, th.outputs['Color'], 1.0, 0.0011)
+    hs = N(nt, 'ShaderNodeHueSaturation')
+    hs.inputs['Saturation'].default_value = YT
+    L(nt, mx.outputs[2], hs.inputs['Color'])
+    L(nt, hs.outputs['Color'], bs.inputs['Base Color'])
+    setp(bs, Roughness=0.85, Sheen_Weight=YS, Sheen_Roughness=0.5, Subsurface_Weight=0.08, Subsurface_Scale=0.002)
+    bump(nt, bs, th.outputs['Color'], YB, YD)
     M[0] = m
     m, nt, bs = new_mat('ami_eye')
     at = N(nt, 'ShaderNodeAttribute', attribute_name='col')
