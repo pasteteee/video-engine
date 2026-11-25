@@ -1,0 +1,9 @@
+name: macos-probe
+on:
+  push:
+    branches: [claude/project-thread-6wx7kn]
+jobs:
+  probe:
+    runs-on: macos-15
+    steps:
+      - run: sw_vers && xcodebuild -version && xcrun simctl list devices available | head -30
