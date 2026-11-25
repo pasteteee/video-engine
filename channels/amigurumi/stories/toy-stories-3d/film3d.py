@@ -139,8 +139,9 @@ def pose_camera(t):
     cam.location = P0.tolist()
     cam.rotation_euler = Vector((T0 - P0).tolist()).to_track_quat('-Z', 'Y').to_euler()
     cd.lens = 18.0 / math.tan(math.radians(fov) / 2)
-    cd.dof.focus_distance = float(np.linalg.norm(T0 - P0))
-    cd.dof.aperture_fstop = 2.8 if fov < 20 else 4.0
+    F0 = B(tg + np.array([0, 0, 35.0]))          # focus on the toys' faces, not their middles
+    cd.dof.focus_distance = float(np.linalg.norm(F0 - P0))
+    cd.dof.aperture_fstop = max(4.0, cd.lens / 12.0)   # long close-up lenses need a smaller aperture
 
 
 # ------------------------------------------------------------------ render setup
