@@ -81,6 +81,12 @@ class AmiToy:
         d = pickle.load(open(pkl, 'rb'))
         self.key, self.home, self.off = key, home, off
         rg = d['rig']
+        nm = [pc['name'] for pc in rg['pieces']]
+        for pc in rg['pieces']:                      # a mirrored piece hangs on its own side's parent (toe_bell_R on leg_R)
+            q = pc['parent']
+            if q is not None and q >= 0 and pc['name'][-2:] in ('_L', '_R') and nm[q][-2:] in ('_L', '_R') \
+                    and nm[q][-2:] != pc['name'][-2:] and nm[q][:-2] + pc['name'][-2:] in nm:
+                pc['parent'] = nm.index(nm[q][:-2] + pc['name'][-2:])
         self.dn = _DN(rg['pieces'])
         self.pieces = self.dn.pieces
         self.height, self.width = d['height'], d['width']

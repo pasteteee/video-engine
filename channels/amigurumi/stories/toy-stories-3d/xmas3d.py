@@ -65,6 +65,61 @@ def piece_centre(toy, name):
 
 LEGS_HIDE = [x['ob'] for x in TOY['legs'].objs if x['name'].split('@')[-1].split('#')[0] == 'chimney']
 print('LEGS_HIDE', len(LEGS_HIDE), [x['name'] for x in TOY['legs'].objs][:6], flush=True)
+
+
+def stand_rig(toy, fwd=6.0):
+    """The cast are seated dolls with their legs out in front.  To stand and walk, the legs swing down under the body
+    (a little forward of plumb, so the feet stay cute) and the body lifts until the feet touch the table.
+    Returns (legL, legR, lift)."""
+    from engine import rot
+    out = {}
+    lows = []
+    for k, pc in enumerate(toy.pieces):
+        if pc['role'] != 'leg':
+            continue
+        d = np.asarray(pc['dir'], float)
+        e = math.degrees(math.atan2(d[1], math.hypot(d[2], 1e-9)))       # elevation in the y-z plane
+        ang = -(90.0 + e) + fwd                                           # legL value that points it down
+        out['L' if pc.get('side', 0) >= 0 else 'R'] = ang
+        R = rot([1, 0, 0], -ang)
+        J = np.asarray(pc['joint'], float)
+        kids = {k} | {j for j, q in enumerate(toy.pieces) if q['parent'] == k}
+        for x in toy.objs:
+            if x['k'] in kids and x['mat'] == 0:
+                V = (np.asarray(x['V']) - J) @ R.T + J
+                lows.append(V[:, 1].min())
+    return out.get('L', 0.0), out.get('R', 0.0), max(0.0, -min(lows)) if lows else 0.0
+
+
+STAND = {k: stand_rig(TOY[k]) for k in ('elf', 'deer')}
+print('STAND', STAND, flush=True)
+
+
+def stand(p, k, s):
+    aL, aR, lift = STAND[k]
+    p['legL'] += aL * s; p['legR'] += aR * s; p['y'] += lift * s
+    if s > 0.5:
+        p['nolift'] = True                     # on its feet: the roll pivots on the soles, no seated-doll lift
+
+
+def elf_up(t):
+    """1 while the elf is on its feet, 0 while it sits on its bum."""
+    if t < T_STUCK + 0.8:
+        return 0.4 + 0.6 * clamp((t - T_STUCK) / 0.5)
+    down = [(T_POP + 0.4, T_POP + 0.55, 15.35, 15.85), (T_STILL + 0.1, T_STILL + 0.3, T_STILL + 1.25, T_STILL + 1.7)]
+    for a0, a1, b0, b1 in down:
+        if a0 <= t < b1:
+            return 1 - ease(clamp((t - a0) / (a1 - a0))) * (1 - ease(clamp((t - b0) / (b1 - b0))))
+    return 1.0
+
+
+def deer_up(t):
+    a0, a1, b0, b1 = T_STILL + 0.15, T_STILL + 0.35, T_STILL + 1.3, T_STILL + 1.75
+    if a0 <= t < b1:
+        return 1 - ease(clamp((t - a0) / (a1 - a0))) * (1 - ease(clamp((t - b0) / (b1 - b0))))
+    return 1.0
+
+
 DOG_HEAD = TOY['dog'].kof('head')
 DOG_MOUTH = piece_centre(TOY['dog'], 'muzzle') + np.array([0.0, -15.0, 6.0])
 SANTA_ARM = [k for k, pc in enumerate(TOY['santa'].pieces) if pc['role'] == 'arm']
@@ -74,11 +129,11 @@ def env(t, t0, t1, a=0.12, b=0.15):
     return clamp((t - t0) / a) * (1 - clamp((t - (t1 - b)) / b))
 
 
-def walk(p, t, amt=1.0, f=2.4):
+def walk(p, t, amt=1.0, f=2.4, bob=5.0):
     ph = 2 * math.pi * f * t
     p['legL'] += 28 * amt * math.sin(ph)
     p['legR'] += -28 * amt * math.sin(ph)
-    p['y'] += 5 * amt * abs(math.sin(ph))
+    p['y'] += bob * amt * abs(math.sin(ph))
     p['roll'] += 6 * amt * math.sin(ph)
     p['armL'] += 25 * amt * math.sin(ph)
     p['armR'] += -25 * amt * math.sin(ph)
@@ -183,7 +238,7 @@ def act(t):
                             (15.9, -80, 10), (16.2, -10, -32), (T_STILL, -10, -32), (T_STILL + 0.5, -60, 20), (23.4, -60, 20),
                             (T_WAIT, -60, 20), (T_BACK, -80, 30), (T_DROP + 0.5, -78, 34)])
         el.update(x=x, z=z)
-        walk(el, t, mv)
+        walk(el, t, mv, bob=-4.0)
         if t < T_STUCK + 1.4:
             el['sq'] += 0.28 * wob(t - (T_STUCK + 0.8), 2.5, 6)
         el['eye'] *= pop_eyes(t, T_STUCK + 0.95, 1.7, 0.9)
@@ -194,7 +249,6 @@ def act(t):
             el['roll'] += 18 * ease((t - T_GRUNT) / 0.4) + shake(t, 2.5 * (t > T_GRUNT))
             el['eye'] *= 0.8 if t > T_GRUNT else 1.0
             el['squint'] = 0.6 if t > T_GRUNT else 0.0
-            el['y'] += 4 * u
         if T_POP <= t < 15.9:                                   # slips, flies back, lands on its bum
             d = t - T_POP
             el['y'] += hop(d / 0.55, 30) if d < 0.55 else 0
@@ -235,7 +289,7 @@ def act(t):
         x, z, mv = path(t, [(14.4, -280, 30), (15.6, -110, 20), (16.0, -52, -26), (T_STILL, -52, -26), (T_STILL + 0.5, -110, 10), (23.4, -110, 10),
                             (T_BACK, -134, 20), (T_DROP + 0.5, -134, 20)])
         de.update(x=x, z=z)
-        walk(de, t, mv, 2.0)
+        walk(de, t, mv, 2.0, bob=-1.0)
         de['yaw'] += 55 if t < 16.3 else face_yaw(x, z, CH[0], CH[1], 0.5)
         de['eye'] *= pop_eyes(t, 15.7, 1.5, 0.5)
         if T_PH1 <= t < T_STILL:
@@ -376,6 +430,8 @@ def act(t):
         for k, (x, z) in {'elf': (-75, 40), 'deer': (-130, 14), 'fox': (-40, 84), 'santa': (25, 50), 'dog': (100, 40)}.items():
             ps[k]['x'] = lerp(ps[k]['x'], x, u)
             ps[k]['z'] = lerp(ps[k]['z'], z, u)
+    stand(ps['elf'], 'elf', elf_up(t))
+    stand(ps['deer'], 'deer', deer_up(t))
     return ps, hold_cookie
 
 
