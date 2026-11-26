@@ -157,6 +157,116 @@ def cmd_visualize(args: argparse.Namespace) -> int:
     return 0
 
 
+def _spans(items):
+    out = []
+    for it in items or []:
+        a, b = it.split(":")
+        out.append((float(a), float(b)))
+    return out or None
+
+
+def cmd_behavior(args: argparse.Namespace) -> int:
+    """Multi-channel behaviour map vs the person's own baseline (face, eyes, head, body,
+    hands, voice, speech) -> <stem>.behavior.json, <stem>.overlay.json, <stem>.behavior.png."""
+    from face_engine import cues
+    from face_engine.cues.deviation import DeviationConfig
+    from face_engine.cues.signals import parse_words
+    from face_engine.sources import load_landmarks, save_landmarks
+
+    out = Path(args.output)
+    out.mkdir(parents=True, exist_ok=True)
+    stem = Path(args.input).stem
+    if Path(args.input).suffix.lower() == ".npz":
+        media, frames = load_landmarks(args.input)
+        clip = args.audio or (media.path if Path(media.path).exists() else None)
+    else:
+        lm = out / f"{stem}.landmarks.npz"
+        if lm.exists() and not args.redetect:
+            media, frames = load_landmarks(lm)
+        else:
+            from face_engine.sources.mediapipe_source import MediaPipeSource
+
+            models = Path(args.models) if args.models else None
+            media, frames = MediaPipeSource(models).read(
+                args.input, sample_fps=args.sample_fps, max_seconds=args.max_seconds)
+            save_landmarks(lm, media, frames)
+        clip = args.audio or args.input
+    report = Engine().run(frames, media, frames_fps=None)
+    audio = None
+    if clip and not args.no_audio:
+        from face_engine.featurebank.signals import audio_signals
+
+        audio = audio_signals(str(clip), len(frames), media.fps)
+        audio.pop("_audio_raw", None)
+    words = None
+    if args.words:
+        words = parse_words(json.loads(Path(args.words).read_text(encoding="utf-8")))
+    elif args.transcribe and clip:
+        words = _transcribe(str(clip), args.transcribe, out / f"{stem}.words.json")
+    questions = json.loads(Path(args.questions).read_text(encoding="utf-8")) if args.questions else ()
+    override = state_override = None
+    if args.baseline_from:
+        prev = json.loads(Path(args.baseline_from).read_text(encoding="utf-8"))
+        override = {k: v for k, v in prev["baseline"].items() if isinstance(v, dict) and "median" in v and "scale" in v}
+        state_override = {g: v for g, v in prev.get("states", {}).get("groups", {}).items() if v.get("used")}
+    states = json.loads(Path(args.states).read_text(encoding="utf-8")) if args.states else ()
+    cfg = DeviationConfig(z=args.z, min_channels=args.min_channels, cluster_s=args.cluster)
+    behavior, overlay, moments = cues.run(
+        report, frames, media, audio, words, args.subject, questions, _spans(args.baseline), override, cfg,
+        overlay_fps=args.overlay_fps, states=states, state_override=state_override)
+    video = None if Path(args.input).suffix.lower() == ".npz" else args.input
+    stills = {}
+    if video:
+        offset = frames[0].time_s
+        for st, t in behavior["states"]["baseline_frame_s"].items():
+            jpg = out / f"{stem}.baseline_{st}.jpg"
+            if _still(video, t + offset, jpg):
+                stills[st] = jpg.name
+        for m in moments["moments"]:
+            if m.get("baseline_frame"):
+                m["baseline_frame"]["path"] = stills.get(m["baseline_frame"]["state"])
+                m["baseline_frame"]["t"] = round(m["baseline_frame"]["t"] + offset, 3)
+    _write(behavior, str(out / f"{stem}.behavior.json"))
+    _write(overlay, str(out / f"{stem}.overlay.json"))
+    _write(moments, str(out / f"{stem}.moments.json"))
+    if not args.no_plot:
+        try:
+            from face_engine.cues.plot import plot
+
+            plot(behavior, out / f"{stem}.behavior.png")
+        except ImportError:
+            print("matplotlib missing: no plot", file=sys.stderr)
+    for line in behavior["summary"]["notes"]:
+        print(line, file=sys.stderr)
+    return 0
+
+
+def _still(video: str, t: float, path: Path) -> bool:
+    import os
+    import subprocess
+
+    r = subprocess.run([os.environ.get("FACE_ENGINE_FFMPEG", "ffmpeg"), "-v", "error", "-y", "-ss", f"{t:.3f}",
+                        "-i", video, "-frames:v", "1", "-q:v", "2", str(path)], capture_output=True)
+    return r.returncode == 0 and path.exists()
+
+
+def _transcribe(clip: str, model: str, path: Path):
+    from faster_whisper import WhisperModel
+
+    from face_engine.cues.signals import parse_words
+
+    import os
+    import subprocess
+
+    pcm = subprocess.run([os.environ.get("FACE_ENGINE_FFMPEG", "ffmpeg"), "-v", "error", "-i", clip, "-ac", "1",
+                          "-ar", "16000", "-f", "s16le", "-"], capture_output=True, check=True).stdout
+    audio = np.frombuffer(pcm, dtype="<i2").astype(np.float32) / 32768
+    segs, _ = WhisperModel(model, device="cpu", compute_type="int8").transcribe(audio, word_timestamps=True)
+    rows = [[w.start, w.end, w.word.strip()] for s in segs for w in (s.words or [])]
+    path.write_text(json.dumps(rows), encoding="utf-8")
+    return parse_words(rows)
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="face-engine", description=__doc__)
     sub = p.add_subparsers(dest="command", required=True)
@@ -196,6 +306,31 @@ def build_parser() -> argparse.ArgumentParser:
     v.add_argument("--max-seconds", type=float)
     v.add_argument("--models")
     v.set_defaults(func=cmd_visualize)
+
+    b = sub.add_parser("behavior", help="multi-channel behaviour map, hotspots and overlay data")
+    b.add_argument("input", help="video, or a saved .npz of landmarks")
+    b.add_argument("-o", "--output", required=True, help="output directory")
+    b.add_argument("--words", help="word timings JSON: [[start, end, text(, speaker)], ...]")
+    b.add_argument("--subject", help="speaker label of the person on camera (with labelled words)")
+    b.add_argument("--questions", help="JSON list of question end times or [start, end, text] rows")
+    b.add_argument("--transcribe", metavar="MODEL", help="make word timings with faster-whisper (e.g. small.en)")
+    b.add_argument("--baseline", action="append", metavar="A:B",
+                   help="baseline span in seconds (repeatable); default: the whole clip")
+    b.add_argument("--baseline-from", help="reuse the baseline of another .behavior.json (same person)")
+    b.add_argument("--states", help="JSON [[start, end, label], ...] e.g. positive / negative_safe spans; "
+                   "speak/listen are found automatically")
+    b.add_argument("--audio", help="audio source when the input is .npz or the audio is separate")
+    b.add_argument("--no-audio", action="store_true")
+    b.add_argument("--z", type=float, default=2.0, help="SD from baseline that counts as a deviation")
+    b.add_argument("--min-channels", type=int, default=3, help="channels needed for a hotspot")
+    b.add_argument("--cluster", type=float, default=5.0, help="hotspot window, seconds")
+    b.add_argument("--overlay-fps", type=float, default=10.0)
+    b.add_argument("--sample-fps", type=float)
+    b.add_argument("--max-seconds", type=float)
+    b.add_argument("--models")
+    b.add_argument("--redetect", action="store_true", help="ignore the cached landmarks")
+    b.add_argument("--no-plot", action="store_true")
+    b.set_defaults(func=cmd_behavior)
     return p
 
 
